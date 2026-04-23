@@ -10,4 +10,4 @@
 
 배포 후 예상 주소:
 
-- `https://cws-letsplax.github.io/inha-operating-system-quiz/`
+- `https://urusung.github.io/inha-operating-system-quiz/`
