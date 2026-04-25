@@ -70,6 +70,7 @@ header .pool-info { margin-top: 8px; font-size: 11px; opacity: 0.85; }
 .q-tag.type-ox { background: #dbeafe; color: #1e40af; }
 .q-tag.type-short { background: #fef3c7; color: #92400e; }
 .q-tag.type-choice { background: #f3e8ff; color: #6b21a8; }
+.q-tag.type-essay { background: #ede9fe; color: #5b21b6; }
 .q-tag.book { background: #fee2e2; color: #991b1b; }
 .q-point { background: #10b981; color: white; font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 700; }
 
@@ -128,6 +129,34 @@ header .pool-info { margin-top: 8px; font-size: 11px; opacity: 0.85; }
 }
 .short-submit:hover { background: #0284c7; }
 .short-submit:disabled { background: #94a3b8; cursor: default; }
+
+/* Essay (서술형) */
+.essay-textarea {
+  width: 100%; min-height: 110px; padding: 11px 13px;
+  border: 1.5px solid #e5e7eb; border-radius: 10px;
+  font-size: 14px; font-family: inherit; line-height: 1.55;
+  outline: none; background: #fafafa; resize: vertical;
+}
+.essay-textarea:focus { border-color: #8b5cf6; background: white; }
+.essay-textarea:disabled { background: #f9fafb; color: #4b5563; }
+.essay-reveal {
+  margin-top: 8px; padding: 9px 16px; border-radius: 10px; border: none;
+  background: #8b5cf6; color: white; font-weight: 700; font-size: 13.5px; cursor: pointer;
+}
+.essay-reveal:hover { background: #7c3aed; }
+.essay-answer {
+  margin-top: 12px; padding: 13px 15px; background: #faf5ff;
+  border-left: 4px solid #8b5cf6; border-radius: 8px;
+  font-size: 13.5px; color: #4c1d95;
+}
+.essay-answer .ea-label { font-weight: 700; color: #6d28d9; display: block; margin-bottom: 6px; }
+.essay-answer .ea-summary { color: #1f2937; font-weight: 600; margin-bottom: 8px; }
+.essay-answer ul { margin: 6px 0 4px 18px; padding: 0; }
+.essay-answer li { margin-bottom: 4px; line-height: 1.55; color: #374151; }
+.essay-answer .ea-foot { margin-top: 8px; color: #6b7280; font-size: 12.5px; font-style: italic; }
+
+.btn-essay { background: #8b5cf6; color: white; }
+.btn-essay:hover { background: #7c3aed; }
 
 .explain {
   margin-top: 12px; padding: 11px 13px; background: #fefce8;
@@ -198,6 +227,10 @@ footer { text-align: center; margin-top: 30px; font-size: 11px; color: #9ca3af; 
   .short-input { flex: 1 1 100%; padding: 10px 12px; font-size: 15px; }
   .short-submit { flex: 1 1 100%; padding: 10px; font-size: 14px; }
 
+  .essay-textarea { min-height: 100px; padding: 10px 12px; font-size: 15px; }
+  .essay-reveal { width: 100%; padding: 10px; font-size: 14px; }
+  .essay-answer { padding: 11px 12px; font-size: 12.8px; }
+
   .explain { padding: 10px 11px; font-size: 12.5px; }
 
   .controls { gap: 8px; margin-top: 18px; }
@@ -212,6 +245,7 @@ footer { text-align: center; margin-top: 30px; font-size: 11px; color: #9ca3af; 
 /* iOS에서 input 줌 방지 (폰트 16px 미만일 때 자동 줌) */
 @media (max-width: 640px) {
   .short-input { font-size: 16px; }
+  .essay-textarea { font-size: 16px; }
 }
 </style>
 </head>
@@ -243,6 +277,7 @@ footer { text-align: center; margin-top: 30px; font-size: 11px; color: #9ca3af; 
 
   <div class="controls">
     <button class="btn btn-secondary" id="reset-btn">🎲 새 세트로 다시 풀기</button>
+    <button class="btn btn-essay" id="mode-btn">📝 서술형 연습</button>
     <button class="btn btn-primary" id="submit-btn">📊 결과 보기</button>
   </div>
 
@@ -303,7 +338,7 @@ const POOL = [
     explain:'1byte = 8bit이므로 1024bit = 128byte. 나머지는 10진 단위 기준으로 모두 성립.' },
   { ch:'2-1', type:'short', book:true, q:'1101(2)의 음수를 2의 보수 표현법으로 구해 보세요.',
     answer:'0011', alts:['0011(2)','0011₂','0011 2','00112','0011(two)'],
-    explain:'모든 비트를 뒤집고(0010) 1을 더한다 → 0011. -5의 2의 보수 표현.' },
+    explain:'모든 비트를 뒤집으면 0010, 1을 더하면 0011. 즉 1101(2)의 2의 보수(=음수 표현)는 0011(2).' },
   { ch:'2-1', type:'short', book:true, q:'DA(16)를 이진수로 표현하면?',
     answer:'11011010', alts:['11011010(2)','11011010₂','0b11011010','11011010 2'],
     explain:'D=1101, A=1010 → 11011010(2).' },
@@ -744,6 +779,176 @@ const POOL = [
   { ch:'6-3', type:'short', book:false, q:'캐시 메모리에 요청한 데이터가 있을 때 이를 "캐시 적중"이라고 한다. 반대로 요청한 데이터가 캐시에 없어서 메모리까지 가야 하는 경우를 무엇이라 하는가?',
     answer:'캐시 미스', alts:['cache miss','miss','미스','캐시미스'],
     explain:'캐시 미스(cache miss) = 캐시에 데이터가 없어 메모리 접근 필요. 적중률 = hit / (hit + miss).' },
+
+  // ========== 서술형 (자가학습용 — 점수 미반영) ==========
+  { ch:'1', type:'essay', book:false,
+    q:'컴퓨터의 4가지 핵심 부품을 나열하고 각각의 역할을 설명하시오.',
+    answer:'CPU, 주기억장치(메모리), 보조기억장치, 입출력장치 — 그리고 이들을 연결하는 시스템 버스.',
+    keypoints:[
+      'CPU: 명령어를 해석하고 실행하는 부품 (ALU + 제어장치 + 레지스터)',
+      '주기억장치(메모리, RAM): 실행 중인 프로그램의 명령어와 데이터를 저장 (휘발성)',
+      '보조기억장치(HDD/SSD 등): 전원이 꺼져도 보관할 프로그램·데이터를 저장 (비휘발성)',
+      '입출력장치: 컴퓨터 외부와 정보를 주고받는 장치 (키보드, 모니터 등)',
+      '시스템 버스: 4가지 핵심 부품을 연결하는 통로 (주소/데이터/제어 버스)'
+    ],
+    explain:'4가지 핵심 부품 + 시스템 버스 = 컴퓨터 구조의 큰 그림.' },
+
+  { ch:'2-1', type:'essay', book:false,
+    q:"2의 보수(two's complement)의 의미와 계산 방법, 그리고 그 한계와 부호 플래그의 역할을 함께 설명하시오.",
+    answer:'어떤 수의 모든 0과 1을 뒤집고 1을 더해 얻는 값으로, 컴퓨터는 이를 그 수의 음수로 간주한다.',
+    keypoints:[
+      '1의 보수: 모든 0과 1을 뒤집은 수',
+      '2의 보수: 1의 보수에 1을 더한 값 — 컴퓨터는 이 값을 음수로 간주',
+      '예) 1011(2)의 2의 보수 → 0100 → 0101(2). 즉 1011(2)의 음수 표현은 0101(2)',
+      '검증: 2의 보수를 두 번 구하면 자기 자신으로 돌아옴 (-(-A) = A)',
+      '구분 한계: 0과 1만 보고는 양/음수 구분이 어려움 → 플래그 레지스터의 부호 플래그로 양·음수 여부를 표시',
+      '표현 한계: n비트로는 -2^(n-1)과 +2^(n-1)을 동시에 표현할 수 없음 (범위 비대칭)'
+    ],
+    explain:'2의 보수 = 컴퓨터의 표준적인 음수 표현 방식. 부호 플래그로 양/음 구분.' },
+
+  { ch:'2-2', type:'essay', book:false,
+    q:'ASCII 코드와 유니코드의 차이점을 설명하시오.',
+    answer:'ASCII는 7비트 영문/숫자 중심 코드, 유니코드는 전 세계 문자를 통합한 국제 표준 문자 집합.',
+    keypoints:[
+      'ASCII: 7비트(128가지) — 영문 알파벳, 숫자, 특수문자 위주. 한글 표현 불가',
+      '유니코드: 모든 언어의 문자를 통합한 국제 표준 문자 집합',
+      '유니코드 인코딩: UTF-8 (가변 길이 1~4바이트, 웹 표준), UTF-16, UTF-32',
+      'EUC-KR과 비교: 유니코드는 다국어 통합 / EUC-KR은 한국어 완성형 (모든 한글 표현 불가)'
+    ],
+    explain:'ASCII = 영문 위주 7비트 / 유니코드 = 다국어 통합 + UTF-x로 인코딩.' },
+
+  { ch:'3-1', type:'essay', book:false,
+    q:'컴파일 언어와 인터프리터 언어의 차이점을 설명하시오.',
+    answer:'컴파일 언어는 소스 코드 전체를 한 번에 번역(컴파일러)하여 실행, 인터프리터 언어는 한 줄씩 번역·실행.',
+    keypoints:[
+      '컴파일 언어: 컴파일러가 소스 전체 → 목적/실행 파일로 한 번에 번역. 한 줄이라도 오류 시 실행 불가. (C, C++) 일반적으로 빠름',
+      '인터프리터 언어: 인터프리터가 소스를 한 줄씩 저급 언어로 번역하며 실행. (Python, JavaScript) 일반적으로 느림',
+      '둘 다 고급 언어의 분류이며, 저급 언어에는 기계어와 어셈블리어가 있음',
+      '실제로는 두 방식을 혼용한 언어도 많음 (Java: 바이트코드 컴파일 + JVM 인터프리트)'
+    ],
+    explain:'컴파일러 vs 인터프리터 = 번역 단위(전체 vs 한 줄)와 실행 시점의 차이.' },
+
+  { ch:'4-1', type:'essay', book:false,
+    q:'ALU와 제어장치의 역할 차이를 설명하시오.',
+    answer:'ALU는 산술·논리 연산을 "수행"하고, 제어장치는 명령어를 "해석"하여 제어 신호를 발생시킨다.',
+    keypoints:[
+      'ALU: 산술 연산(+, -, ×, ÷)과 논리 연산(AND, OR, NOT 등) 수행. 입력=피연산자+제어신호 / 출력=연산결과+플래그',
+      '제어장치(CU): 명령어를 해석하고 제어 신호를 발생시킴. 입력=클럭+명령어 레지스터+플래그+(외부)제어신호',
+      'ALU는 "계산하는 일꾼", 제어장치는 "지시·관리하는 관리자"',
+      '두 부품과 레지스터가 모여 CPU를 구성'
+    ],
+    explain:'ALU = 연산, 제어장치 = 해석·제어. CPU의 두 핵심 부품.' },
+
+  { ch:'4-2', type:'essay', book:false,
+    q:'CPU의 주요 레지스터(프로그램 카운터, 명령어 레지스터, 플래그 레지스터, 범용 레지스터, 스택 포인터, 베이스 레지스터)의 역할을 각각 설명하시오.',
+    answer:'각 레지스터는 명령어 실행에 필요한 정보를 임시 저장하는 CPU 내부의 작은 저장 공간.',
+    keypoints:[
+      '프로그램 카운터(PC): 다음에 인출(fetch)할 명령어의 메모리 주소 저장',
+      '명령어 레지스터(IR): 인출되어 해석할 명령어 저장',
+      '플래그 레지스터: 연산 결과의 부가 정보(부호/제로/캐리/오버플로우/인터럽트 등) 저장',
+      '범용 레지스터: 데이터와 주소 모두 자유롭게 저장 가능',
+      '스택 포인터(SP): 스택의 최상단 위치(주소) 저장',
+      '베이스 레지스터: 기준 주소 저장 — 변위와 더해 유효 주소 계산',
+      '※ 메모리 주소 레지스터(MAR), 메모리 버퍼 레지스터(MBR)도 있음'
+    ],
+    explain:'레지스터 = CPU 내부의 작은 임시 저장 장치들. 각자 정해진 역할 수행.' },
+
+  { ch:'4-3', type:'essay', book:false,
+    q:'명령어 사이클의 4단계(인출/실행/간접/인터럽트)를 각각 설명하시오.',
+    answer:'CPU가 하나의 명령어를 처리하는 정형화된 흐름. 인출과 실행은 필수, 간접과 인터럽트는 필요 시.',
+    keypoints:[
+      '인출 사이클(Fetch): 메모리에서 명령어를 CPU로 가져오는 단계 (PC가 가리키는 주소)',
+      '실행 사이클(Execute): 인출한 명령어를 해석·실행하는 단계',
+      '간접 사이클(Indirect): 피연산자의 실제 주소를 찾기 위해 메모리에서 한 번 더 데이터를 읽어오는 단계 (간접 주소 지정 방식 사용 시)',
+      '인터럽트 사이클(Interrupt): 인터럽트 발생 시 현재 작업을 백업하고 ISR로 분기하는 단계',
+      '기본 흐름: 인출 → (간접) → 실행 → (인터럽트) → 다시 인출…'
+    ],
+    explain:'명령어 사이클 = CPU가 명령어 하나를 처리하는 표준 절차.' },
+
+  { ch:'4-3', type:'essay', book:false,
+    q:'하드웨어 인터럽트가 발생했을 때 CPU의 처리 과정을 단계별로 설명하시오.',
+    answer:'입출력장치의 인터럽트 요청 → CPU가 수용 → 현재 상태 백업 → ISR 실행 → 원래 작업으로 복귀.',
+    keypoints:[
+      '① 입출력장치가 CPU에 인터럽트 요청 신호를 보냄',
+      '② CPU는 현재 명령어 실행 후 인터럽트 비트(플래그 레지스터) 확인 — 활성화 시 수용',
+      '③ 수용 가능하면 현재 작업(PC, 레지스터 등)을 스택에 백업',
+      '④ 인터럽트 벡터 테이블(IVT)에서 ISR 시작 주소를 찾아 분기',
+      '⑤ 인터럽트 서비스 루틴(ISR) 실행',
+      '⑥ ISR 종료 후 백업한 상태를 복원하여 원래 작업으로 복귀',
+      '※ NMI(Non-Maskable Interrupt)는 인터럽트 비트로 막을 수 없음'
+    ],
+    explain:'인터럽트 = 정상 흐름 잠시 중단 → ISR 처리 → 복귀.' },
+
+  { ch:'5-1', type:'essay', book:false,
+    q:'멀티코어 프로세서와 멀티스레드 프로세서의 차이를 설명하시오.',
+    answer:'멀티코어는 CPU 안에 코어(연산 부품)가 여러 개, 멀티스레드는 한 코어가 여러 스레드(작업 단위)를 동시 처리.',
+    keypoints:[
+      '코어: 명령어를 인출·해석·실행하는 부품의 묶음 (ALU + 제어장치 + 레지스터)',
+      '스레드(하드웨어): 코어가 동시에 처리할 수 있는 명령어 단위 = 논리 프로세서',
+      '멀티코어: CPU 내 코어 수 ≥ 2 (물리적 연산 자원이 많음)',
+      '멀티스레드: 한 코어가 여러 스레드 동시 처리(하이퍼스레딩) → OS는 (코어 수 × 스레드 수)만큼 논리 프로세서로 인식',
+      '소프트웨어적 스레드: OS가 관리하는 실행 흐름 (하드웨어 스레드와 구분)'
+    ],
+    explain:'멀티코어 = 코어 여러 개 / 멀티스레드 = 한 코어가 여러 스레드 처리.' },
+
+  { ch:'5-2', type:'essay', book:false,
+    q:'명령어 병렬 처리 기법(ILP) 3가지(파이프라이닝, 슈퍼스칼라, 비순차적 명령어 처리)를 각각 설명하시오.',
+    answer:'한 CPU가 동시에 여러 명령어를 처리해 처리량을 높이는 3가지 핵심 기법.',
+    keypoints:[
+      '명령어 파이프라이닝: 명령어 처리를 단계(인출/해석/실행/저장 등)로 나눠 서로 다른 명령어를 각 단계에서 겹쳐 실행',
+      '슈퍼스칼라(Superscalar): CPU 내부에 파이프라인을 여러 개 두어 명령어를 동시에 인출·실행',
+      '비순차적 명령어 처리(OoOE): 의존성 없는 명령어를 원래 순서를 바꾸어 먼저 실행',
+      '파이프라인 위험(hazard): 데이터 위험, 제어 위험, 구조적 위험 → 성능 저하 원인'
+    ],
+    explain:'ILP 3대 기법 = 파이프라이닝 + 슈퍼스칼라 + OoOE.' },
+
+  { ch:'5-3', type:'essay', book:false,
+    q:'CISC와 RISC의 특징과 차이점을 설명하시오.',
+    answer:'CISC는 다양·복잡한 명령어 / RISC는 단순·고정 길이 명령어. 설계 철학의 차이.',
+    keypoints:[
+      'CISC(Complex ISC): 명령어 종류 多, 가변 길이, 다양한 주소 지정 방식, 1 명령어가 여러 클럭 소요. 프로그램 전체 명령어 수는 적음. 파이프라이닝 어려움. (x86)',
+      'RISC(Reduced ISC): 명령어 종류 少, 고정 길이, 적은 주소 지정 방식, 1 명령어 = 1 클럭 내 수행. 프로그램 전체 명령어 수는 많음. 파이프라이닝 유리. (ARM, RISC-V)',
+      'CISC: "한 명령어가 많은 일을 하지만 복잡"',
+      'RISC: "명령어가 단순해서 빠르고 예측 가능"'
+    ],
+    explain:'CISC=복잡·다양·가변 / RISC=단순·적음·고정. 현대는 RISC 설계가 우세.' },
+
+  { ch:'6-1', type:'essay', book:false,
+    q:'DRAM과 SRAM의 차이점을 설명하시오.',
+    answer:'DRAM은 주기적 refresh가 필요한 동적 RAM(주기억장치용), SRAM은 refresh가 불필요한 정적 RAM(캐시용).',
+    keypoints:[
+      'DRAM(Dynamic RAM): 시간이 지나면 데이터가 사라져 주기적 재활성화(refresh) 필요. 집적도 ↑, 가격 ↓, 속도 ↓ → 주기억장치(메모리)로 사용',
+      'SRAM(Static RAM): refresh 불필요. 집적도 ↓, 가격 ↑, 속도 ↑ → 캐시 메모리로 사용',
+      'SDRAM: 클럭과 동기화된 DRAM',
+      'DDR SDRAM: 클럭의 상승/하강 에지 모두에서 데이터 전송 → SDR 대비 대역폭 2배. 세대별 DDR2/3/4 등 2배씩 증가',
+      '둘 다 휘발성(volatile) — 전원 꺼지면 데이터 소실'
+    ],
+    explain:'DRAM = 주기억장치 / SRAM = 캐시. 둘 다 휘발성 RAM.' },
+
+  { ch:'6-2', type:'essay', book:false,
+    q:'논리 주소와 물리 주소의 차이를 설명하고, MMU의 역할과 베이스/한계 레지스터의 동작을 함께 설명하시오.',
+    answer:'논리 주소는 프로세스가 보는 주소(0번지부터), 물리 주소는 메모리 하드웨어상의 실제 주소. MMU가 둘을 변환.',
+    keypoints:[
+      '논리 주소: 실행 중인 프로세스가 보는 주소 — 프로그램마다 0번지부터 시작',
+      '물리 주소: 메모리 하드웨어상의 실제 주소 — 프로그램이 실제 적재된 위치',
+      'MMU(Memory Management Unit): 논리 주소를 물리 주소로 변환하는 하드웨어 부품 (CPU와 메모리 사이)',
+      '한계 레지스터(Limit): 프로세스의 최대 논리 주소. 논리 주소 ≥ Limit면 다른 프로세스 침범 → 인터럽트(트랩)',
+      '베이스 레지스터(Base): 프로세스가 적재된 시작 물리 주소. 변환식: 물리 주소 = 베이스 + 논리 주소',
+      '변환 절차: ① 논리 주소 < Limit ? → ② Yes면 Base + 논리 주소 = 물리 주소'
+    ],
+    explain:'논리/물리 주소 분리 + MMU = 메모리 보호와 재배치를 가능하게 함.' },
+
+  { ch:'6-3', type:'essay', book:false,
+    q:'캐시 메모리가 필요한 이유와, 그 효율의 근거가 되는 참조 지역성의 원리(시간 지역성, 공간 지역성)를 설명하시오.',
+    answer:'CPU와 메모리 간 속도 차이를 줄이기 위해 캐시 메모리를 둠. 참조 지역성 덕분에 캐시가 효율적으로 동작함.',
+    keypoints:[
+      '필요 이유: CPU 속도 ≫ 메모리 속도 → 메모리 접근이 병목. CPU 가까이에 작고 빠른 캐시를 두어 자주 쓰는 데이터를 미리 적재',
+      '저장 장치 계층 구조: 레지스터 > 캐시(L1/L2/L3) > 메모리 > 보조기억장치 (위로 갈수록 빠름·비쌈·작음)',
+      '시간 지역성(temporal locality): 최근 접근한 데이터가 가까운 시일 내 다시 접근될 가능성 ↑ (반복문 변수 등)',
+      '공간 지역성(spatial locality): 최근 접근한 데이터의 주변 주소가 다시 접근될 가능성 ↑ (배열 순차 접근, 캐시 라인 단위 로딩)',
+      '캐시 적중(hit) / 캐시 미스(miss) — 적중률 높을수록 평균 메모리 접근 시간 감소'
+    ],
+    explain:'캐시 메모리 = CPU·메모리 속도 차이 완화. 참조 지역성이 효율의 근거.' },
 ];
 
 // ============ 출제 설정 ============
@@ -765,7 +970,7 @@ const escapeHtml = (s) => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&l
 function normalize(s) {
   return String(s).toLowerCase().replace(/\s+/g,'').replace(/[.,\-_/\\()\[\]{}'"`]/g,'');
 }
-function typeLabel(t){ return t==='ox'?'OX':t==='short'?'주관식':'객관식'; }
+function typeLabel(t){ return t==='ox'?'OX':t==='short'?'주관식':t==='essay'?'서술형':'객관식'; }
 function typeClass(t){ return 'type-'+t; }
 
 // ============ 상태 ============
@@ -775,10 +980,18 @@ const state = {
   revealed: {},   // idx -> boolean
   correct: {},    // idx -> boolean
   filter: 'all',
+  mode: 'exam',   // 'exam' | 'essay'
 };
 
 // ============ 세트 생성 ============
 function buildSet() {
+  if (state.mode === 'essay') {
+    // 서술형: 모든 essay 문제를 챕터 순으로 정렬해 그대로 출제
+    const set = POOL.filter(q => q.type === 'essay').slice();
+    set.sort((a, b) => CHAPTERS.indexOf(a.ch) - CHAPTERS.indexOf(b.ch));
+    return set;
+  }
+
   const oxPool = POOL.filter(q => q.type === 'ox');
   const shortPool = POOL.filter(q => q.type === 'short');
   const choicePool = POOL.filter(q => q.type === 'choice');
@@ -806,6 +1019,7 @@ function newRound() {
   state.correct = {};
   state.filter = 'all';
   document.getElementById('result-card').classList.remove('show');
+  applyModeUI();
   renderFilters();
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -856,6 +1070,10 @@ function render() {
         else if (sel === ci) cls += ' selected';
         return `<div class="${cls}" data-qi="${i}" data-ci="${ci}"><div class="choice-num">${ci+1}</div><div class="choice-text">${escapeHtml(c)}</div></div>`;
       }).join('') + '</div>';
+    } else if (q.type === 'essay') {
+      const val = state.answers[i] ?? '';
+      body = `<textarea class="essay-textarea" data-qi="${i}" placeholder="답안을 자유롭게 작성해보세요 (선택)" ${revealed?'disabled':''}>${escapeHtml(val)}</textarea>`;
+      if (!revealed) body += `<button class="essay-reveal" data-qi="${i}">💡 모범답안 보기</button>`;
     } else { // short
       const val = state.answers[i] ?? '';
       const inpCls = revealed ? (correct ? 'correct' : 'wrong') : '';
@@ -865,19 +1083,35 @@ function render() {
       </div>`;
     }
 
-    const explainHtml = revealed ? `
-      <div class="explain show">
-        <span class="explain-label">${correct ? '✅ 정답!' : '❌ 오답'}</span>
-        ${escapeHtml(q.explain)}
-        ${q.type === 'short' ? `<span class="ans-line">📖 정답: ${escapeHtml(q.answer)}${q.alts && q.alts.length ? ' (또는 ' + q.alts.map(escapeHtml).join(' / ') + ')' : ''}</span>` : ''}
-      </div>` : '';
+    let explainHtml = '';
+    if (revealed) {
+      if (q.type === 'essay') {
+        const kp = (q.keypoints || []).map(k => `<li>${escapeHtml(k)}</li>`).join('');
+        explainHtml = `
+          <div class="essay-answer">
+            <span class="ea-label">📖 모범답안</span>
+            <div class="ea-summary">${escapeHtml(q.answer)}</div>
+            ${kp ? `<ul>${kp}</ul>` : ''}
+            ${q.explain ? `<div class="ea-foot">${escapeHtml(q.explain)}</div>` : ''}
+          </div>`;
+      } else {
+        explainHtml = `
+          <div class="explain show">
+            <span class="explain-label">${correct ? '✅ 정답!' : '❌ 오답'}</span>
+            ${escapeHtml(q.explain)}
+            ${q.type === 'short' ? `<span class="ans-line">📖 정답: ${escapeHtml(q.answer)}${q.alts && q.alts.length ? ' (또는 ' + q.alts.map(escapeHtml).join(' / ') + ')' : ''}</span>` : ''}
+          </div>`;
+      }
+    }
 
+    const pointBadge = q.type === 'essay' ? '' : `<span class="q-point">${POINTS[q.type]}점</span>`;
+    const finalCardClass = q.type === 'essay' ? '' : cardClass;
     return `
-      <div class="question-card ${cardClass}" id="q-${i}">
+      <div class="question-card ${finalCardClass}" id="q-${i}">
         <div class="q-header">
           <span class="q-num">Q${i+1}</span>
           <span class="q-tag ${typeClass(q.type)}">${tLabel}</span>
-          <span class="q-point">${POINTS[q.type]}점</span>
+          ${pointBadge}
           <span class="q-tag">${q.ch}장</span>
           ${bookBadge}
         </div>
@@ -925,6 +1159,20 @@ function render() {
     if (btn.disabled) return;
     btn.addEventListener('click', () => submitShort(parseInt(btn.dataset.qi)));
   });
+  // 서술형
+  container.querySelectorAll('.essay-textarea').forEach(ta => {
+    if (ta.disabled) return;
+    ta.addEventListener('input', () => {
+      state.answers[parseInt(ta.dataset.qi)] = ta.value;
+    });
+  });
+  container.querySelectorAll('.essay-reveal').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const qi = parseInt(btn.dataset.qi);
+      state.revealed[qi] = true;
+      render(); updateProgress();
+    });
+  });
 
   updateProgress();
 }
@@ -939,13 +1187,19 @@ function submitShort(qi) {
 function updateProgress() {
   const total = state.questions.length;
   const answered = Object.keys(state.revealed).length;
+  document.getElementById('progress-text').textContent = `${answered} / ${total}`;
+  document.getElementById('progress-fill').style.width = total ? `${(answered/total)*100}%` : '0%';
+
+  if (state.mode === 'essay') {
+    document.getElementById('score-badge').textContent = `열람 ${answered}`;
+    document.getElementById('points-badge').textContent = '연습 모드';
+    return;
+  }
   let correct = 0, earned = 0, maxPts = 0;
   state.questions.forEach((q, i) => {
-    maxPts += POINTS[q.type];
-    if (state.correct[i]) { correct++; earned += POINTS[q.type]; }
+    maxPts += POINTS[q.type] || 0;
+    if (state.correct[i]) { correct++; earned += POINTS[q.type] || 0; }
   });
-  document.getElementById('progress-text').textContent = `${answered} / ${total}`;
-  document.getElementById('progress-fill').style.width = `${(answered/total)*100}%`;
   document.getElementById('score-badge').textContent = `정답 ${correct}`;
   document.getElementById('points-badge').textContent = `${earned} / ${maxPts}점`;
 }
@@ -971,15 +1225,29 @@ function renderPoolInfo() {
   const info = document.getElementById('pool-info');
   const byType = (t) => POOL.filter(q => q.type === t).length;
   const bookN = POOL.filter(q => q.book).length;
-  info.textContent = `문제 풀: 총 ${POOL.length}문제 (OX ${byType('ox')} / 주관식 ${byType('short')} / 객관식 ${byType('choice')}) · 교재 확인 문제 ${bookN}개`;
+  info.textContent = `문제 풀: 총 ${POOL.length}문제 (OX ${byType('ox')} / 주관식 ${byType('short')} / 객관식 ${byType('choice')} / 서술형 ${byType('essay')}) · 교재 확인 문제 ${bookN}개`;
+}
+
+function applyModeUI() {
+  const isEssay = state.mode === 'essay';
+  const subtitle = document.querySelector('header p');
+  if (subtitle) {
+    subtitle.textContent = isEssay
+      ? '서술형 연습 (자가학습용 — 점수 미반영) · 모범답안 보기로 확인'
+      : '1장~6장 (03-2 제외) · OX 1점 / 주관식 2점 / 객관식 3점 · 40점 만점 랜덤';
+  }
+  document.getElementById('submit-btn').style.display = isEssay ? 'none' : '';
+  document.getElementById('mode-btn').textContent = isEssay ? '🎯 시험 모드로' : '📝 서술형 연습';
+  document.getElementById('reset-btn').textContent = isEssay ? '🔄 처음부터 다시' : '🎲 새 세트로 다시 풀기';
 }
 
 // ============ 이벤트 ============
 document.getElementById('submit-btn').addEventListener('click', () => {
+  if (state.mode === 'essay') return; // 서술형 모드에서는 결과 보기 비활성
   let correct = 0, earned = 0, maxPts = 0;
   state.questions.forEach((q, i) => {
-    maxPts += POINTS[q.type];
-    if (state.correct[i]) { correct++; earned += POINTS[q.type]; }
+    maxPts += POINTS[q.type] || 0;
+    if (state.correct[i]) { correct++; earned += (POINTS[q.type] || 0); }
   });
   const percent = Math.round((earned / maxPts) * 100);
   document.getElementById('result-score').textContent = `${earned} / ${maxPts}점`;
@@ -1014,7 +1282,22 @@ document.getElementById('submit-btn').addEventListener('click', () => {
 });
 
 document.getElementById('reset-btn').addEventListener('click', () => {
-  if (Object.keys(state.revealed).length > 0 && !confirm('새로운 세트로 바꾸면 현재 답안이 사라집니다. 진행할까요?')) return;
+  const msg = state.mode === 'essay'
+    ? '서술형 답안과 열람 상태가 초기화됩니다. 진행할까요?'
+    : '새로운 세트로 바꾸면 현재 답안이 사라집니다. 진행할까요?';
+  if (Object.keys(state.revealed).length > 0 && !confirm(msg)) return;
+  newRound();
+});
+
+document.getElementById('mode-btn').addEventListener('click', () => {
+  const goingEssay = state.mode !== 'essay';
+  if (Object.keys(state.revealed).length > 0) {
+    const msg = goingEssay
+      ? '서술형 연습 모드로 전환합니다. 현재 시험 답안이 사라집니다. 진행할까요?'
+      : '시험 모드로 전환합니다. 서술형 작성 내용이 사라집니다. 진행할까요?';
+    if (!confirm(msg)) return;
+  }
+  state.mode = goingEssay ? 'essay' : 'exam';
   newRound();
 });
 
