@@ -1,8 +1,8 @@
 <!DOCTYPE html><script type="application/json" id="cowork-artifact-meta">
 {
-  "name": "Os Midterm Quiz",
+  "name": "Os Final Quiz",
   "schemaVersion": 1,
-  "description": "오퍼레이팅시스템 중간고사 대비 인터랙티브 퀴즈 (1장~6장, 03-2 제외) — 교재 '혼자 공부하는 컴퓨터 구조+운영체제'의 '확인 문제' + 예상 문제 기반. OX(1점)/주관식(2점)/객관식(3점), 40점 만점 랜덤 출제"
+  "description": "오퍼레이팅시스템 기말고사 대비 인터랙티브 문제은행 (7장~13장) - 교재 PDF의 확인 문제 전체 포함"
 }
 </script>
 <html lang="ko">
@@ -10,7 +10,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
-<title>OS 중간고사 문제풀이</title>
+<title>OS 기말고사 문제풀이</title>
 <style>
 :root { color-scheme: light; }
 * { box-sizing: border-box; }
@@ -72,6 +72,8 @@ header .pool-info { margin-top: 8px; font-size: 11px; opacity: 0.85; }
 .q-tag.type-choice { background: #f3e8ff; color: #6b21a8; }
 .q-tag.type-essay { background: #ede9fe; color: #5b21b6; }
 .q-tag.book { background: #fee2e2; color: #991b1b; }
+.q-tag.prof { background: #dcfce7; color: #166534; }
+.q-tag.trend { background: #e0e7ff; color: #3730a3; }
 .q-point { background: #10b981; color: white; font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 700; }
 
 .q-text { font-size: 15px; font-weight: 500; margin: 0 0 14px; color: #111827; white-space: pre-wrap; }
@@ -252,8 +254,8 @@ footer { text-align: center; margin-top: 30px; font-size: 11px; color: #9ca3af; 
 <body>
 <div class="container">
   <header>
-    <h1>💻 오퍼레이팅시스템 중간고사</h1>
-    <p>1장~6장 (03-2 제외) · OX 1점 / 주관식 2점 / 객관식 3점 · 40점 만점 랜덤</p>
+    <h1>💻 오퍼레이팅시스템 기말고사</h1>
+    <p>7장~13장 · PDF 확인 문제 + 교수/경향 보강 · 주관식 2점 / 객관식 3점</p>
     <div class="pool-info" id="pool-info"></div>
   </header>
 
@@ -267,7 +269,7 @@ footer { text-align: center; margin-top: 30px; font-size: 11px; color: #9ca3af; 
   <div class="filter-bar" id="filter-bar"></div>
 
   <div class="result-card" id="result-card">
-    <div class="result-score" id="result-score">0 / 40점</div>
+    <div class="result-score" id="result-score">0점</div>
     <div class="result-detail" id="result-detail">정답률 0%</div>
     <div class="result-message" id="result-message"></div>
     <div class="result-breakdown" id="result-breakdown"></div>
@@ -277,802 +279,1922 @@ footer { text-align: center; margin-top: 30px; font-size: 11px; color: #9ca3af; 
 
   <div class="controls">
     <button class="btn btn-secondary" id="reset-btn">🎲 새 세트로 다시 풀기</button>
-    <button class="btn btn-essay" id="mode-btn">📝 서술형 연습</button>
+    <button class="btn btn-essay" id="mode-btn" style="display:none">📝 서술형 연습</button>
     <button class="btn btn-primary" id="submit-btn">📊 결과 보기</button>
   </div>
 
-  <footer>교재: 혼자 공부하는 컴퓨터 구조+운영체제 · 인하대 소프트웨어융합공학과 · 📘책 뱃지 = 교재 확인 문제</footer>
+  <footer>교재: 혼자 공부하는 컴퓨터 구조+운영체제 · 기말 범위 7장~13장 · 📘책 = PDF 확인 문제 · 교수PDF/경향 = 보강 문제</footer>
 </div>
 
 <script>
 // ============ 문제 풀 ============
-// type: 'ox' (1점) | 'short' (2점) | 'choice' (3점)
-// book: true 면 📘책 뱃지 (교재 확인 문제에서 거의 그대로)
+// type: 'short' (2점) | 'choice' (3점)
+// book: true 면 📘책 뱃지 (PDF 교재 확인 문제)
 const POOL = [
-
-  // ========== 01-2장: 컴퓨터 구조의 큰 그림 (p.050~051) ==========
-  // 책 확인 문제
-  { ch:'1', type:'short', book:true, q:'(빈칸) 컴퓨터가 이해하는 정보에는 ( ① )와 ( ② )가 있습니다. [보기: 명령어, 데이터, CPU, 메모리, 보조기억장치] — 두 단어를 쉼표로 구분해 적으세요.',
-    answer:'명령어, 데이터', alts:['데이터, 명령어','명령어,데이터','데이터,명령어'],
-    explain:'컴퓨터가 이해하는 정보 = 데이터(data) + 명령어(instruction).' },
-  { ch:'1', type:'choice', book:true, q:'컴퓨터의 네 가지 핵심 부품 중 명령어를 해석하고 실행하는 장치를 고르세요.',
-    choices:['보조기억장치','입출력장치','CPU','주기억장치'], answer:2,
-    explain:'명령어를 해석·실행하는 부품 = CPU.' },
-  { ch:'1', type:'short', book:true, q:'(빈칸) 프로그램이 실행되려면 반드시 (     )에 저장되어 있어야 합니다.',
-    answer:'메모리', alts:['주기억장치','RAM','메모리(주기억장치)','주기억 장치'],
-    explain:'실행 중인 프로그램의 명령어와 데이터는 메모리에 저장되어 있어야 한다.' },
-  { ch:'1', type:'short', book:true, q:'(짝짓기) 보조기억장치가 저장하는 것은? (보기: 실행되는 프로그램 / 보관할 프로그램)',
-    answer:'보관할 프로그램', alts:['보관할프로그램','전원이 꺼져도 보관할 프로그램','보관할 프로그램 저장'],
-    explain:'메모리 = 실행되는 프로그램 저장, 보조기억장치 = 전원이 꺼져도 보관할 프로그램 저장.' },
-  { ch:'1', type:'choice', book:true, q:'시스템 버스와 관련하여 옳지 않은 내용을 고르세요.',
-    choices:[
-      '시스템 버스는 컴퓨터의 핵심 부품을 분리시키는 버스입니다.',
-      '시스템 버스는 주소 버스, 데이터 버스, 제어 버스로 구성되어 있습니다.',
-      '메인보드 내부에는 시스템 버스를 비롯한 다양한 버스가 있습니다.',
-      'CPU가 메모리에 값을 저장할 때 주소 버스, 데이터 버스, 제어 버스를 모두 사용할 수 있습니다.'
-    ], answer:0,
-    explain:'시스템 버스는 핵심 부품들을 "분리"하는 것이 아니라 "연결하는 통로" 역할을 한다.' },
-  // 예상 문제
-  { ch:'1', type:'ox', book:false, q:'컴퓨터의 4가지 핵심 부품은 CPU, 주기억장치(메모리), 보조기억장치, 입출력장치이다.', answer:'O',
-    explain:'4가지 핵심 부품 + 시스템 버스(메인보드)가 컴퓨터의 큰 그림.' },
-  { ch:'1', type:'ox', book:false, q:'RAM(주기억장치)에 저장된 내용은 전원이 꺼지면 사라진다.', answer:'O',
-    explain:'RAM은 휘발성(volatile). 비휘발성은 ROM/SSD/HDD.' },
-  { ch:'1', type:'ox', book:false, q:'CPU 내부에는 ALU, 제어장치(CU), 레지스터가 들어 있다.', answer:'O',
-    explain:'CPU = ALU + 제어장치 + 레지스터들.' },
-  { ch:'1', type:'short', book:false, q:'시스템 버스는 주소 버스, 제어 버스와 함께 어떤 버스로 구성되는가?',
-    answer:'데이터 버스', alts:['data bus','데이터버스'],
-    explain:'시스템 버스 = 주소 버스 + 데이터 버스 + 제어 버스.' },
-
-  // ========== 02-1장: 0과 1로 숫자를 표현하는 방법 (p.064~065) ==========
-  // 책 확인 문제
-  { ch:'2-1', type:'short', book:true, q:'2000MB는 몇 GB인가요? (정수로, 단위 생략)',
-    answer:'2', alts:['2GB','약 2','2 GB','2기가바이트'],
-    explain:'1GB ≈ 1000MB 기준으로 2000MB ≈ 2GB.' },
-  { ch:'2-1', type:'choice', book:true, q:'다음 중 옳지 않은 것을 골라 보세요.',
-    choices:[
-      '1000GB는 1TB와 같습니다.',
-      '1000kB는 1MB와 같습니다.',
-      '1000MB는 1GB와 같습니다.',
-      '1024bit는 1byte와 같습니다.'
-    ], answer:3,
-    explain:'1byte = 8bit이므로 1024bit = 128byte. 나머지는 10진 단위 기준으로 모두 성립.' },
-  { ch:'2-1', type:'short', book:true, q:'1101(2)의 음수를 2의 보수 표현법으로 구해 보세요.',
-    answer:'0011', alts:['0011(2)','0011₂','0011 2','00112','0011(two)'],
-    explain:'모든 비트를 뒤집으면 0010, 1을 더하면 0011. 즉 1101(2)의 2의 보수(=음수 표현)는 0011(2).' },
-  { ch:'2-1', type:'short', book:true, q:'DA(16)를 이진수로 표현하면?',
-    answer:'11011010', alts:['11011010(2)','11011010₂','0b11011010','11011010 2'],
-    explain:'D=1101, A=1010 → 11011010(2).' },
-  { ch:'2-1', type:'choice', book:true, q:'이진수와 더불어 십육진수가 많이 사용되는 대표적인 이유는 무엇인가요?',
-    choices:[
-      '이진수와 십육진수 간의 변환이 쉽기 때문입니다.',
-      '십육진수에 비해 이진수로 표현되는 글자 수가 일반적으로 적기 때문입니다.',
-      '십육진수가 십진수보다 일상적으로 더 많이 사용되기 때문입니다.',
-      '컴퓨터는 이진수를 이해하지 못하기 때문입니다.'
-    ], answer:0,
-    explain:'16진수 한 자리 = 이진수 4자리. 변환이 쉽고 가독성이 좋음.' },
-  // 예상 문제
-  { ch:'2-1', type:'ox', book:false, q:'1바이트(byte)는 8비트(bit)이다.', answer:'O',
-    explain:'1byte = 8bit. 1KB = 1024byte.' },
-  { ch:'2-1', type:'ox', book:false, q:'2의 보수는 컴퓨터에서 음수를 표현하기 위한 방법이다.', answer:'O',
-    explain:'컴퓨터는 음수를 표현할 때 2의 보수를 사용.' },
-  { ch:'2-1', type:'short', book:false, q:'n비트로 표현할 수 있는 2의 보수 정수의 범위는? (식으로, n 사용)',
-    answer:'-2^(n-1) ~ 2^(n-1)-1', alts:['-2^(n-1)~2^(n-1)-1','-2**(n-1)~2**(n-1)-1','-2^(n-1) to 2^(n-1)-1'],
-    explain:'n비트 2의 보수 범위 = -2^(n-1) ~ 2^(n-1) - 1. 예) 4비트 → -8 ~ 7.' },
-
-  // ========== 02-2장: 0과 1로 문자를 표현하는 방법 (p.075) ==========
-  // 책 확인 문제
-  { ch:'2-2', type:'short', book:true, q:'68쪽의 아스키 코드표를 참고하여 아래의 아스키 코드를 디코딩한 내용을 써 보세요.\n104 111 110 103 111 110 103 → ( ? )',
-    answer:'hongong', alts:['HONGONG','Hongong','혼공'],
-    explain:'104=h, 111=o, 110=n, 103=g → hongong (혼공).' },
-  { ch:'2-2', type:'choice', book:true, q:'다음 중 EUC-KR 인코딩에 대한 설명 중 옳지 않은 것을 고르세요.',
-    choices:[
-      '한국어를 표현할 수 있는 인코딩 방식입니다.',
-      '조합형 인코딩 방식입니다.',
-      '하나의 완성된 한글 글자에 코드를 부여합니다.',
-      '모든 한글을 표현할 수 없습니다.'
-    ], answer:1,
-    explain:'EUC-KR은 완성형(완성된 한글에 코드 부여)이지 조합형이 아니다.' },
-  { ch:'2-2', type:'short', book:true, q:'유니코드 문자 집합에서 "안"=C548(16), "녕"=B155(16)일 때, 이러한 유니코드 값을 가변 길이(1~4바이트)로 인코딩하여 "안녕"을 표현하는 대표적 웹 표준 방식은?',
-    answer:'UTF-8', alts:['utf8','utf 8','UTF8','utf-8'],
-    explain:'UTF-8은 유니코드 값을 가변 길이로 인코딩하는 웹 표준 방식.' },
-  // 예상 문제
-  { ch:'2-2', type:'ox', book:false, q:'ASCII 코드는 7비트를 사용하여 128가지 문자를 표현한다.', answer:'O',
-    explain:'ASCII = 7비트 = 2^7 = 128가지.' },
-  { ch:'2-2', type:'ox', book:false, q:'유니코드는 한국어 전용 인코딩 방식이다.', answer:'X',
-    explain:'유니코드는 전 세계 문자를 표현하기 위한 국제 표준 문자 집합.' },
-
-  // ========== 03-1장: 소스 코드와 명령어 (p.089) ==========
-  // 책 확인 문제
-  { ch:'3-1', type:'short', book:true, q:'다음 중 고급 언어가 아닌 것을 모두 고르세요.\n① 컴파일 언어  ② 인터프리터 언어  ③ 기계어  ④ 어셈블리 언어\n(번호를 쉼표로 구분해 적으세요)',
-    answer:'3,4', alts:['3, 4','4,3','4, 3','③,④','③, ④','기계어, 어셈블리어','기계어,어셈블리어','기계어, 어셈블리 언어','기계어와 어셈블리어'],
-    explain:'기계어·어셈블리어 = 저급 언어. 컴파일/인터프리터 언어 = 고급 언어.' },
-  { ch:'3-1', type:'choice', book:true, q:'다음 중 옳지 않은 것을 고르세요.',
-    choices:[
-      '컴파일 언어는 한 줄이라도 소스 코드상에 오류가 있다면 실행될 수 없습니다.',
-      '일반적으로 컴파일 언어보다 인터프리터 언어가 더 빠릅니다.',
-      '인터프리터는 인터프리터 언어로 작성된 소스 코드를 한 줄씩 저급 언어로 변환하여 실행합니다.',
-      '컴파일러는 컴파일 언어로 작성된 소스 코드 전체를 목적 코드로 변환합니다.'
-    ], answer:1,
-    explain:'일반적으로 컴파일 언어가 인터프리터 언어보다 빠르다.' },
-  // 예상 문제
-  { ch:'3-1', type:'ox', book:false, q:'C, Java, Python은 모두 고급 언어이다.', answer:'O',
-    explain:'C, Java, Python, JavaScript 등은 고급 언어.' },
-  { ch:'3-1', type:'short', book:false, q:'소스 코드를 실행 가능한 기계어로 통째로 번역해주는 프로그램을 무엇이라 하는가?',
-    answer:'컴파일러', alts:['compiler'],
-    explain:'컴파일러(compiler) = 고급 언어 소스코드 → 목적/실행 파일 전체 변환.' },
-
-  // ========== 04-1장: ALU와 제어장치 (p.110~111) ==========
-  // 책 확인 문제
-  { ch:'4-1', type:'short', book:true, q:'어떤 CPU의 플래그 레지스터에 [부호=1, 제로=0, 캐리=0, 오버플로우=0, 인터럽트=0, 슈퍼바이저=0] 이 세팅되어 있고, ALU의 연산 결과 레지스터에 2진수 101이 저장되어 있다. 이 계산 결과를 십진수로 적으시오.',
-    answer:'-3', alts:['-3(10)','십진수 -3','마이너스 3','음수 3'],
-    explain:'부호 플래그=1 → 음수(2의 보수 표현). 101(2)의 2의 보수: 비트 반전(010) + 1 = 011(2) = 3. 따라서 -3.' },
-  { ch:'4-1', type:'choice', book:true, q:'다음 중 제어장치와 관련된 설명 중 옳지 않은 것을 고르세요.',
-    choices:[
-      '제어장치는 제어 버스로 제어 신호를 내보냅니다.',
-      '제어장치는 제어 신호를 통해 ALU에게 연산을 지시합니다.',
-      '제어장치는 클럭 신호를 받아들입니다.',
-      '제어장치는 CPU 내에서 산술 연산과 논리 연산을 담당하는 부품입니다.'
-    ], answer:3,
-    explain:'산술·논리 연산을 담당하는 부품은 ALU. 제어장치는 명령어 해석과 제어 신호 발생.' },
-  { ch:'4-1', type:'short', book:true, q:'(그림 빈칸) 제어장치의 입력은 클럭, 해석할 명령어(명령어 레지스터), 플래그(플래그 레지스터), 그리고 "CPU 외부의 입출력장치로부터 받는 전기 신호"이다. 이 네 번째 입력의 이름은?',
-    answer:'제어 신호', alts:['control signal','제어신호','입출력장치로부터의 제어 신호','제어 신호(입출력장치)'],
-    explain:'제어장치 입력 = 클럭 + 해석할 명령어 + 플래그 + 제어 신호(입출력장치로부터).' },
-  { ch:'4-1', type:'choice', book:true, q:'CPU의 구성 요소로 적절하지 않은 것을 고르세요.',
-    choices:['ALU','레지스터','제어장치','하드 디스크'], answer:3,
-    explain:'하드 디스크는 보조기억장치. CPU 구성 = ALU + 제어장치 + 레지스터.' },
-  // 예상 문제
-  { ch:'4-1', type:'ox', book:false, q:'ALU는 연산 결과와 함께 플래그를 내보낸다.', answer:'O',
-    explain:'ALU는 연산 결과와 부호/제로/캐리/오버플로우 등의 플래그를 내보낸다.' },
-  { ch:'4-1', type:'short', book:false, q:'연산 결과에 대한 부가 정보(부호, 제로, 캐리, 오버플로우 등)가 저장되는 레지스터는?',
-    answer:'플래그 레지스터', alts:['flag register','플래그레지스터','플래그'],
-    explain:'플래그 레지스터: 연산 결과의 상태 정보를 저장.' },
-
-  // ========== 04-2장: 레지스터 (p.124~125) ==========
-  // 책 확인 문제
-  { ch:'4-2', type:'short', book:true, q:'현재 프로그램 카운터에 저장된 값이 2100일 때, CPU가 다음으로 읽어 들일 메모리 주소는 몇 번지일까요?',
-    answer:'2100', alts:['2100번지','2100 번지'],
-    explain:'프로그램 카운터(PC)는 "다음에 인출할 명령어의 메모리 주소"를 저장.' },
-  { ch:'4-2', type:'short', book:true, q:'(짝짓기) 보기에서 골라 쓰세요. [보기: 프로그램 카운터, 명령어 레지스터, 플래그 레지스터, 범용 레지스터]\n"연산 결과 혹은 CPU 상태에 대한 부가 정보를 저장하는 레지스터"',
-    answer:'플래그 레지스터', alts:['flag register','플래그레지스터'],
-    explain:'플래그 레지스터: 부호/제로/캐리/오버플로우 등 상태 저장.' },
-  { ch:'4-2', type:'short', book:true, q:'(짝짓기) "데이터와 주소를 모두 저장할 수 있는 레지스터"는? [보기: 프로그램 카운터, 명령어 레지스터, 플래그 레지스터, 범용 레지스터]',
-    answer:'범용 레지스터', alts:['general register','범용레지스터','general-purpose register'],
-    explain:'범용 레지스터: 데이터와 주소 모두 저장 가능.' },
-  { ch:'4-2', type:'short', book:true, q:'스택의 4/5/6번지에 각각 1/2/3이 쌓여 있고 스택 포인터가 4번지를 가리킬 때, 데이터를 두 번 pop 하면 스택 포인터는 몇 번지를 가리키는가?\n(힌트: 스택 포인터는 "남아 있는 최상단 데이터의 주소"를 저장)',
-    answer:'6', alts:['6번지','6 번지'],
-    explain:'pop 2번 → 1과 2가 빠지고 3만 남음(6번지). 스택 포인터 = 6번지.' },
-  { ch:'4-2', type:'choice', book:true, q:'레지스터에 대한 설명으로 옳은 것을 고르세요.',
-    choices:[
-      '산술 연산과 논리 연산을 수행하는 부품입니다.',
-      '제어 신호를 발생시킵니다.',
-      '명령어를 해석합니다.',
-      'CPU 내에 있는 작은 임시 저장 장치입니다.'
-    ], answer:3,
-    explain:'레지스터 = CPU 내부의 작은 임시 저장 장치. ① ALU, ②③ 제어장치의 기능.' },
-  // 예상 문제
-  { ch:'4-2', type:'short', book:false, q:'다음에 인출할 명령어의 주소를 저장하는 레지스터는?',
-    answer:'프로그램 카운터', alts:['PC','program counter','명령어 포인터','IP'],
-    explain:'PC(Program Counter) = 다음 인출할 명령어 주소.' },
-  { ch:'4-2', type:'short', book:false, q:'메모리에서 가져온 해석할 명령어를 저장하는 레지스터는?',
-    answer:'명령어 레지스터', alts:['IR','instruction register','명령어레지스터'],
-    explain:'명령어 레지스터(IR): 해석할 명령어 저장.' },
-  { ch:'4-2', type:'ox', book:false, q:'베이스 레지스터에 저장된 주소는 기준 주소로서의 역할을 한다.', answer:'O',
-    explain:'베이스 레지스터 + 변위(displacement) = 유효 주소.' },
-
-  // ========== 04-3장: 명령어 사이클과 인터럽트 (p.140~141) ==========
-  // 책 확인 문제
-  { ch:'4-3', type:'choice', book:true, q:'명령어 사이클에 대한 설명으로 옳지 않은 것을 고르세요.',
-    choices:[
-      '명령어 사이클은 인출, 간접, 실행, 인터럽트 사이클로 구성됩니다.',
-      '인출 사이클은 메모리에서 실행할 명령어를 CPU로 가져오는 과정을 의미합니다.',
-      '간접 사이클은 피연산자의 실제 주소를 찾기 위해 메모리 내의 데이터를 한 번 더 인출하는 과정을 의미합니다.',
-      '인터럽트 사이클은 프로그램의 순차적인 흐름을 이어 나가게 합니다.'
-    ], answer:3,
-    explain:'인터럽트 사이클은 프로그램의 순차적 흐름을 "방해(중단)"하는 것이지 이어나가는 것이 아니다.' },
-  { ch:'4-3', type:'choice', book:true, q:'인터럽트에 대한 설명으로 옳지 않은 것을 고르세요.',
-    choices:[
-      '인터럽트는 프로그램의 정상적인 실행 흐름을 방해하는 기능입니다.',
-      'CPU는 입출력 작업 도중에도 명령어를 효율적으로 처리하기 위해 하드웨어 인터럽트를 사용할 수 있습니다.',
-      '모든 인터럽트는 인터럽트 비트를 설정함으로써 막을 수 있습니다.',
-      'CPU는 인터럽트를 처리하기 위해 인터럽트 서비스 루틴을 수행합니다.'
-    ], answer:2,
-    explain:'NMI(Non-Maskable Interrupt)는 인터럽트 비트로도 막을 수 없다.' },
-  { ch:'4-3', type:'short', book:true, q:'다음 빈칸에 알맞은 말을 쓰세요. [보기: 인터럽트 서비스 루틴, 인터럽트 벡터, 인터럽트 요청 신호]\nCPU는 인터럽트를 처리하기 위해 하던 작업을 잠시 백업한 뒤 (     )라는 프로그램을 실행합니다.',
-    answer:'인터럽트 서비스 루틴', alts:['ISR','interrupt service routine','인터럽트서비스루틴','인터럽트 핸들러'],
-    explain:'인터럽트 서비스 루틴(ISR) = 인터럽트를 처리하기 위한 프로그램.' },
-  { ch:'4-3', type:'choice', book:true, q:'명령어 사이클에서 인출 사이클에 대한 설명으로 옳은 것을 고르세요.',
-    choices:[
-      'CPU가 명령어를 실행하는 단계입니다.',
-      'CPU가 명령어를 메모리로부터 가져오는 단계입니다.',
-      '예기치 못한 상황에 대처하는 단계입니다.',
-      'CPU가 작동을 멈추는 단계입니다.'
-    ], answer:1,
-    explain:'인출(Fetch) = 메모리에서 명령어를 CPU로 가져오는 단계.' },
-  { ch:'4-3', type:'choice', book:true, q:'CPU가 프로그램을 실행하던 도중 하드웨어 인터럽트가 발생했다. 이때 CPU가 수행할 동작으로 올바른 것을 고르세요(플래그 레지스터 속 인터럽트 비트는 활성화되어 있다고 가정).',
-    choices:[
-      '프로그램을 종료합니다.',
-      '인터럽트를 처리하기 전에 실행하던 프로그램을 마저 실행합니다.',
-      '수행하던 작업을 잠시 백업한 뒤 인터럽트 서비스 루틴을 실행하고 다시 수행하던 작업으로 되돌아옵니다.',
-      '보조기억장치에 저장된 정보를 초기화합니다.'
-    ], answer:2,
-    explain:'① 현재 상태 백업 → ② ISR 실행 → ③ 원래 작업으로 복귀.' },
-  // 예상 문제
-  { ch:'4-3', type:'ox', book:false, q:'NMI(Non-Maskable Interrupt)는 인터럽트 비트로도 막을 수 없다.', answer:'O',
-    explain:'NMI는 "막을 수 없는" 인터럽트. 하드웨어 고장, 정전 등.' },
-  { ch:'4-3', type:'ox', book:false, q:'인터럽트는 CPU의 정상적인 작업 흐름을 방해하는 신호이다.', answer:'O',
-    explain:'인터럽트 = 정상 실행 흐름을 중단·우선처리 요청하는 신호.' },
-  { ch:'4-3', type:'short', book:false, q:'인터럽트 서비스 루틴들의 시작 주소를 모아놓은 표(테이블)는?',
-    answer:'인터럽트 벡터 테이블', alts:['IVT','interrupt vector table','인터럽트벡터테이블','인터럽트 벡터'],
-    explain:'IVT(Interrupt Vector Table): 인터럽트 번호 → ISR 시작 주소 매핑.' },
-
-  // ========== 05-1장: 빠른 CPU를 위한 설계 기법 (p.154~155) ==========
-  // 책 확인 문제
-  { ch:'5-1', type:'choice', book:true, q:'클럭에 대한 설명 중 옳지 않은 것을 고르세요.',
-    choices:[
-      'CPU는 클럭 신호에 맞춰 작동합니다.',
-      '클럭 신호는 CPU의 속도 단위입니다.',
-      '클럭 신호를 높여도 컴퓨터 부품은 발열 없이 빠르게 작동합니다.',
-      '클럭 신호는 항상 일정하게 유지되지 않습니다.'
-    ], answer:2,
-    explain:'클럭 속도를 올리면 발열·전력 소모가 급증한다.' },
-  { ch:'5-1', type:'choice', book:true, q:'멀티코어와 멀티스레드에 대한 설명 중 옳지 않은 것을 고르세요.',
-    choices:[
-      '코어는 명령어를 인출하고 해석하고 실행하는 부품의 집합입니다.',
-      '스레드는 코어가 처리할 수 있는 작업 단위입니다.',
-      '여러 개의 스레드를 처리할 수 있다면 하나의 프로그램을 동시에 처리할 수 있습니다.',
-      '하나의 코어는 하나의 스레드만 처리할 수 있습니다.'
-    ], answer:3,
-    explain:'하나의 코어가 여러 스레드(하이퍼스레딩)를 처리할 수 있다 = 멀티스레드 프로세서.' },
-  { ch:'5-1', type:'short', book:true, q:'(빈칸) 스레드에는 ( ① )적 스레드와 ( ② )적 스레드가 있습니다. [보기: 소프트웨어, 하드웨어, 시스템 버스] — 두 단어를 쉼표로 구분.',
-    answer:'하드웨어, 소프트웨어', alts:['소프트웨어, 하드웨어','하드웨어,소프트웨어','소프트웨어,하드웨어'],
-    explain:'하드웨어적 스레드(논리 프로세서) + 소프트웨어적 스레드(OS가 관리하는 실행 흐름).' },
-  { ch:'5-1', type:'short', book:true, q:'멀티코어 CPU를 도식화한 그림에서 CPU 내부에 "ALU + 레지스터 + 제어장치" 묶음이 두 개 있을 때, 각 묶음을 무엇이라고 하는가?',
-    answer:'코어', alts:['core','코어(core)'],
-    explain:'코어(core) = CPU 내부에서 명령어를 처리하는 부품의 묶음.' },
-  // 예상 문제
-  { ch:'5-1', type:'ox', book:false, q:'멀티코어 CPU는 하나의 CPU 안에 여러 개의 코어가 있는 CPU를 말한다.', answer:'O',
-    explain:'멀티코어 = 한 CPU 내 코어 ≥ 2.' },
-  { ch:'5-1', type:'ox', book:false, q:'CPU의 클럭 속도를 무한히 높이기만 하면 성능은 계속 향상된다.', answer:'X',
-    explain:'발열의 벽으로 한계. 그래서 멀티코어·멀티스레드로 진화.' },
-
-  // ========== 05-2장: 명령어 병렬 처리 기법 (p.165) ==========
-  // 책 확인 문제
-  { ch:'5-2', type:'choice', book:true, q:'명령어 파이프라이닝에 대한 설명으로 옳지 않은 것을 고르세요.',
-    choices:[
-      '명령어 파이프라이닝은 명령어를 병렬적으로 처리하는 기법입니다.',
-      '슈퍼스칼라는 단일한 명령어 파이프라인을 이용하여 명령어를 처리하는 기법입니다.',
-      '제어 위험은 프로그램 카운터의 갑작스러운 변화에 의해 발생합니다.',
-      '데이터 위험은 명령어 간의 데이터 의존성에 의해 발생합니다.'
-    ], answer:1,
-    explain:'슈퍼스칼라는 "여러 개"의 파이프라인을 이용해 명령어를 처리한다.' },
-  { ch:'5-2', type:'short', book:true, q:'(빈칸) 순서를 바꾸어 명령어를 실행하는 기법은? [보기: 슈퍼스칼라, 비순차적 명령어 처리]',
-    answer:'비순차적 명령어 처리', alts:['OoOE','Out-of-Order Execution','비순차적명령어처리','OOO','OOOE'],
-    explain:'OoOE(Out-of-Order Execution): 의존성 없는 명령어부터 먼저 실행.' },
-  { ch:'5-2', type:'short', book:true, q:'(빈칸) 여러 개의 파이프라인을 이용하여 명령어를 동시에 처리하는 기법은? [보기: 슈퍼스칼라, 비순차적 명령어 처리]',
-    answer:'슈퍼스칼라', alts:['superscalar','슈퍼 스칼라'],
-    explain:'슈퍼스칼라(superscalar): CPU 내부에 명령어 파이프라인 여러 개.' },
-  // 예상 문제
-  { ch:'5-2', type:'ox', book:false, q:'파이프라이닝은 하나의 명령어 처리를 여러 단계로 나누어 서로 다른 명령어들을 각 단계에서 겹쳐 실행하는 기법이다.', answer:'O',
-    explain:'파이프라인 = 단계별 동시 처리 → 처리량 증가.' },
-  { ch:'5-2', type:'short', book:false, q:'파이프라인에서 데이터 의존성, 분기, 자원 충돌 등으로 성능 저하가 발생하는 현상을 통칭하여 무엇이라 하는가?',
-    answer:'파이프라인 위험', alts:['hazard','pipeline hazard','해저드','위험'],
-    explain:'파이프라인 위험(pipeline hazard) = 데이터/제어/구조적 해저드.' },
-
-  // ========== 05-3장: CISC와 RISC (p.175) ==========
-  // 책 확인 문제
-  { ch:'5-3', type:'choice', book:true, q:'CISC에 대한 설명 중 올바르지 않은 것을 고르세요.',
-    choices:[
-      '명령어의 규격화가 어렵습니다.',
-      'RISC보다 다양하고 강력한 기능을 가진 명령어들이 있습니다.',
-      '적은 수의 명령어로 프로그램을 수행합니다.',
-      '일반적으로 명령어 주소 지정 방식의 종류가 적습니다.'
-    ], answer:3,
-    explain:'CISC는 주소 지정 방식이 "다양"하다. 적은 쪽은 RISC.' },
-  { ch:'5-3', type:'choice', book:true, q:'RISC에 대한 설명 중 올바르지 않은 것을 고르세요.',
-    choices:[
-      'CISC보다 프로그램을 실행하는 명령어 수가 적습니다.',
-      'CISC보다 적은 메모리 접근 방식이 있습니다.',
-      'CISC보다 파이프라이닝에 유리합니다.',
-      'CISC보다 명령어의 크기가 규격화되어 있습니다.'
-    ], answer:0,
-    explain:'RISC는 명령어 종류는 적지만, 프로그램 수행 시 CISC보다 "더 많은 수"의 명령어가 필요하다.' },
-  // 예상 문제
-  { ch:'5-3', type:'ox', book:false, q:'CISC는 명령어 길이가 고정적이고 1 클럭 내로 명령어를 수행한다.', answer:'X',
-    explain:'CISC = 가변 길이 + 여러 클럭. RISC가 고정 길이 + 1 클럭 내 수행.' },
-  { ch:'5-3', type:'short', book:false, q:'CISC와 RISC 중, 명령어 종류가 적고 고정 길이이며 파이프라이닝에 유리한 설계 철학은?',
-    answer:'RISC', alts:['risc','Reduced Instruction Set Computer'],
-    explain:'RISC(Reduced Instruction Set Computer) = 단순·적은·고정 길이 명령어.' },
-
-  // ========== 06-1장: RAM의 특성과 종류 (p.184~185) ==========
-  // 책 확인 문제
-  { ch:'6-1', type:'choice', book:true, q:'RAM에 대한 설명 중 옳지 않은 것을 고르세요.',
-    choices:[
-      'RAM은 휘발성 저장 장치입니다.',
-      'DRAM은 시간이 지나면 점차 데이터가 사라지는 RAM입니다.',
-      'SRAM은 흔히 주기억장치, 즉 메모리로 사용됩니다.',
-      'RAM이 크면 많은 프로그램을 동시에 빠르게 실행하는 데 유리합니다.'
-    ], answer:2,
-    explain:'주기억장치로 사용되는 RAM은 DRAM. SRAM은 주로 캐시 메모리.' },
-  { ch:'6-1', type:'short', book:true, q:'(짝짓기) "대역폭을 두 배 넓힌 SDRAM"은? [보기: DRAM, SRAM, SDRAM, DDR SDRAM]',
-    answer:'DDR SDRAM', alts:['DDR','ddr sdram','ddr-sdram','DDR-SDRAM'],
-    explain:'DDR(Double Data Rate): 클럭 상승/하강 에지 모두에서 데이터 전송 → 대역폭 2배.' },
-  { ch:'6-1', type:'short', book:true, q:'(짝짓기) "시간이 지나도 저장된 데이터가 사라지지 않는 RAM"은? [보기: DRAM, SRAM, SDRAM, DDR SDRAM]',
-    answer:'SRAM', alts:['sram'],
-    explain:'SRAM은 refresh 불필요. 빠르지만 비싸서 캐시에 사용.' },
-  { ch:'6-1', type:'short', book:true, q:'(짝짓기) "데이터의 소멸을 막기 위해 일정 주기로 데이터를 재활성화해야 하는 RAM"은? [보기: DRAM, SRAM, SDRAM, DDR SDRAM]',
-    answer:'DRAM', alts:['dram'],
-    explain:'DRAM은 시간이 지나면 데이터가 사라지므로 주기적 refresh 필요.' },
-  { ch:'6-1', type:'short', book:true, q:'(짝짓기) "클럭과 동기화된 DRAM"은? [보기: DRAM, SRAM, SDRAM, DDR SDRAM]',
-    answer:'SDRAM', alts:['sdram'],
-    explain:'SDRAM(Synchronous DRAM): 클럭 동기화 DRAM.' },
-  { ch:'6-1', type:'choice', book:true, q:'다음 중 주로 캐시 메모리로 활용되고 집적도가 상대적으로 낮은 RAM은?',
-    choices:['DRAM','SRAM','SDRAM','DDR SDRAM'], answer:1,
-    explain:'SRAM = 속도 빠름 + 비쌈 + 집적도 낮음 → 캐시 메모리.' },
-  { ch:'6-1', type:'short', book:true, q:'빈칸에 알맞은 숫자를 쓰세요.\nDDR3 SDRAM은 DDR2 SDRAM에 비해 대역폭이 (     )배 넓다. (숫자만)',
-    answer:'2', alts:['2배','두 배','둘'],
-    explain:'DDR 세대별 대역폭은 2배씩 증가 (DDR→DDR2→DDR3→DDR4→…).' },
-  // 예상 문제
-  { ch:'6-1', type:'ox', book:false, q:'DDR SDRAM은 SDR SDRAM에 비해 클럭 사이클당 대역폭이 약 2배이다.', answer:'O',
-    explain:'DDR = 상승/하강 에지 모두 사용 → 2배 대역폭.' },
-  { ch:'6-1', type:'short', book:false, q:'전원이 꺼지면 저장된 내용이 사라지는 메모리의 특성을 무엇이라고 하는가?',
-    answer:'휘발성', alts:['volatile','휘발','휘발성(volatile)'],
-    explain:'RAM = 휘발성(volatile). ROM/SSD/HDD = 비휘발성.' },
-
-  // ========== 06-2장: 메모리의 주소 공간 (p.194~195) ==========
-  // 책 확인 문제
-  { ch:'6-2', type:'choice', book:true, q:'주소와 관련된 설명으로 옳은 것을 고르세요.',
-    choices:[
-      '실행되는 프로그램은 항상 같은 메모리 주소에 적재됩니다.',
-      '논리 주소와 물리 주소의 구분은 의미가 없습니다.',
-      '프로그램이 실행될 때마다 다른 주소에 적재될 수 있습니다.',
-      'CPU가 이해하는 주소는 물리 주소입니다.'
-    ], answer:2,
-    explain:'프로그램은 실행될 때마다 다른 메모리 위치에 적재 가능. CPU는 논리 주소만 이해.' },
-  { ch:'6-2', type:'choice', book:true, q:'논리 주소와 물리 주소에 대한 설명 중 옳지 않은 것을 고르세요.',
-    choices:[
-      '실행되는 프로그램과 CPU는 메모리의 물리 주소를 알지 못합니다.',
-      'MMU는 논리 주소를 물리 주소로 변환합니다.',
-      '물리 주소는 모든 프로그램의 시작 주소를 0번지로 간주합니다.',
-      '명령어 속 주소는 논리 주소입니다.'
-    ], answer:2,
-    explain:'0번지부터 시작하는 것은 "논리 주소". 물리 주소는 프로그램마다 다름.' },
-  { ch:'6-2', type:'choice', book:true, q:'MMU에 대한 설명으로 옳은 것을 고르세요.',
-    choices:[
-      'MMU는 논리 주소를 물리 주소로 변환해 줍니다.',
-      'MMU는 대용량 저장 장치 중 하나입니다.',
-      'MMU 없이도 물리 주소와 논리 주소 간의 변환이 가능합니다.',
-      'MMU는 컴퓨터가 부팅이 될 때 한 번만 사용됩니다.'
-    ], answer:0,
-    explain:'MMU(Memory Management Unit) = 논리 주소 → 물리 주소 변환 하드웨어.' },
-  { ch:'6-2', type:'short', book:true, q:'(그림 빈칸) 논리 주소 → 물리 주소 변환 도식에서 "논리 주소 < ( ① ) ?" 검사 후 Yes이면 "( ② ) + 논리 주소 = 물리 주소"로 변환. ①과 ②에 들어갈 레지스터를 쉼표로 구분해 쓰세요. [보기: 한계 레지스터, 베이스 레지스터, 플래그 레지스터, 명령어 레지스터]',
-    answer:'한계 레지스터, 베이스 레지스터', alts:['한계레지스터, 베이스레지스터','한계 레지스터,베이스 레지스터','한계레지스터,베이스레지스터','limit register, base register'],
-    explain:'① 한계(Limit) — 범위 검사 / ② 베이스(Base) — 기준 주소.' },
-  // 예상 문제
-  { ch:'6-2', type:'ox', book:false, q:'논리 주소는 실행 중인 프로세스가 보는 주소이고, 물리 주소는 메모리 하드웨어상의 실제 주소이다.', answer:'O',
-    explain:'논리 주소 = CPU/프로세스 관점 / 물리 주소 = 하드웨어 관점.' },
-  { ch:'6-2', type:'ox', book:false, q:'프로세스의 논리 주소가 한계 레지스터의 값보다 크거나 같으면 CPU는 해당 접근을 허용한다.', answer:'X',
-    explain:'논리 주소 ≥ Limit → 접근 불허(트랩 인터럽트, 세그멘테이션 폴트).' },
-
-  // ========== 06-3장: 캐시 메모리 (p.205) ==========
-  // 책 확인 문제
-  { ch:'6-3', type:'short', book:true, q:'저장 장치 계층 구조 피라미드 맨 위(①)부터 맨 아래(④)까지의 순서를 쉼표로 구분해 쓰세요. [보기: 메모리, 보조기억장치, 캐시 메모리, 레지스터] — 속도 빠른 것부터.',
-    answer:'레지스터, 캐시 메모리, 메모리, 보조기억장치',
-    alts:[
-      '레지스터,캐시 메모리,메모리,보조기억장치',
-      '레지스터, 캐시, 메모리, 보조기억장치',
-      '레지스터,캐시,메모리,보조기억장치',
-      '레지스터 캐시 메모리 메모리 보조기억장치'
+  {
+    "seq": 1,
+    "ch": "7-1",
+    "type": "short",
+    "book": true,
+    "q": "<보기> 플래터, 스핀들, 헤드, 디스크 암\n하드 디스크에서 데이터는 어디에 저장되나요?",
+    "answer": "플래터",
+    "explain": "교재 확인 문제입니다.",
+    "alts": [
+      "platter"
+    ]
+  },
+  {
+    "seq": 2,
+    "ch": "7-1",
+    "type": "short",
+    "book": true,
+    "q": "<보기> 플래터, 스핀들, 헤드, 디스크 암\n하드 디스크의 플래터를 돌리는 구성 요소는 무엇인가요?",
+    "answer": "스핀들",
+    "explain": "교재 확인 문제입니다.",
+    "alts": [
+      "spindle"
+    ]
+  },
+  {
+    "seq": 3,
+    "ch": "7-1",
+    "type": "short",
+    "book": true,
+    "q": "<보기> 플래터, 스핀들, 헤드, 디스크 암\n하드 디스크에 저장된 데이터를 읽고 쓰는 구성 요소는 무엇인가요?",
+    "answer": "헤드",
+    "explain": "교재 확인 문제입니다.",
+    "alts": [
+      "head"
+    ]
+  },
+  {
+    "seq": 4,
+    "ch": "7-1",
+    "type": "choice",
+    "book": true,
+    "q": "SLC, MLC, TLC 타입에 대해 옳지 않은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "SLC 타입은 MLC 타입보다 읽고 쓰는 속도가 빠릅니다.",
+      "TLC 타입은 MLC 타입보다 읽고 쓰는 속도가 빠릅니다.",
+      "MLC 타입은 SLC 타입보다 가격이 저렴합니다.",
+      "TLC 타입은 MLC 타입보다 가격이 저렴합니다."
     ],
-    explain:'메모리 계층 구조: 레지스터 > 캐시 > 메모리 > 보조기억장치 (위로 갈수록 빠름·비쌈·작음).' },
-  { ch:'6-3', type:'choice', book:true, q:'캐시 메모리와 관련된 설명 중 옳지 않은 것을 고르세요.',
-    choices:[
-      '캐시 메모리는 CPU가 사용할 법한 데이터를 저장합니다.',
-      '캐시 메모리는 참조 지역성의 원리에 입각해 데이터를 가져와 저장합니다.',
-      '캐시 메모리는 메모리와 CPU 사이에 위치합니다.',
-      '캐시 적중률이 높으면 캐시 메모리의 성능이 떨어집니다.'
-    ], answer:3,
-    explain:'캐시 적중률이 높을수록 성능이 "향상"된다.' },
-  // 예상 문제
-  { ch:'6-3', type:'ox', book:false, q:'캐시 적중률이 높아질수록 CPU의 평균 메모리 접근 시간이 짧아진다.', answer:'O',
-    explain:'적중률↑ → 빠른 캐시 접근 비중↑ → 평균 접근 시간↓.' },
-  { ch:'6-3', type:'short', book:false, q:'최근에 접근한 데이터가 가까운 시일 내에 다시 접근될 가능성이 높다는 참조 지역성의 원리는?',
-    answer:'시간 지역성', alts:['temporal locality','시간지역성'],
-    explain:'참조 지역성 = 시간 지역성(temporal) + 공간 지역성(spatial).' },
-  { ch:'6-3', type:'short', book:false, q:'최근 접근한 데이터의 주변(근처) 주소가 다시 접근될 가능성이 높다는 원리는?',
-    answer:'공간 지역성', alts:['spatial locality','공간지역성'],
-    explain:'배열 순차 접근이 대표적. 캐시 라인 단위 로딩의 근거.' },
-  { ch:'6-3', type:'choice', book:false, q:'CPU에 가장 가까운 캐시 레벨은?',
-    choices:['L3 캐시','L2 캐시','L1 캐시','주기억장치'], answer:2,
-    explain:'L1(가장 가깝고 빠름·작음) → L2 → L3 → 메인 메모리.' },
-
-  // ========== 추가 변형 예상 문제 (출제자가 자주 쓰는 각도: 반대로 묻기 / 수치 변형 / 보기 교체) ==========
-  // 01-2
-  { ch:'1', type:'choice', book:false, q:'다음 중 컴퓨터의 네 가지 핵심 부품에 해당하지 않는 것은?',
-    choices:['CPU','주기억장치','시스템 버스','보조기억장치'], answer:2,
-    explain:'네 가지 핵심 부품 = CPU, 주기억장치(메모리), 보조기억장치, 입출력장치. 시스템 버스는 이들을 "연결"하는 통로.' },
-  { ch:'1', type:'ox', book:false, q:'메인보드 내부에는 시스템 버스 외에도 다양한 버스가 존재한다.', answer:'O',
-    explain:'메인보드에는 시스템 버스 외에도 여러 종류의 버스가 있고, 그중 네 가지 핵심 부품을 연결하는 가장 중요한 버스가 시스템 버스.' },
-
-  // 02-1
-  { ch:'2-1', type:'short', book:false, q:'0110(2)의 음수를 2의 보수 표현법으로 구하세요.',
-    answer:'1010', alts:['1010(2)','1010₂','1010 2','10102'],
-    explain:'0110 뒤집기 → 1001, 1 더하기 → 1010. (즉 -6의 2의 보수 표현)' },
-  { ch:'2-1', type:'choice', book:false, q:'다음 중 십육진수 한 자리로 표현할 수 있는 이진수의 비트 수는?',
-    choices:['2비트','4비트','8비트','16비트'], answer:1,
-    explain:'16 = 2^4 이므로 16진수 한 자리 = 이진수 4비트.' },
-
-  // 02-2
-  { ch:'2-2', type:'ox', book:false, q:'EUC-KR은 완성형 인코딩 방식으로, 모든 한글을 표현할 수는 없다.', answer:'O',
-    explain:'EUC-KR은 자주 쓰는 완성된 한글에 코드를 부여하는 완성형 → 표현 불가능한 한글이 존재.' },
-  { ch:'2-2', type:'choice', book:false, q:'다음 중 유니코드를 인코딩하는 방식이 아닌 것을 고르세요.',
-    choices:['UTF-8','UTF-16','UTF-32','EUC-KR'], answer:3,
-    explain:'EUC-KR은 유니코드가 아니라 한국어 완성형 인코딩. UTF-x 시리즈가 유니코드 인코딩.' },
-
-  // 03-1
-  { ch:'3-1', type:'short', book:false, q:'다음 중 저급 언어에 해당하는 것을 모두 고르세요.\n① 컴파일 언어  ② 인터프리터 언어  ③ 기계어  ④ 어셈블리 언어\n(번호를 쉼표로 구분)',
-    answer:'3,4', alts:['3, 4','4,3','4, 3','③,④','③, ④','기계어, 어셈블리어','기계어,어셈블리어'],
-    explain:'저급 언어 = 기계어 + 어셈블리어. 고급 언어 = 컴파일/인터프리터 언어.' },
-  { ch:'3-1', type:'ox', book:false, q:'소스 코드에 한 줄이라도 오류가 있으면 컴파일 언어는 실행 자체가 되지 않는다.', answer:'O',
-    explain:'컴파일러는 소스 전체를 한 번에 번역하므로, 한 줄이라도 에러가 있으면 실행 파일이 생성되지 않음.' },
-
-  // 04-1
-  { ch:'4-1', type:'short', book:false, q:'어떤 CPU의 플래그 레지스터에 [부호=0, 제로=1, 캐리=0, 오버플로우=0, 인터럽트=0, 슈퍼바이저=0] 이고, ALU 연산 결과 레지스터 값이 2진수 000이다. 이 계산 결과를 십진수로 적으시오.',
-    answer:'0', alts:['영','0(10)','zero'],
-    explain:'제로 플래그=1 → 결과가 0. (부호=0이니 양수 영역이기도 함)' },
-  { ch:'4-1', type:'choice', book:false, q:'다음 중 ALU의 입력이 아닌 것을 고르세요.',
-    choices:['레지스터로부터 받은 피연산자','제어장치로부터 받은 제어 신호','수행할 연산의 종류','메모리의 물리 주소'], answer:3,
-    explain:'ALU 입력 = 피연산자 + 제어 신호(연산 종류). 메모리 주소는 제어장치·MAR의 영역.' },
-
-  // 04-2
-  { ch:'4-2', type:'short', book:false, q:'프로그램 카운터에 저장된 값이 3000이고, 3000번지의 명령어 크기가 50바이트일 때, 현재 명령어 실행 후 프로그램 카운터가 가리키는 다음 명령어의 주소는?',
-    answer:'3050', alts:['3050번지','3050 번지'],
-    explain:'PC는 현재 명령어를 인출한 뒤 "다음 인출할 주소"로 업데이트 → 3000 + 50 = 3050.' },
-  { ch:'4-2', type:'short', book:false, q:'스택의 4/5/6번지에 1/2/3이 쌓여 있고 스택 포인터가 4번지를 가리킬 때, 데이터를 한 번만 pop 하면 스택 포인터가 가리키는 주소는? (힌트: 남아있는 최상단 데이터의 주소)',
-    answer:'5', alts:['5번지','5 번지'],
-    explain:'pop 1번 → 1이 빠지고 2, 3만 남음. 최상단 = 2 (5번지).' },
-
-  // 04-3
-  { ch:'4-3', type:'ox', book:false, q:'명령어 사이클은 인출 사이클과 실행 사이클의 두 단계로만 구성된다.', answer:'X',
-    explain:'명령어 사이클 = 인출 + 실행 + (필요 시) 간접 + (필요 시) 인터럽트 사이클.' },
-  { ch:'4-3', type:'short', book:false, q:'인터럽트 중 하드웨어 인터럽트와 구분되며, CPU가 명령어를 수행하는 도중 "내부적으로" 발생하는 비정상 상황(0으로 나누기, 잘못된 명령어 등)에 의한 인터럽트를 무엇이라 하는가?',
-    answer:'예외', alts:['exception','예외(exception)'],
-    explain:'인터럽트 종류 = 예외(exception, 내부) + 하드웨어 인터럽트(외부 입출력장치 등).' },
-
-  // 05-1
-  { ch:'5-1', type:'ox', book:false, q:'스레드는 하드웨어적 스레드와 소프트웨어적 스레드로 나뉜다.', answer:'O',
-    explain:'하드웨어 스레드 = 하나의 코어가 동시 처리 가능한 명령어 단위(논리 프로세서). 소프트웨어 스레드 = OS가 관리하는 실행 흐름.' },
-  { ch:'5-1', type:'choice', book:false, q:'다음 중 하드웨어 스레드를 가리키는 다른 용어로 가장 알맞은 것은?',
-    choices:['프로세스','논리 프로세서','코어','인터럽트'], answer:1,
-    explain:'하드웨어 스레드 = 논리 프로세서. OS가 "몇 개의 CPU처럼 보이나"의 단위.' },
-
-  // 05-2
-  { ch:'5-2', type:'choice', book:false, q:'다음 중 명령어 병렬 처리 기법(ILP)에 해당하지 않는 것을 고르세요.',
-    choices:['명령어 파이프라이닝','슈퍼스칼라','비순차적 명령어 처리','캐시 메모리'], answer:3,
-    explain:'ILP 3대 기법 = 파이프라이닝 + 슈퍼스칼라 + 비순차적 명령어 처리(OoOE). 캐시는 메모리 계층.' },
-  { ch:'5-2', type:'ox', book:false, q:'제어 위험(control hazard)은 프로그램 카운터의 갑작스러운 변화(분기/점프)에 의해 발생한다.', answer:'O',
-    explain:'분기 명령어로 PC가 예측과 다르게 변할 때 이미 파이프라인에 올려둔 명령어를 폐기해야 해서 성능 저하 → 제어 위험.' },
-
-  // 05-3
-  { ch:'5-3', type:'short', book:false, q:'하드웨어가 소프트웨어(명령어)를 어떻게 이해할지에 대한 약속, 즉 CPU의 언어를 무엇이라 하는가? (영문 약어)',
-    answer:'ISA', alts:['isa','Instruction Set Architecture'],
-    explain:'ISA(Instruction Set Architecture) = CPU 명령어 집합 구조. CISC/RISC는 ISA의 설계 철학.' },
-  { ch:'5-3', type:'ox', book:false, q:'RISC는 CISC보다 적은 종류의 명령어를 가지지만, 같은 프로그램 수행 시에는 일반적으로 더 많은 수의 명령어로 변환된다.', answer:'O',
-    explain:'RISC = 단순·적은 종류 + 프로그램 구성 명령어 수 많음. CISC = 다양·많은 종류 + 프로그램 구성 명령어 수 적음.' },
-
-  // 06-1
-  { ch:'6-1', type:'ox', book:false, q:'SRAM은 DRAM보다 속도가 빠르지만, 집적도가 낮아 대용량화에 불리하다.', answer:'O',
-    explain:'SRAM: 빠름·비쌈·집적도↓·refresh 불필요 → 캐시. DRAM: 느림·쌈·집적도↑·refresh 필요 → 메인 메모리.' },
-  { ch:'6-1', type:'choice', book:false, q:'다음 중 "클럭과 동기화되며, 상승/하강 엣지 모두에서 데이터를 전송하여 대역폭을 두 배로 넓힌 RAM"에 해당하는 것은?',
-    choices:['DRAM','SRAM','SDRAM','DDR SDRAM'], answer:3,
-    explain:'SDRAM(클럭 동기화) + DDR(Double Data Rate, 상승/하강 에지 모두 사용) = DDR SDRAM.' },
-
-  // 06-2
-  { ch:'6-2', type:'ox', book:false, q:'물리 주소 = 베이스 레지스터 값 + 논리 주소 로 계산된다.', answer:'O',
-    explain:'MMU는 한계 레지스터로 범위 체크 후 OK면 베이스 + 논리주소 = 물리주소로 변환.' },
-  { ch:'6-2', type:'short', book:false, q:'실행 중인 프로세스의 논리 주소가 한계 레지스터의 값을 벗어나 다른 프로세스의 주소 공간을 침범하려 할 때 CPU가 발생시키는 신호는 무엇인가?',
-    answer:'인터럽트', alts:['트랩','trap','interrupt','예외','exception'],
-    explain:'논리 주소 ≥ Limit → 인터럽트(트랩/예외) 발생. 해당 프로세스는 비정상 종료될 수 있음.' },
-
-  // 06-3
-  { ch:'6-3', type:'ox', book:false, q:'저장 장치 계층 구조에서 위로 갈수록 속도는 빠르지만, 가격은 비싸고 용량은 작다.', answer:'O',
-    explain:'레지스터(최상단, 가장 빠름·비쌈·작음) → 캐시 → 메모리 → 보조기억장치(하단).' },
-  { ch:'6-3', type:'short', book:false, q:'캐시 메모리에 요청한 데이터가 있을 때 이를 "캐시 적중"이라고 한다. 반대로 요청한 데이터가 캐시에 없어서 메모리까지 가야 하는 경우를 무엇이라 하는가?',
-    answer:'캐시 미스', alts:['cache miss','miss','미스','캐시미스'],
-    explain:'캐시 미스(cache miss) = 캐시에 데이터가 없어 메모리 접근 필요. 적중률 = hit / (hit + miss).' },
-
-  // ========== 추가 다양성 문제 (OX·객관식 함정/계산/비교 변형) ==========
-  // 01-2
-  { ch:'1', type:'ox', book:false, q:'CPU와 메모리 사이의 통신은 시스템 버스 중 데이터 버스 하나만으로 충분하다.', answer:'X',
-    explain:'주소 버스(어디로) + 데이터 버스(무엇을) + 제어 버스(어떻게) 모두 필요.' },
-  { ch:'1', type:'ox', book:false, q:'보조기억장치(HDD/SSD)는 전원이 꺼져도 데이터가 유지되는 비휘발성 저장 장치이다.', answer:'O',
-    explain:'보조기억장치 = 비휘발성. 휘발성은 RAM(주기억장치).' },
-  { ch:'1', type:'choice', book:false, q:'다음 중 비휘발성 저장 장치로만 묶인 것을 고르세요.',
-    choices:['HDD, RAM','SSD, HDD','RAM, SSD','RAM, HDD'], answer:1,
-    explain:'비휘발성 = SSD, HDD, ROM. RAM은 휘발성.' },
-  { ch:'1', type:'choice', book:false, q:'프로그램이 실행되기 위해 반드시 적재되어야 하는 곳을 고르세요.',
-    choices:['CPU 레지스터','메모리(RAM)','보조기억장치','입출력장치'], answer:1,
-    explain:'실행 중 프로그램의 명령어·데이터는 반드시 메모리(RAM)에 적재되어 있어야 한다.' },
-
-  // 02-1
-  { ch:'2-1', type:'ox', book:false, q:'2의 보수를 두 번 연속으로 구하면 원래의 수로 돌아온다.', answer:'O',
-    explain:'-(-A) = A. 2의 보수의 2의 보수는 자기 자신.' },
-  { ch:'2-1', type:'ox', book:false, q:'16진수 한 자리는 이진수 4비트로 정확히 표현된다.', answer:'O',
-    explain:'16 = 2^4 → 16진수 1자리 = 이진수 4비트.' },
-  { ch:'2-1', type:'choice', book:false, q:'이진수 1010(2)을 양수로 보고 십진수로 변환하면?',
-    choices:['8','9','10','12'], answer:2,
-    explain:'1×8 + 0×4 + 1×2 + 0×1 = 10.' },
-  { ch:'2-1', type:'choice', book:false, q:'다음 중 16진수 표기가 아닌 것을 고르세요.',
-    choices:['0xA1','0b101','FF(16)','DA'], answer:1,
-    explain:'0b 접두사는 이진수 표기. 16진수는 0x, (16), 그리고 A~F가 들어간 표기.' },
-
-  // 02-2
-  { ch:'2-2', type:'ox', book:false, q:'UTF-8은 문자에 따라 1~4바이트의 가변 길이로 인코딩한다.', answer:'O',
-    explain:'UTF-8: ASCII는 1바이트, 한글은 보통 3바이트, 이모지 등은 4바이트.' },
-  { ch:'2-2', type:'ox', book:false, q:'ASCII 코드는 한글도 표현할 수 있다.', answer:'X',
-    explain:'ASCII는 7비트 영문/숫자 위주. 한글 표현 불가.' },
-  { ch:'2-2', type:'choice', book:false, q:'다음 중 한국어를 표현할 수 없는 인코딩을 고르세요.',
-    choices:['EUC-KR','UTF-8','UTF-16','ASCII'], answer:3,
-    explain:'ASCII는 영문/숫자 위주 7비트로 한글 표현 불가. 나머지는 한글 가능.' },
-
-  // 03-1
-  { ch:'3-1', type:'ox', book:false, q:'어셈블리어는 기계어를 사람이 읽기 쉽게 표현한 저급 언어이다.', answer:'O',
-    explain:'어셈블리어 = 기계어 1:1 대응 + 사람이 읽기 쉬운 형태. 저급 언어.' },
-  { ch:'3-1', type:'ox', book:false, q:'인터프리터 언어는 실행 전에 반드시 별도의 컴파일 단계를 거쳐야 한다.', answer:'X',
-    explain:'인터프리터 언어는 컴파일 없이 한 줄씩 번역·실행.' },
-  { ch:'3-1', type:'choice', book:false, q:'다음 중 인터프리터 언어로 가장 적합한 예를 고르세요.',
-    choices:['C','C++','Python','Rust'], answer:2,
-    explain:'Python·JavaScript = 대표적 인터프리터 언어. C/C++/Rust = 컴파일 언어.' },
-
-  // 04-1
-  { ch:'4-1', type:'ox', book:false, q:'제어장치는 클럭 신호를 받아 동작 시점을 결정한다.', answer:'O',
-    explain:'제어장치 입력 = 클럭 + 명령어(IR) + 플래그 + 제어 신호.' },
-  { ch:'4-1', type:'ox', book:false, q:'ALU는 명령어를 해석하는 부품이다.', answer:'X',
-    explain:'명령어 해석 = 제어장치. ALU는 산술·논리 연산 수행.' },
-  { ch:'4-1', type:'choice', book:false, q:'다음 중 ALU의 출력에 해당하지 않는 것을 고르세요.',
-    choices:['연산 결과','플래그(부호·제로·캐리·오버플로우)','제어 신호','(수치) 데이터'], answer:2,
-    explain:'제어 신호는 제어장치의 출력. ALU는 연산 결과 + 플래그를 출력.' },
-
-  // 04-2
-  { ch:'4-2', type:'ox', book:false, q:'스택은 LIFO(Last-In First-Out) 자료구조이다.', answer:'O',
-    explain:'스택 = 가장 나중에 push한 데이터가 가장 먼저 pop. 스택 포인터로 최상단 관리.' },
-  { ch:'4-2', type:'ox', book:false, q:'프로그램 카운터(PC)는 현재 실행 중인 명령어의 주소를 저장한다.', answer:'X',
-    explain:'PC = "다음에 인출할 명령어"의 주소. 현재 명령어는 IR에.' },
-  { ch:'4-2', type:'choice', book:false, q:'베이스 레지스터에 1000이 저장되어 있고, 변위(displacement)가 50인 명령어를 실행할 때 유효 주소는?',
-    choices:['50','950','1000','1050'], answer:3,
-    explain:'유효 주소 = 베이스(1000) + 변위(50) = 1050.' },
-  { ch:'4-2', type:'choice', book:false, q:'다음 중 메모리에 접근할 데이터의 "주소"를 임시로 저장하는 레지스터를 고르세요.',
-    choices:['PC','IR','MAR','MBR'], answer:2,
-    explain:'MAR(Memory Address Register) = 메모리 접근 주소. MBR = 주고받는 데이터.' },
-
-  // 04-3
-  { ch:'4-3', type:'ox', book:false, q:'인터럽트 서비스 루틴(ISR)의 시작 주소는 인터럽트 벡터 테이블(IVT)에서 찾는다.', answer:'O',
-    explain:'IVT = 인터럽트 번호별 ISR 시작 주소 매핑 테이블.' },
-  { ch:'4-3', type:'ox', book:false, q:'예외(exception)는 외부 입출력장치에서 발생하는 인터럽트이다.', answer:'X',
-    explain:'예외 = CPU 내부에서 발생(0 나누기, 잘못된 명령어). 외부 발생 = 하드웨어 인터럽트.' },
-  { ch:'4-3', type:'choice', book:false, q:'다음 중 예외(exception)에 해당하는 상황을 고르세요.',
-    choices:['키보드 입력 발생','프린터 출력 완료','0으로 나누기 시도','네트워크 패킷 수신'], answer:2,
-    explain:'예외 = CPU 내부 비정상 상황(0 나누기, 잘못된 명령어 등). 나머지는 하드웨어 인터럽트.' },
-
-  // 05-1
-  { ch:'5-1', type:'ox', book:false, q:'코어가 4개이고 각 코어가 2개의 스레드를 처리할 수 있는 CPU는 OS에 8개의 논리 프로세서로 인식된다.', answer:'O',
-    explain:'논리 프로세서 수 = 코어 수 × 코어당 스레드 수 = 4 × 2 = 8.' },
-  { ch:'5-1', type:'ox', book:false, q:'클럭 속도만 높이면 발열·전력 문제 없이 CPU 성능을 무한히 향상시킬 수 있다.', answer:'X',
-    explain:'발열의 벽으로 한계. 그래서 멀티코어·멀티스레드로 진화.' },
-  { ch:'5-1', type:'choice', book:false, q:'CPU 내부에 "ALU + 제어장치 + 레지스터" 묶음이 4개 있는 CPU를 무엇이라 부르는가?',
-    choices:['하이퍼스레드 CPU','쿼드 코어 CPU','쿼드 스레드 CPU','멀티 슬롯 CPU'], answer:1,
-    explain:'코어 4개 = 쿼드 코어. 코어 = 명령어 처리 부품의 묶음.' },
-
-  // 05-2
-  { ch:'5-2', type:'ox', book:false, q:'데이터 위험(data hazard)은 두 명령어 사이의 데이터 의존성으로 발생한다.', answer:'O',
-    explain:'앞 명령어 결과를 뒤 명령어가 사용해야 하는데 아직 결과가 안 나왔을 때.' },
-  { ch:'5-2', type:'ox', book:false, q:'비순차적 명령어 처리(OoOE)는 의존성이 있는 명령어의 순서도 자유롭게 바꿔 실행한다.', answer:'X',
-    explain:'OoOE는 "의존성이 없는" 명령어만 순서를 바꿔 먼저 실행. 의존성 있으면 안 됨.' },
-  { ch:'5-2', type:'choice', book:false, q:'다음 중 파이프라인 위험(hazard)에 해당하지 않는 것을 고르세요.',
-    choices:['데이터 위험','제어 위험','구조적 위험','클럭 위험'], answer:3,
-    explain:'파이프라인 위험 3종 = 데이터 / 제어 / 구조적. "클럭 위험"은 없는 용어.' },
-
-  // 05-3
-  { ch:'5-3', type:'ox', book:false, q:'x86은 대표적인 RISC 계열 ISA이다.', answer:'X',
-    explain:'x86은 CISC. RISC = ARM, RISC-V, MIPS 등.' },
-  { ch:'5-3', type:'ox', book:false, q:'RISC는 한 명령어가 1 클럭 내 수행되어 파이프라이닝에 유리하다.', answer:'O',
-    explain:'RISC = 고정 길이 + 1 명령 1 클럭 → 파이프라인 단계가 일정 → 유리.' },
-  { ch:'5-3', type:'choice', book:false, q:'다음 중 RISC 계열 ISA에 해당하는 것을 고르세요.',
-    choices:['x86','x86-64','ARM','IA-32'], answer:2,
-    explain:'ARM/RISC-V/MIPS = RISC. x86 계열(x86, x86-64, IA-32)은 CISC.' },
-
-  // 06-1
-  { ch:'6-1', type:'ox', book:false, q:'DRAM은 전원이 꺼져도 데이터가 유지된다.', answer:'X',
-    explain:'DRAM은 휘발성(volatile). 전원 OFF 시 데이터 소실.' },
-  { ch:'6-1', type:'ox', book:false, q:'DDR4 SDRAM은 DDR3 SDRAM에 비해 대역폭이 약 2배 넓다.', answer:'O',
-    explain:'DDR 세대마다 대역폭이 약 2배씩 증가 (DDR→DDR2→DDR3→DDR4).' },
-  { ch:'6-1', type:'choice', book:false, q:'다음 중 캐시 메모리에 주로 사용되는 RAM은?',
-    choices:['DRAM','SRAM','SDRAM','DDR SDRAM'], answer:1,
-    explain:'SRAM = 빠르고 refresh 불필요 → 캐시. DRAM 계열은 주기억장치.' },
-
-  // 06-2
-  { ch:'6-2', type:'ox', book:false, q:'CPU는 직접 물리 주소를 생성하여 메모리에 접근한다.', answer:'X',
-    explain:'CPU는 논리 주소만 생성. MMU가 논리 → 물리 주소로 변환.' },
-  { ch:'6-2', type:'ox', book:false, q:'베이스 레지스터의 값을 변경하면 같은 논리 주소가 다른 물리 주소로 매핑된다.', answer:'O',
-    explain:'베이스 = 적재 시작 주소. 베이스가 바뀌면 매핑 결과도 바뀜 → 재배치 가능.' },
-  { ch:'6-2', type:'choice', book:false, q:'MMU가 논리 주소를 변환할 때 가장 먼저 검사하는 레지스터를 고르세요.',
-    choices:['베이스 레지스터','한계 레지스터','명령어 레지스터','플래그 레지스터'], answer:1,
-    explain:'① 한계 레지스터로 범위 체크 → ② OK면 베이스 + 논리 주소 = 물리 주소.' },
-
-  // 06-3
-  { ch:'6-3', type:'ox', book:false, q:'L1 캐시는 L2 캐시보다 용량은 작지만 속도는 빠르다.', answer:'O',
-    explain:'CPU에 가까울수록(L1 → L2 → L3) 속도↑ 용량↓.' },
-  { ch:'6-3', type:'ox', book:false, q:'공간 지역성은 같은 데이터를 반복적으로 접근할 가능성이 높다는 원리이다.', answer:'X',
-    explain:'그건 시간 지역성. 공간 지역성 = "주변 주소"를 다시 접근.' },
-  { ch:'6-3', type:'choice', book:false, q:'캐시 적중률(hit rate)이 0.9일 때 캐시 미스율(miss rate)은?',
-    choices:['0.01','0.1','0.9','1'], answer:1,
-    explain:'미스율 = 1 - 적중률 = 1 - 0.9 = 0.1.' },
-  { ch:'6-3', type:'choice', book:false, q:'다음 중 저장 장치 계층 구조의 가장 위(가장 빠름)에 위치하는 것을 고르세요.',
-    choices:['캐시','메모리','레지스터','보조기억장치'], answer:2,
-    explain:'레지스터(최상단) > 캐시 > 메모리 > 보조기억장치.' },
-
-  // ========== 서술형 (자가학습용 — 점수 미반영) ==========
-  { ch:'1', type:'essay', book:false,
-    q:'컴퓨터의 4가지 핵심 부품을 나열하고 각각의 역할을 설명하시오.',
-    answer:'CPU · 메모리 · 보조기억장치 · 입출력장치 (+ 연결: 시스템 버스)',
-    keypoints:[
-      'CPU: 명령어 해석·실행',
-      '메모리(RAM): 실행 중 프로그램·데이터 저장 (휘발성)',
-      '보조기억장치(HDD/SSD): 보관용 저장 (비휘발성)',
-      '입출력장치: 외부와 정보 교환 (키보드·모니터)',
-      '시스템 버스: 4부품 연결 (주소·데이터·제어)'
+    "explain": "SLC > MLC > TLC 순으로 일반적으로 속도와 수명이 좋고, 가격은 그 반대입니다."
+  },
+  {
+    "seq": 5,
+    "ch": "7-2",
+    "type": "choice",
+    "book": true,
+    "q": "RAID에 대한 설명 중 옳지 않은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "RAID는 여러 보조기억장치들을 마치 하나의 장치처럼 사용하는 기술입니다.",
+      "RAID를 구성하지 않아도 보조기억장치는 영구히 사용할 수 있습니다.",
+      "RAID를 통해 보조기억장치들의 성능을 높일 수 있습니다.",
+      "RAID를 통해 데이터를 안전하게 보관할 수 있습니다."
     ],
-    explain:'4부품 + 시스템 버스.' },
-
-  { ch:'2-1', type:'essay', book:false,
-    q:"2의 보수(two's complement)의 의미와 계산 방법, 그리고 그 한계와 부호 플래그의 역할을 함께 설명하시오.",
-    answer:'모든 비트 뒤집고 +1 → 음수 표현',
-    keypoints:[
-      '계산: 1의 보수(비트 반전) + 1',
-      '예) 1011 → 0100 → 0101 (= -1011)',
-      '한계 ①: 0/1만으로는 양/음 구분 불가 → 부호 플래그로 표시',
-      '한계 ②: n비트 표현 범위 비대칭 (-2^(n-1) ~ +2^(n-1)-1)'
+    "explain": "RAID는 성능과 안전성을 높일 수 있지만, 보조기억장치의 영구 사용을 보장하지는 않습니다."
+  },
+  {
+    "seq": 6,
+    "ch": "7-2",
+    "type": "choice",
+    "book": true,
+    "q": "RAID 0과 관련한 설명으로 옳은 것을 고르세요.",
+    "answer": 2,
+    "choices": [
+      "RAID 0은 하나의 물리적인 보조기억장치만을 사용하는 방식입니다.",
+      "RAID 0은 안전한 백업이 가능한 RAID 구성 방식입니다.",
+      "RAID 0은 데이터를 단순히 병렬적으로 분산하여 저장하는 방식입니다.",
+      "RAID 0은 CPU 구성 방식입니다."
     ],
-    explain:'음수 표현의 표준 방식.' },
-
-  { ch:'2-2', type:'essay', book:false,
-    q:'ASCII 코드와 유니코드의 차이점을 설명하시오.',
-    answer:'ASCII = 7비트 영문, 유니코드 = 전 세계 문자 통합',
-    keypoints:[
-      'ASCII: 7비트(128자), 영문·숫자만, 한글 X',
-      '유니코드: 다국어 통합 국제 표준',
-      '유니코드 인코딩: UTF-8 / UTF-16 / UTF-32'
+    "explain": "RAID 0은 스트라이핑으로 데이터를 병렬 분산 저장합니다. 복제나 패리티가 없어 안전성은 낮습니다."
+  },
+  {
+    "seq": 7,
+    "ch": "7-2",
+    "type": "short",
+    "book": true,
+    "q": "그림처럼 5개의 하드 디스크에 데이터 블록과 서로 다른 두 개의 패리티가 분산 저장되는 RAID 레벨을 고르세요. [보기: RAID 0, RAID 1, RAID 4, RAID 5, RAID 6]",
+    "answer": "RAID 6",
+    "explain": "두 종류의 패리티를 분산 저장하는 방식은 RAID 6입니다.",
+    "alts": [
+      "레이드6",
+      "raid6",
+      "RAID6"
+    ]
+  },
+  {
+    "seq": 8,
+    "ch": "8-1",
+    "type": "short",
+    "book": true,
+    "q": "컴퓨터 내부와 정보를 주고받기 위해 입출력장치가 장치 컨트롤러를 이용하는 이유로 옳은 것을 두 가지 고르세요.\n① 입출력장치는 종류가 많아 주고받는 정보의 규격화가 어렵기 때문입니다.\n② CPU는 모든 입출력장치가 사용하는 데이터 형식들을 알고 있기 때문입니다.\n③ 일반적으로 입출력장치와 CPU 간에 전송률의 차이가 크기 때문입니다.\n④ CPU와 입출력장치 사이에는 중개자가 필요하지 않기 때문입니다.",
+    "answer": "①, ③",
+    "explain": "장치 종류가 다양해 규격화가 어렵고, CPU/메모리와 입출력장치 사이 전송률 차이가 큽니다.",
+    "alts": [
+      "1,3",
+      "①③",
+      "1 3",
+      "1번 3번",
+      "① ③"
+    ]
+  },
+  {
+    "seq": 9,
+    "ch": "8-1",
+    "type": "choice",
+    "book": true,
+    "q": "장치 컨트롤러의 기능으로 옳지 않은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "CPU 또는 입출력장치 간의 통신을 중개합니다.",
+      "전원이 꺼져도 대용량의 데이터를 저장합니다.",
+      "입출력장치의 오류를 검출합니다.",
+      "데이터 버퍼링을 통해 전송률 차이를 완화해 줍니다."
     ],
-    explain:'영문 7비트 vs 다국어 통합.' },
-
-  { ch:'3-1', type:'essay', book:false,
-    q:'컴파일 언어와 인터프리터 언어의 차이점을 설명하시오.',
-    answer:'컴파일 = 전체 한 번에 번역, 인터프리터 = 한 줄씩 번역·실행',
-    keypoints:[
-      '컴파일: 전체 → 목적 파일, 빠름, 오류 시 실행 X (C, C++)',
-      '인터프리터: 한 줄씩 번역·실행, 느림 (Python, JS)',
-      '둘 다 고급 언어 (저급 = 기계어·어셈블리어)'
+    "explain": "전원이 꺼져도 대용량 데이터를 저장하는 것은 보조기억장치의 역할입니다."
+  },
+  {
+    "seq": 10,
+    "ch": "8-1",
+    "type": "short",
+    "book": true,
+    "q": "장치 드라이버는 ( ① )가 컴퓨터 내부와 정보를 주고받을 수 있게 하는 ( ② )입니다. [보기: 메모리, 장치 컨트롤러, 프로그램, 하드웨어] ①,②를 쉼표로 적으세요.",
+    "answer": "장치 컨트롤러, 프로그램",
+    "explain": "장치 드라이버는 장치 컨트롤러가 동작하도록 돕는 프로그램입니다.",
+    "alts": [
+      "장치컨트롤러,프로그램",
+      "장치 컨트롤러 프로그램",
+      "장치컨트롤러 프로그램"
+    ]
+  },
+  {
+    "seq": 11,
+    "ch": "8-1",
+    "type": "choice",
+    "book": true,
+    "q": "장치 드라이버와 관련한 설명 중 옳은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "운영체제가 기본적으로 제공하는 장치 드라이버는 없습니다.",
+      "컴퓨터가 장치 드라이버를 인식하고 실행할 수 있다면 해당 입출력장치의 사용이 가능합니다.",
+      "컴퓨터가 장치 드라이버를 인식하고 실행할 수 없어도 해당 입출력장치의 사용이 가능합니다.",
+      "장치 드라이버는 하드웨어입니다."
     ],
-    explain:'번역 단위의 차이.' },
-
-  { ch:'4-1', type:'essay', book:false,
-    q:'ALU와 제어장치의 역할 차이를 설명하시오.',
-    answer:'ALU = 연산 수행, 제어장치 = 명령어 해석·제어 신호 발생',
-    keypoints:[
-      'ALU: 산술(+,-,×,÷) + 논리(AND,OR,NOT) 연산',
-      '제어장치(CU): 명령어 해석 → 제어 신호 발생',
-      'ALU + 제어장치 + 레지스터 = CPU'
+    "explain": "장치 드라이버가 인식되고 실행되어야 해당 입출력장치를 사용할 수 있습니다."
+  },
+  {
+    "seq": 12,
+    "ch": "8-2",
+    "type": "choice",
+    "book": true,
+    "q": "메모리 맵 입출력과 고립형 입출력에 관한 설명 중 옳지 않은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "메모리 맵 입출력은 메모리를 위한 주소 공간과 입출력장치에 접근하기 위한 주소 공간을 하나의 주소 공간으로 간주하는 입출력 방식입니다.",
+      "고립형 입출력 방식은 메모리의 주소 공간을 축소시키는 방법입니다.",
+      "메모리 맵 입출력 방식은 메모리와 입출력장치에 동일한 명령어로써 접근합니다.",
+      "고립형 입출력은 분리된 주소 공간으로 메모리와 입출력장치를 관리하는 방식입니다."
     ],
-    explain:'연산 vs 해석·제어.' },
-
-  { ch:'4-2', type:'essay', book:false,
-    q:'CPU의 주요 레지스터(프로그램 카운터, 명령어 레지스터, 플래그 레지스터, 범용 레지스터, 스택 포인터, 베이스 레지스터)의 역할을 각각 설명하시오.',
-    answer:'CPU 내부의 임시 저장 공간',
-    keypoints:[
-      'PC(프로그램 카운터): 다음 인출할 명령어 주소',
-      'IR(명령어 레지스터): 현재 해석할 명령어',
-      '플래그: 연산 결과 부가 정보 (부호·제로·캐리·오버플로우)',
-      '범용: 데이터·주소 자유 저장',
-      'SP(스택 포인터): 스택 최상단 주소',
-      '베이스: 기준 주소 (+ 변위 = 유효 주소)'
+    "explain": "메모리 주소 공간이 축소될 수 있는 방식은 메모리 맵 입출력입니다."
+  },
+  {
+    "seq": 13,
+    "ch": "8-2",
+    "type": "short",
+    "book": true,
+    "q": "인터럽트 A의 서비스 루틴을 실행하던 중 우선순위가 더 높은 인터럽트 B가 발생했습니다. CPU는 인터럽트 (A, B)의 서비스 루틴을 잠시 멈추고, 인터럽트 (A, B)의 서비스 루틴을 실행합니다. 순서대로 고르세요.",
+    "answer": "A, B",
+    "explain": "우선순위가 높은 B를 처리하기 위해 실행 중이던 A의 서비스 루틴을 잠시 멈춥니다.",
+    "alts": [
+      "A B",
+      "a,b",
+      "a b",
+      "A,B"
+    ]
+  },
+  {
+    "seq": 14,
+    "ch": "8-2",
+    "type": "choice",
+    "book": true,
+    "q": "DMA와 관련한 설명 중 옳지 않은 것을 고르세요.",
+    "answer": 2,
+    "choices": [
+      "DMA 작업이 완료되면 DMA 컨트롤러는 CPU에게 인터럽트 요청을 보냅니다.",
+      "DMA 컨트롤러와 CPU는 시스템 버스를 동시에 사용할 수 없습니다.",
+      "DMA 컨트롤러는 CPU를 거치고 메모리와 입출력장치 간의 데이터를 주고 받습니다.",
+      "DMA는 프로그램 입출력보다 CPU의 입출력 부담이 적습니다."
     ],
-    explain:'각자 역할이 정해진 임시 저장소.' },
-
-  { ch:'4-3', type:'essay', book:false,
-    q:'명령어 사이클의 4단계(인출/실행/간접/인터럽트)를 각각 설명하시오.',
-    answer:'인출·실행은 필수, 간접·인터럽트는 필요 시',
-    keypoints:[
-      '인출(Fetch): 메모리 → CPU로 명령어 가져옴',
-      '실행(Execute): 명령어 해석·실행',
-      '간접(Indirect): 피연산자 실주소를 한 번 더 읽음',
-      '인터럽트(Interrupt): 백업 후 ISR로 분기',
-      '흐름: 인출 → (간접) → 실행 → (인터럽트) → 인출…'
+    "explain": "DMA는 CPU를 거치지 않고 메모리와 입출력장치 간 데이터를 전송합니다."
+  },
+  {
+    "seq": 15,
+    "ch": "8-2",
+    "type": "short",
+    "book": true,
+    "q": "메모리에 접근하기 위한 주소 공간과 입출력장치에 접근하기 위한 주소 공간을 하나의 주소 공간으로 간주하는 입출력 방식은 무엇인가요?",
+    "answer": "메모리 맵 입출력",
+    "explain": "하나의 주소 공간으로 관리하는 방식은 메모리 맵 입출력입니다.",
+    "alts": [
+      "메모리맵입출력",
+      "memory mapped I/O",
+      "memory-mapped I/O",
+      "메모리 맵 I/O"
+    ]
+  },
+  {
+    "seq": 16,
+    "ch": "8-2",
+    "type": "short",
+    "book": true,
+    "q": "메모리에 접근하기 위한 주소 공간과 입출력장치에 접근하기 위한 주소 공간을 별도의 주소 공간으로 분리하는 입출력 방식은 무엇인가요?",
+    "answer": "고립형 입출력",
+    "explain": "주소 공간을 분리하는 방식은 고립형 입출력입니다.",
+    "alts": [
+      "고립형입출력",
+      "isolated I/O",
+      "isolated IO",
+      "분리형 입출력"
+    ]
+  },
+  {
+    "seq": 17,
+    "ch": "9-1",
+    "type": "short",
+    "book": true,
+    "q": "운영체제는 실행할 프로그램에 (     )을 할당하고, 프로그램이 올바르게 실행되도록 돕는 프로그램입니다.",
+    "answer": "자원",
+    "explain": "운영체제는 실행 프로그램에 필요한 자원을 할당하고 실행을 돕습니다.",
+    "alts": [
+      "시스템 자원",
+      "리소스",
+      "resource"
+    ]
+  },
+  {
+    "seq": 18,
+    "ch": "9-1",
+    "type": "choice",
+    "book": true,
+    "q": "운영체제에 대한 설명으로 옳지 않은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "운영체제를 이해하면 하드웨어와 프로그램을 더 깊이 이해할 수 있습니다.",
+      "운영체제는 사용자 영역에 적재됩니다.",
+      "운영체제는 시스템 자원을 관리하는 프로그램입니다.",
+      "운영체제는 사용자가 실행하는 프로그램이 올바르게 실행되도록 돕습니다."
     ],
-    explain:'명령어 처리 표준 절차.' },
-
-  { ch:'4-3', type:'essay', book:false,
-    q:'하드웨어 인터럽트가 발생했을 때 CPU의 처리 과정을 단계별로 설명하시오.',
-    answer:'요청 → 수용 → 백업 → ISR 실행 → 복귀',
-    keypoints:[
-      '① 입출력장치가 인터럽트 요청',
-      '② CPU가 인터럽트 비트(플래그) 확인 후 수용',
-      '③ 현재 작업(PC·레지스터)을 스택에 백업',
-      '④ 인터럽트 벡터 테이블(IVT)에서 ISR 주소 찾아 분기',
-      '⑤ ISR 실행 → 복원·복귀'
+    "explain": "운영체제의 핵심인 커널은 커널 영역에 적재됩니다."
+  },
+  {
+    "seq": 19,
+    "ch": "9-2",
+    "type": "short",
+    "book": true,
+    "q": "(     )은 운영체제의 핵심 기능을 담당하는 부분을 의미합니다.",
+    "answer": "커널",
+    "explain": "커널은 운영체제의 핵심 기능을 담당합니다.",
+    "alts": [
+      "kernel"
+    ]
+  },
+  {
+    "seq": 20,
+    "ch": "9-2",
+    "type": "choice",
+    "book": true,
+    "q": "이중 모드와 시스템 호출에 대해 옳지 않은 것을 고르세요.",
+    "answer": 3,
+    "choices": [
+      "운영체제의 핵심 서비스는 커널 모드로 실행됩니다.",
+      "일반적인 응용 프로그램은 사용자 모드로 실행됩니다.",
+      "시스템 호출을 통해 사용자 모드에서 커널 모드로 전환할 수 있습니다.",
+      "시스템 호출은 인터럽트와 아무런 연관이 없습니다."
     ],
-    explain:'중단 → ISR → 복귀.' },
-
-  { ch:'5-1', type:'essay', book:false,
-    q:'멀티코어 프로세서와 멀티스레드 프로세서의 차이를 설명하시오.',
-    answer:'멀티코어 = 코어 여러 개, 멀티스레드 = 한 코어가 여러 스레드 처리',
-    keypoints:[
-      '코어: 명령어 인출·해석·실행 부품 묶음',
-      '멀티코어: CPU 내 코어 ≥ 2',
-      '멀티스레드: 한 코어 = 여러 논리 프로세서 (하이퍼스레딩)',
-      'OS 인식: 코어 수 × 스레드 수 = 논리 프로세서 수'
+    "explain": "시스템 호출은 소프트웨어 인터럽트와 관련이 있습니다."
+  },
+  {
+    "seq": 21,
+    "ch": "9-2",
+    "type": "choice",
+    "book": true,
+    "q": "운영체제의 핵심 서비스가 아닌 것을 고르세요.",
+    "answer": 2,
+    "choices": [
+      "프로세스 관리",
+      "자원 접근 및 할당",
+      "사용자 인터페이스 제공",
+      "파일 시스템 관리"
     ],
-    explain:'코어 수 vs 한 코어 안 스레드 수.' },
-
-  { ch:'5-2', type:'essay', book:false,
-    q:'명령어 병렬 처리 기법(ILP) 3가지(파이프라이닝, 슈퍼스칼라, 비순차적 명령어 처리)를 각각 설명하시오.',
-    answer:'파이프라이닝 + 슈퍼스칼라 + 비순차적 명령어 처리(OoOE)',
-    keypoints:[
-      '파이프라이닝: 단계(인출·해석·실행·저장)별로 명령어 겹쳐 실행',
-      '슈퍼스칼라: 파이프라인 여러 개 → 동시 인출·실행',
-      'OoOE: 의존성 없는 명령어 순서 바꿔 먼저 실행',
-      '위험(hazard): 데이터·제어·구조적 위험'
+    "explain": "사용자 인터페이스 제공은 커널의 핵심 서비스라기보다 운영체제 전체가 제공할 수 있는 서비스입니다."
+  },
+  {
+    "seq": 22,
+    "ch": "10-1",
+    "type": "choice",
+    "book": true,
+    "q": "프로세스와 관련한 설명 중 옳지 않은 것을 고르세요.",
+    "answer": 3,
+    "choices": [
+      "실행되는 프로그램을 프로세스라고 합니다.",
+      "프로세스가 생성되면 커널 영역에 PCB가 생성됩니다.",
+      "프로세스들은 문맥 교환을 통해 번갈아 가며 수행됩니다.",
+      "프로세스는 반드시 사용자와 상호작용할 수 있어야 합니다."
     ],
-    explain:'ILP 3대 기법.' },
-
-  { ch:'5-3', type:'essay', book:false,
-    q:'CISC와 RISC의 특징과 차이점을 설명하시오.',
-    answer:'CISC = 복잡·다양·가변 / RISC = 단순·적음·고정',
-    keypoints:[
-      'CISC: 명령어 多·가변 길이·1명령 多클럭, 파이프라이닝 어려움 (x86)',
-      'RISC: 명령어 少·고정 길이·1명령 1클럭, 파이프라이닝 유리 (ARM)',
-      '프로그램 명령어 수: CISC 적음 / RISC 많음'
+    "explain": "사용자와 상호작용하지 않는 백그라운드 프로세스도 있습니다."
+  },
+  {
+    "seq": 23,
+    "ch": "10-1",
+    "type": "choice",
+    "book": true,
+    "q": "문맥 교환과 관련한 설명 중 옳지 않은 것을 고르세요.",
+    "answer": 0,
+    "choices": [
+      "문맥 교환은 자주 수행될수록 좋습니다.",
+      "문맥 교환 과정에서 직전에 수행되던 프로세스의 문맥이 백업됩니다.",
+      "문맥 교환 과정에서 다음에 수행할 프로세스의 문맥이 복구됩니다.",
+      "문맥은 PCB에 기록됩니다."
     ],
-    explain:'설계 철학의 차이. 현대는 RISC 우세.' },
-
-  { ch:'6-1', type:'essay', book:false,
-    q:'DRAM과 SRAM의 차이점을 설명하시오.',
-    answer:'DRAM = refresh 필요(메모리), SRAM = refresh 불필요(캐시)',
-    keypoints:[
-      'DRAM: 집적도↑, 가격↓, 속도↓, refresh 필요 → 주기억장치',
-      'SRAM: 집적도↓, 가격↑, 속도↑, refresh X → 캐시',
-      'SDRAM: 클럭 동기화 / DDR SDRAM: 상승·하강 엣지 모두 사용 (대역폭 2배)',
-      '둘 다 휘발성'
+    "explain": "문맥 교환은 오버헤드가 있으므로 무조건 자주 수행될수록 좋은 것은 아닙니다."
+  },
+  {
+    "seq": 24,
+    "ch": "10-2",
+    "type": "short",
+    "book": true,
+    "q": "프로세스 상태 다이어그램에서 ①~⑤에 알맞은 상태를 순서대로 쓰세요. 단서: ①에서 ②로 생성 후 이동, ②에서 디스패치로 ③, ③에서 ④ 종료, ③에서 입출력 요청으로 ⑤, ⑤에서 입출력 완료로 ②.",
+    "answer": "생성, 준비, 실행, 종료, 대기",
+    "explain": "프로세스 상태는 생성, 준비, 실행, 대기, 종료가 있습니다.",
+    "alts": [
+      "생성 준비 실행 종료 대기",
+      "생성상태,준비상태,실행상태,종료상태,대기상태",
+      "생성,준비,실행,종료,대기"
+    ]
+  },
+  {
+    "seq": 25,
+    "ch": "10-2",
+    "type": "short",
+    "book": true,
+    "q": "최초 프로세스가 로그인 프로세스를 생성하고, 로그인 프로세스는 bash 프로세스를, bash 프로세스는 Vim 프로세스를 생성했습니다. bash 프로세스의 부모 프로세스는 무엇인가요?",
+    "answer": "로그인 프로세스",
+    "explain": "bash는 로그인 프로세스가 생성했습니다.",
+    "alts": [
+      "login 프로세스",
+      "로그인",
+      "login"
+    ]
+  },
+  {
+    "seq": 26,
+    "ch": "10-2",
+    "type": "short",
+    "book": true,
+    "q": "위 상황에서 bash 프로세스의 자식 프로세스는 무엇인가요?",
+    "answer": "Vim 프로세스",
+    "explain": "bash는 Vim 프로세스를 생성했습니다.",
+    "alts": [
+      "vim 프로세스",
+      "Vim",
+      "vim"
+    ]
+  },
+  {
+    "seq": 27,
+    "ch": "10-2",
+    "type": "short",
+    "book": true,
+    "q": "위 상황에서 Vim 프로세스의 부모 프로세스는 무엇인가요?",
+    "answer": "bash 프로세스",
+    "explain": "Vim은 bash 프로세스가 생성했습니다.",
+    "alts": [
+      "bash",
+      "배시 프로세스"
+    ]
+  },
+  {
+    "seq": 28,
+    "ch": "10-2",
+    "type": "choice",
+    "book": true,
+    "q": "fork와 exec에 대한 설명으로 옳지 않은 것을 고르세요.",
+    "answer": 0,
+    "choices": [
+      "fork 시스템 호출을 하면 새로운 폴더가 생성됩니다.",
+      "fork 시스템 호출을 하면 부모 프로세스의 복제본이 자식 프로세스로서 생성됩니다.",
+      "exec 시스템 호출을 하면 프로세스의 메모리 공간이 다른 프로세스의 내용으로 변경됩니다.",
+      "많은 운영체제는 fork와 exec을 통해 프로세스 계층 구조를 형성합니다."
     ],
-    explain:'메모리 vs 캐시.' },
-
-  { ch:'6-2', type:'essay', book:false,
-    q:'논리 주소와 물리 주소의 차이를 설명하고, MMU의 역할과 베이스/한계 레지스터의 동작을 함께 설명하시오.',
-    answer:'논리 = 프로세스가 보는 주소(0번지~), 물리 = 실제 메모리 주소. MMU가 변환.',
-    keypoints:[
-      'MMU: 논리 → 물리 주소 변환 (CPU와 메모리 사이)',
-      '한계 레지스터: 최대 논리 주소 → 초과 시 인터럽트(트랩)',
-      '베이스 레지스터: 적재 시작 물리 주소',
-      '변환식: 물리 주소 = 베이스 + 논리 주소'
+    "explain": "fork 시스템 호출은 폴더 생성과 관련이 없습니다."
+  },
+  {
+    "seq": 29,
+    "ch": "10-2",
+    "type": "choice",
+    "book": true,
+    "q": "프로세스 상태에 대한 설명으로 옳은 것을 고르세요.",
+    "answer": 3,
+    "choices": [
+      "생성 상태는 프로세스가 입출력 장치의 작업을 기다리는 상태입니다.",
+      "실행 상태는 프로세스가 종료되는 상태입니다.",
+      "종료 상태는 프로세스가 이제 막 생성된 상태입니다.",
+      "준비 상태는 CPU를 할당받기를 기다리고 있는 상태입니다."
     ],
-    explain:'주소 분리 → 메모리 보호·재배치.' },
-
-  { ch:'6-3', type:'essay', book:false,
-    q:'캐시 메모리가 필요한 이유와, 그 효율의 근거가 되는 참조 지역성의 원리(시간 지역성, 공간 지역성)를 설명하시오.',
-    answer:'CPU·메모리 속도 차이 완화. 참조 지역성 덕분에 효율적.',
-    keypoints:[
-      '필요: CPU ≫ 메모리 속도 → 병목 해소',
-      '시간 지역성: 최근 접근 데이터 다시 접근 (반복문)',
-      '공간 지역성: 인접 주소 접근 (배열 순차)',
-      '계층: 레지스터 > 캐시 > 메모리 > 보조기억장치',
-      '적중(hit) / 미스(miss)'
+    "explain": "준비 상태는 실행 가능한 프로세스가 CPU 할당을 기다리는 상태입니다."
+  },
+  {
+    "seq": 30,
+    "ch": "10-3",
+    "type": "choice",
+    "book": true,
+    "q": "스레드와 관련한 설명으로 옳지 않은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "스레드는 프로세스 내의 실행의 흐름 단위입니다.",
+      "프로세스 내의 스레드들은 각기 다른 코드/데이터/힙 영역을 가지고 있습니다.",
+      "프로세스 내의 스레드들은 각기 다른 프로그램 카운터값을 가지고 있습니다.",
+      "프로세스 내의 스레드들은 각기 다른 스택을 가지고 있습니다."
     ],
-    explain:'속도차 해소 + 지역성.' },
+    "explain": "같은 프로세스의 스레드들은 코드, 데이터, 힙 영역을 공유하고 각자 스택과 실행 정보를 가집니다."
+  },
+  {
+    "seq": 31,
+    "ch": "10-3",
+    "type": "short",
+    "book": true,
+    "q": "멀티프로세스와 멀티스레드의 차이입니다. 옳은 단어를 순서대로 고르세요.\n프로세스끼리는 기본적으로 자원을 (공유하지 않지만, 공유하지만), 프로세스 내의 스레드끼리는 같은 프로세스 내의 자원을 (공유하지 않습니다, 공유합니다).",
+    "answer": "공유하지 않지만, 공유합니다",
+    "explain": "프로세스끼리는 기본적으로 자원을 공유하지 않고, 같은 프로세스의 스레드끼리는 자원을 공유합니다.",
+    "alts": [
+      "공유하지않지만,공유합니다",
+      "공유하지 않지만 공유합니다"
+    ]
+  },
+  {
+    "seq": 32,
+    "ch": "11-1",
+    "type": "choice",
+    "book": true,
+    "q": "프로세스 스케줄링에 대해 옳지 않은 것을 고르세요.",
+    "answer": 3,
+    "choices": [
+      "운영체제는 우선순위를 토대로 프로세스들을 스케줄링합니다.",
+      "운영체제는 스케줄링 큐를 사용하여 스케줄링할 프로세스들을 관리합니다.",
+      "준비 큐에는 준비 상태인 프로세스들이, 대기 큐에는 대기 상태인 프로세스들이 삽입됩니다.",
+      "선점형 스케줄링은 프로세스가 이용 중인 자원을 빼앗을 수 없는 방식을 의미합니다."
+    ],
+    "explain": "선점형 스케줄링은 프로세스가 이용 중인 자원을 빼앗을 수 있는 방식입니다."
+  },
+  {
+    "seq": 33,
+    "ch": "11-1",
+    "type": "short",
+    "book": true,
+    "q": "그림에서 준비 상태 프로세스들이 줄 서는 ①과 대기 상태 프로세스들이 줄 서는 ②에 알맞은 말을 순서대로 쓰세요.",
+    "answer": "준비 큐, 대기 큐",
+    "explain": "준비 큐는 CPU 할당 대기, 대기 큐는 입출력 등 특정 이벤트 대기 프로세스를 관리합니다.",
+    "alts": [
+      "준비큐,대기큐",
+      "준비 큐 대기 큐",
+      "ready queue, waiting queue"
+    ]
+  },
+  {
+    "seq": 34,
+    "ch": "11-1",
+    "type": "choice",
+    "book": true,
+    "q": "선점형 스케줄링과 비선점형 스케줄링에 대해 옳지 않은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "선점형 스케줄링은 어느 한 프로세스가 자원을 독점할 수 없는 스케줄링 방식입니다.",
+      "선점형 스케줄링은 문맥 교환 과정의 오버헤드가 비선점형 스케줄링에 비해 적습니다.",
+      "비선점형 스케줄링은 어느 한 프로세스가 자원을 독점할 수 있는 스케줄링 방식입니다.",
+      "비선점형 스케줄링은 문맥 교환 과정의 오버헤드가 선점형 스케줄링에 비해 적습니다."
+    ],
+    "explain": "선점형 스케줄링은 문맥 교환 오버헤드가 비선점형보다 클 수 있습니다."
+  },
+  {
+    "seq": 35,
+    "ch": "11-2",
+    "type": "choice",
+    "book": true,
+    "q": "준비 큐에 프로세스 A, B, C, D 순으로 삽입되었습니다. 선입 선처리 스케줄링 알고리즘을 적용하면 어떤 순서대로 CPU를 할당받나요?",
+    "answer": 2,
+    "choices": [
+      "A-D-B-C",
+      "B-C-A-D",
+      "A-B-C-D",
+      "D-C-B-A"
+    ],
+    "explain": "선입 선처리는 준비 큐에 삽입된 순서대로 CPU를 할당합니다."
+  },
+  {
+    "seq": 36,
+    "ch": "11-2",
+    "type": "short",
+    "book": true,
+    "q": "우선순위가 낮아 실행이 계속 연기되는 문제를 무엇이라고 하나요? [보기: 기아 현상, 에이징, 타임 슬라이스]",
+    "answer": "기아 현상",
+    "explain": "낮은 우선순위 때문에 실행이 계속 밀리는 문제는 기아 현상입니다.",
+    "alts": [
+      "기아현상",
+      "starvation"
+    ]
+  },
+  {
+    "seq": 37,
+    "ch": "11-2",
+    "type": "short",
+    "book": true,
+    "q": "우선순위가 낮아 실행이 계속 연기되는 문제를 해결하기 위해 점차 우선순위를 높이는 기법은 무엇인가요? [보기: 기아 현상, 에이징, 타임 슬라이스]",
+    "answer": "에이징",
+    "explain": "에이징은 시간이 지날수록 우선순위를 높여 기아 현상을 완화합니다.",
+    "alts": [
+      "aging"
+    ]
+  },
+  {
+    "seq": 38,
+    "ch": "12-1",
+    "type": "short",
+    "book": true,
+    "q": "동기화의 의미입니다. 빈칸 ①,②에 알맞은 말을 순서대로 쓰세요.\n①을 위한 동기화: 프로세스를 올바른 순서대로 실행하기\n②를 위한 동기화: 동시에 접근해서는 안 되는 자원에 하나의 프로세스만 접근하게 하기\n[보기: 상호 배제, 실행 순서 제어, 임계 구역]",
+    "answer": "실행 순서 제어, 상호 배제",
+    "explain": "동기화는 실행 순서 제어와 상호 배제를 포함합니다.",
+    "alts": [
+      "실행순서제어,상호배제",
+      "실행 순서 제어 상호 배제"
+    ]
+  },
+  {
+    "seq": 39,
+    "ch": "12-1",
+    "type": "choice",
+    "book": true,
+    "q": "임계 구역에 대한 설명으로 옳지 않은 것을 고르세요.",
+    "answer": 0,
+    "choices": [
+      "임계 구역에서 여러 개의 프로세스가 동시에 실행해도 무방합니다.",
+      "임계 구역에서 여러 프로세스가 동시에 실행할 경우 레이스 컨디션이 발생합니다.",
+      "임계 구역에서 실행되는 프로세스가 있다면 다른 프로세스는 기다려야 합니다.",
+      "운영체제는 임계 구역을 관리합니다."
+    ],
+    "explain": "임계 구역에는 동시에 여러 프로세스가 진입하면 문제가 발생할 수 있습니다."
+  },
+  {
+    "seq": 40,
+    "ch": "12-2",
+    "type": "choice",
+    "book": true,
+    "q": "뮤텍스 락과 세마포에 대한 설명으로 옳지 않은 것을 고르세요.",
+    "answer": 3,
+    "choices": [
+      "뮤텍스 락은 임계 구역을 잠근 뒤 임계 구역에 진입함으로써 상호 배제를 위한 동기화를 이룹니다.",
+      "세마포는 공유 자원이 여러 개 있는 상황에서도 이용할 수 있습니다.",
+      "세마포를 이용해 프로세스 실행 순서 제어를 위한 동기화도 이룰 수 있습니다.",
+      "세마포를 이용하면 반드시 바쁜 대기를 해야 합니다."
+    ],
+    "explain": "세마포는 구현 방식에 따라 바쁜 대기를 피할 수 있습니다."
+  },
+  {
+    "seq": 41,
+    "ch": "12-2",
+    "type": "short",
+    "book": true,
+    "q": "조건 변수 x와 y가 있습니다. 스레드 A는 x.wait를 호출했고 스레드 B는 y.wait를 호출했습니다. 스레드 C가 y.signal을 호출했을 때 실행이 재개되는 스레드는 무엇인가요?",
+    "answer": "스레드 B",
+    "explain": "y.signal은 y 조건 변수에서 기다리는 스레드를 깨우므로 B가 재개됩니다.",
+    "alts": [
+      "B",
+      "스레드B",
+      "thread B"
+    ]
+  },
+  {
+    "seq": 42,
+    "ch": "12-2",
+    "type": "short",
+    "book": true,
+    "q": "세마포를 이용하면 동시에 실행되는 프로세스 혹은 스레드 간에 ( ① )를 위한 동기화와 ( ② )를 위한 동기화를 할 수 있습니다. [보기: 실행 순서 제어, 상호 배제, 입출력장치] ①,②를 순서대로 쓰세요.",
+    "answer": "상호 배제, 실행 순서 제어",
+    "explain": "세마포는 상호 배제와 실행 순서 제어 모두에 사용할 수 있습니다.",
+    "alts": [
+      "상호배제,실행순서제어",
+      "상호 배제 실행 순서 제어"
+    ]
+  },
+  {
+    "seq": 43,
+    "ch": "13-1",
+    "type": "choice",
+    "book": true,
+    "q": "교착 상태에 대한 설명으로 옳지 않은 것을 고르세요.",
+    "answer": 3,
+    "choices": [
+      "교착 상태는 다양한 상황에서 발생할 수 있습니다.",
+      "교착 상태는 자원 할당 그래프로 표현할 수 있습니다.",
+      "교착 상태는 일어나지 않을 사건을 기다리며 무한히 대기하는 현상을 의미합니다.",
+      "식사하는 철학자 문제에서 단 한 명의 철학자가 식사를 해도 교착 상태가 발생합니다."
+    ],
+    "explain": "식사하는 철학자 문제에서는 모든 철학자가 동시에 식사를 하려고 할 때 교착 상태가 발생할 수 있습니다."
+  },
+  {
+    "seq": 44,
+    "ch": "13-1",
+    "type": "short",
+    "book": true,
+    "q": "교착 상태가 발생할 수 있는 네 가지 조건을 모두 쓰세요.",
+    "answer": "상호 배제, 점유와 대기, 비선점, 원형 대기",
+    "explain": "교착 상태 발생 조건은 상호 배제, 점유와 대기, 비선점, 원형 대기입니다.",
+    "alts": [
+      "상호배제,점유와대기,비선점,원형대기",
+      "상호 배제 점유와 대기 비선점 원형 대기"
+    ]
+  },
+  {
+    "seq": 45,
+    "ch": "13-1",
+    "type": "choice",
+    "book": true,
+    "q": "자원 할당 그래프 중 교착 상태가 발생할 위험이 있는 그래프는 ①과 ② 중 무엇인가요? 단서: ②는 자원 할당 그래프가 원형 대기 형태를 이룹니다.",
+    "answer": 1,
+    "choices": [
+      "①",
+      "②"
+    ],
+    "explain": "자원 할당 그래프가 원의 형태를 띠면 교착 상태 발생 위험이 있습니다."
+  },
+  {
+    "seq": 46,
+    "ch": "13-2",
+    "type": "choice",
+    "book": true,
+    "q": "교착 상태를 회복하는 방법에 대해 옳지 않은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "교착 상태가 발생하는 조건 중 하나를 충족하지 않게 하면 교착 상태를 예방할 수 있습니다.",
+      "교착 상태가 발생했다면 이를 회복할 수 없습니다.",
+      "안전 상태를 유지할 수 있는 경우에만 자원을 할당하면 교착 상태를 회피할 수 있습니다.",
+      "교착 상태 검출 후 회복 방식에서 운영체제는 주기적으로 교착 상태의 발생 여부를 검사합니다."
+    ],
+    "explain": "교착 상태가 발생해도 검출 후 회복 방식으로 회복할 수 있습니다."
+  },
+  {
+    "seq": 47,
+    "ch": "13-2",
+    "type": "short",
+    "book": true,
+    "q": "할당 가능 자원 12개, 현재 사용량 합계 9개라서 남은 자원은 3개입니다. 이 상황에서 프로세스 P2에 자원 2개를 나누어 주고, P2가 실행을 종료한 뒤 현재 사용 중이던 자원 4개를 반납하면 남은 자원은 몇 개인가요?",
+    "answer": "5",
+    "explain": "P2에 2개를 주면 3-2=1개가 남고, P2가 종료되어 4개를 반납하면 1+4=5개입니다.",
+    "alts": [
+      "5개"
+    ]
+  },
+  {
+    "seq": 48,
+    "ch": "13-2",
+    "type": "choice",
+    "book": true,
+    "q": "교착 상태에 대한 대처 방법 중 타조 알고리즘에 대한 설명으로 옳은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "교착 상태를 회피하는 방법입니다.",
+      "교착 상태를 무시하는 방법입니다.",
+      "교착 상태를 검출하고 회복하는 방법입니다.",
+      "교착 상태를 예방하는 방법입니다."
+    ],
+    "explain": "타조 알고리즘은 교착 상태가 발생해도 이를 무시하는 방법입니다."
+  },
+  {
+    "seq": 49,
+    "ch": "13-2",
+    "type": "choice",
+    "book": true,
+    "q": "교착 상태 예방에 대한 설명으로 옳지 않은 것을 고르세요.",
+    "answer": 3,
+    "choices": [
+      "상호 배제 조건을 없앰으로써 교착 상태를 예방할 수 있습니다.",
+      "점유와 대기 조건을 없앰으로써 교착 상태를 예방할 수 있습니다.",
+      "비선점 조건을 없앰으로써 교착 상태를 예방할 수 있습니다.",
+      "원형 대기 조건을 추가함으로써 교착 상태를 예방할 수 있습니다."
+    ],
+    "explain": "원형 대기 조건을 없애야 교착 상태를 예방할 수 있습니다."
+  },
+  {
+    "seq": 50,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "뮤텍스 락을 옷 가게 탈의실 비유로 설명할 때, 탈의실의 “자물쇠”에 해당하는 동기화 개념은 무엇인가요?",
+    "answer": 0,
+    "explain": "뮤텍스 락은 공유 자원에 대한 상호 배제를 보장하는 잠금입니다.",
+    "choices": [
+      "임계 구역에 한 번에 하나의 프로세스만 들어가도록 하는 잠금",
+      "프로세스를 무조건 종료시키는 운영체제 서비스",
+      "디스크 블록을 순서대로 배치하는 저장 장치 기법",
+      "프로세스 우선순위를 자동으로 낮추는 스케줄링 기법"
+    ]
+  },
+  {
+    "seq": 51,
+    "ch": "12-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "뮤텍스 락에서 락을 얻지 못한 프로세스가 CPU를 계속 소모하며 반복 확인하는 대기 방식을 무엇이라고 하나요?",
+    "answer": "바쁜 대기",
+    "explain": "while 루프를 돌며 계속 확인하는 방식은 바쁜 대기 또는 스핀 락입니다.",
+    "choices": [
+      "busy wait",
+      "busy waiting",
+      "스핀 락",
+      "spin lock",
+      "스핀락"
+    ]
+  },
+  {
+    "seq": 52,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "실제 프로그래밍 언어의 뮤텍스 락 구현에 대한 설명으로 옳은 것은?",
+    "answer": 0,
+    "explain": "교수 PDF는 현대 언어/프레임워크의 뮤텍스가 대기 상태 전환 등으로 바쁜 대기를 줄인다고 설명합니다.",
+    "choices": [
+      "락을 얻지 못하면 스레드를 대기 상태로 전환하거나 짧게 스핀한 뒤 잠재우는 등 커널/라이브러리 수준에서 최적화된다.",
+      "항상 사용자가 직접 무한 루프 acquire()를 구현해야만 한다.",
+      "뮤텍스 락은 CPU 스케줄링과 무관하므로 운영체제 커널의 도움을 받지 않는다.",
+      "뮤텍스 락은 공유 자원이 여러 개일 때만 사용할 수 있고 하나일 때는 사용할 수 없다."
+    ]
+  },
+  {
+    "seq": 53,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "이진 세마포와 뮤텍스 락의 핵심 차이로 가장 적절한 것은?",
+    "answer": 1,
+    "explain": "교수 PDF의 핵심 질문은 소유권(Ownership)의 유무입니다.",
+    "choices": [
+      "이진 세마포는 0과 1을 사용하지 않는다.",
+      "뮤텍스 락은 소유권이 있어 락을 획득한 주체가 해제해야 하지만, 이진 세마포는 단순 신호 체계로 소유권이 없을 수 있다.",
+      "뮤텍스 락은 순서 제어에만 쓰이고 상호 배제에는 쓰이지 않는다.",
+      "이진 세마포는 공유 자원 수가 무한할 때만 동작한다."
+    ]
+  },
+  {
+    "seq": 54,
+    "ch": "12-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "세마포에서 wait()는 다익스트라 표기로 어떤 연산이라고도 부르나요?",
+    "answer": "P",
+    "explain": "wait()는 P 연산 또는 down으로도 불립니다.",
+    "choices": [
+      "P()",
+      "p",
+      "down",
+      "down()"
+    ]
+  },
+  {
+    "seq": 55,
+    "ch": "12-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "세마포에서 signal()은 다익스트라 표기로 어떤 연산이라고도 부르나요?",
+    "answer": "V",
+    "explain": "signal()은 V 연산 또는 up으로도 불립니다.",
+    "choices": [
+      "V()",
+      "v",
+      "up",
+      "up()"
+    ]
+  },
+  {
+    "seq": 56,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "대기 큐 방식의 세마포에서 S < 0일 때 S의 절댓값이 의미하는 것은?",
+    "answer": 2,
+    "explain": "교수 PDF는 S가 음수일 때 대기 큐에 갇혀 잠든 프로세스 수를 나타낸다고 설명합니다.",
+    "choices": [
+      "즉시 사용 가능한 실제 공유 자원의 개수",
+      "현재 CPU 코어의 개수",
+      "세마포 대기 큐에서 잠들어 있는 프로세스의 개수",
+      "이미 종료된 프로세스의 개수"
+    ]
+  },
+  {
+    "seq": 57,
+    "ch": "12-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "세마포로 실행 순서를 제어할 때, 나중에 실행되어야 하는 프로세스 앞에는 어떤 함수를 붙이나요?",
+    "answer": "wait()",
+    "explain": "먼저 실행되어야 하는 프로세스 뒤에는 signal(), 나중에 실행되어야 하는 프로세스 앞에는 wait()를 둡니다.",
+    "choices": [
+      "wait",
+      "P",
+      "P()",
+      "down",
+      "down()"
+    ]
+  },
+  {
+    "seq": 58,
+    "ch": "12-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "세마포로 실행 순서를 제어할 때, 먼저 실행되어야 하는 프로세스 뒤에는 어떤 함수를 붙이나요?",
+    "answer": "signal()",
+    "explain": "먼저 실행될 작업이 끝난 뒤 signal()로 대기 중인 프로세스를 깨웁니다.",
+    "choices": [
+      "signal",
+      "V",
+      "V()",
+      "up",
+      "up()"
+    ]
+  },
+  {
+    "seq": 59,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "세마포 사용 실수와 그 결과가 잘못 연결된 것은?",
+    "answer": 3,
+    "explain": "교수 PDF는 signal 누락, 순서 오류, wait 중복 호출을 세마포의 위험한 사용 예로 듭니다.",
+    "choices": [
+      "임계 구역을 빠져나올 때 signal() 호출을 잊으면 무한 대기가 발생할 수 있다.",
+      "signal()을 먼저 호출하고 wait()를 나중에 호출하면 상호 배제가 깨질 수 있다.",
+      "wait()를 연속으로 두 번 호출하면 스스로 갇혀 교착 상태가 발생할 수 있다.",
+      "signal()을 호출하지 않으면 항상 시스템 성능이 향상된다."
+    ]
+  },
+  {
+    "seq": 60,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "모니터에 대한 설명으로 옳지 않은 것은?",
+    "answer": 2,
+    "explain": "모니터에서는 공유 자원에 직접 접근하지 않고 지정된 인터페이스를 통해 접근합니다.",
+    "choices": [
+      "공유 자원과 접근 인터페이스를 하나의 안전한 구역으로 묶어 관리한다.",
+      "모니터 내부에는 한 번에 하나의 프로세스만 들어와 실행되도록 통제한다.",
+      "프로세스는 모니터를 거치지 않고 공유 자원에 직접 접근해야 한다.",
+      "세마포보다 사용자가 더 안전하고 편리하게 동기화를 구현하도록 돕는다."
+    ]
+  },
+  {
+    "seq": 61,
+    "ch": "12-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "모니터에서 상호 배제를 위해 모니터 바깥쪽 문 앞에 존재하는 큐는 무엇인가요?",
+    "answer": "모니터 진입 큐",
+    "explain": "모니터 진입 큐는 모니터 내부에 들어가려는 프로세스들이 대기하는 상호 배제 큐입니다.",
+    "choices": [
+      "진입 큐",
+      "entry queue",
+      "모니터진입큐"
+    ]
+  },
+  {
+    "seq": 62,
+    "ch": "12-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "모니터에서 특정 실행 조건이 만족될 때까지 프로세스가 기다리는 큐는 무엇인가요?",
+    "answer": "조건 변수 대기 큐",
+    "explain": "조건 변수 대기 큐는 모니터 내부에서 특정 조건을 기다리는 순서 제어 큐입니다.",
+    "choices": [
+      "조건변수대기큐",
+      "조건 변수 큐",
+      "condition variable queue",
+      "condition queue"
+    ]
+  },
+  {
+    "seq": 63,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "조건 변수 x.wait()를 호출한 프로세스에 대한 설명으로 옳은 것은?",
+    "answer": 0,
+    "explain": "조건 변수 wait()는 호출 프로세스를 조건 변수 대기 큐에 넣고 실행을 중단시킵니다.",
+    "choices": [
+      "실행을 일시 중단하고 조건 변수 x의 전용 대기 큐로 이동한다.",
+      "모니터 밖의 진입 큐로 이동하지 않고 CPU를 계속 점유하며 바쁜 대기를 한다.",
+      "해당 조건을 만족시키지 않아도 즉시 계속 실행한다.",
+      "모니터 내부 프로세스 수를 강제로 두 개로 유지한다."
+    ]
+  },
+  {
+    "seq": 64,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "Signal-and-Wait(Hoare 방식)에 대한 설명으로 옳은 것은?",
+    "answer": 0,
+    "explain": "Hoare 방식은 깨어난 프로세스에게 모니터 소유권을 즉시 넘기는 방식입니다.",
+    "choices": [
+      "signal()을 호출한 프로세스가 잠시 멈추고 깨어난 프로세스에게 모니터 소유권을 즉시 넘긴다.",
+      "signal()을 호출한 프로세스가 끝까지 실행한 뒤에야 깨어난 프로세스가 실행된다.",
+      "조건 변수 wait() 호출을 금지하는 방식이다.",
+      "뮤텍스 락에서만 사용되고 모니터와는 무관하다."
+    ]
+  },
+  {
+    "seq": 65,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "Signal-and-Continue(Mesa 방식)에 대한 설명으로 옳은 것은?",
+    "answer": 1,
+    "explain": "Mesa 방식은 signal() 호출자가 계속 실행한 뒤 모니터를 떠나면 깨어난 프로세스가 실행됩니다.",
+    "choices": [
+      "signal() 호출자가 즉시 멈추고 깨어난 프로세스가 곧바로 모니터를 점유한다.",
+      "signal() 호출자가 남은 작업을 끝내고 모니터를 떠난 뒤 깨어난 프로세스가 실행을 이어받는다.",
+      "조건 변수 대기 큐를 사용하지 않는다.",
+      "세마포의 P/V 연산 이름을 바꾼 것일 뿐이다."
+    ]
+  },
+  {
+    "seq": 66,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "식사하는 철학자 문제를 운영체제 상황에 대응시킬 때, 포크에 해당하는 것은?",
+    "answer": 1,
+    "explain": "철학자는 프로세스/스레드, 포크는 한정된 공유 자원에 대응합니다.",
+    "choices": [
+      "프로세스 또는 스레드",
+      "한정된 공유 자원",
+      "자원 요청 및 점유 행위",
+      "교착 상태 그 자체"
+    ]
+  },
+  {
+    "seq": 67,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "자원 할당 그래프에서 프로세스와 자원을 표현하는 도형으로 옳은 것은?",
+    "answer": 2,
+    "explain": "자원 할당 그래프에서 프로세스는 원, 자원 종류는 사각형으로 표현합니다.",
+    "choices": [
+      "프로세스는 사각형, 자원은 원",
+      "프로세스와 자원 모두 원",
+      "프로세스는 원, 자원은 사각형",
+      "프로세스와 자원 모두 삼각형"
+    ]
+  },
+  {
+    "seq": 68,
+    "ch": "13-1",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "자원 할당 그래프에서 사각형 내부의 점(●)은 무엇을 의미하나요?",
+    "answer": "자원의 인스턴스 개수",
+    "explain": "같은 종류 자원의 개수는 사각형 내부의 점으로 표시합니다.",
+    "choices": [
+      "자원 개수",
+      "자원의 수량",
+      "인스턴스 개수",
+      "사용 가능한 자원의 개수"
+    ]
+  },
+  {
+    "seq": 69,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "자원 할당 그래프의 화살표 의미로 옳지 않은 것은?",
+    "answer": 3,
+    "explain": "대기 화살표는 프로세스에서 자원으로 향합니다. 할당 화살표는 자원에서 프로세스로 향합니다.",
+    "choices": [
+      "자원에서 프로세스로 향하는 화살표는 해당 자원이 프로세스에 할당되었음을 의미한다.",
+      "프로세스에서 자원으로 향하는 화살표는 프로세스가 해당 자원을 기다림을 의미한다.",
+      "프로세스가 자원을 반납하면 할당 화살표는 삭제된다.",
+      "자원에서 프로세스로 향하는 화살표는 프로세스가 그 자원을 기다리고 있음을 의미한다."
+    ]
+  },
+  {
+    "seq": 70,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "자원 할당 그래프의 사이클에 대한 설명으로 가장 정확한 것은?",
+    "answer": 2,
+    "explain": "교수 PDF는 사이클이 필수 조건이지만, 자원이 여러 인스턴스면 충분 조건은 아닐 수 있다고 강조합니다.",
+    "choices": [
+      "사이클이 있으면 자원 인스턴스 수와 무관하게 항상 100% 교착 상태이다.",
+      "사이클이 없더라도 교착 상태가 반드시 발생한다.",
+      "자원당 인스턴스가 1개뿐이면 사이클은 교착 상태를 의미하지만, 인스턴스가 여러 개면 사이클이 있어도 교착 상태가 아닐 수 있다.",
+      "사이클은 교착 상태와 아무 관련이 없다."
+    ]
+  },
+  {
+    "seq": 71,
+    "ch": "13-1",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "교착 상태가 발생하기 위한 4가지 필요조건을 모두 쓰세요.",
+    "answer": "상호 배제, 점유와 대기, 비선점, 원형 대기",
+    "explain": "교수 PDF는 상호 배제, 점유와 대기, 비선점, 원형 대기를 4가지 조건으로 정리합니다.",
+    "choices": [
+      "상호배제,점유와대기,비선점,원형대기",
+      "상호 배제 점유와 대기 비선점 원형 대기",
+      "상호 배제, 점유 대기, 비선점, 순환 대기"
+    ]
+  },
+  {
+    "seq": 72,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "점유와 대기 조건에 대한 설명으로 옳은 것은?",
+    "answer": 0,
+    "explain": "점유와 대기는 Hold and Wait입니다.",
+    "choices": [
+      "프로세스가 이미 하나 이상의 자원을 점유한 상태에서 다른 자원을 얻기 위해 기다리는 상황이다.",
+      "모든 자원을 여러 프로세스가 동시에 사용할 수 있는 상황이다.",
+      "자원을 가진 프로세스가 강제로 자원을 빼앗기는 상황이다.",
+      "프로세스가 아무 자원도 갖지 않은 상태에서만 대기하는 상황이다."
+    ]
+  },
+  {
+    "seq": 73,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "비선점 조건에 대한 설명으로 옳은 것은?",
+    "answer": 1,
+    "explain": "비선점은 이미 점유된 자원을 강제로 선점할 수 없다는 조건입니다.",
+    "choices": [
+      "운영체제가 언제든 다른 프로세스의 자원을 강제로 빼앗을 수 있다는 조건이다.",
+      "자원을 가진 프로세스가 스스로 반납할 때까지 운영체제나 다른 프로세스가 강제로 빼앗지 못한다는 조건이다.",
+      "프로세스가 자원을 하나도 갖지 않는다는 조건이다.",
+      "자원 요청 순서가 항상 오름차순이라는 조건이다."
+    ]
+  },
+  {
+    "seq": 74,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "교착 상태 예방에 대한 설명으로 옳은 것은?",
+    "answer": 0,
+    "explain": "예방은 필요조건 하나 이상을 깨뜨려 데드락을 원천 차단하는 방식입니다.",
+    "choices": [
+      "교착 상태 발생 필요조건 네 가지 중 최소 하나를 충족하지 못하게 시스템을 설계한다.",
+      "교착 상태 발생 후에만 자원 할당 그래프를 검사한다.",
+      "현대 범용 OS가 항상 채택하는 최고의 무비용 전략이다.",
+      "불안전 상태를 허용하는 경우에만 자원을 할당한다."
+    ]
+  },
+  {
+    "seq": 75,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "점유와 대기 조건을 파괴하는 예방 방식의 핵심 아이디어는?",
+    "answer": 1,
+    "explain": "All or Nothing 방식은 점유와 대기 조건을 깨뜨립니다.",
+    "choices": [
+      "자원에 번호를 붙이고 오름차순으로만 요청하게 한다.",
+      "필요한 모든 자원을 한꺼번에 할당하거나 하나라도 부족하면 아무것도 할당하지 않는다.",
+      "프로세스가 자원을 요청할 때마다 항상 허용한다.",
+      "교착 상태를 무시한다."
+    ]
+  },
+  {
+    "seq": 76,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "원형 대기 조건을 파괴하는 대표적인 방법은?",
+    "answer": 2,
+    "explain": "자원 번호 부여와 오름차순 요청 제한은 원형 대기를 깨뜨립니다.",
+    "choices": [
+      "모든 자원을 동시에 공유 가능하게 만든다.",
+      "프로세스가 가진 자원을 모두 강제 회수한다.",
+      "모든 자원에 번호를 부여하고 오름차순으로만 요청하게 한다.",
+      "교착 상태가 발생할 때까지 아무 조치도 하지 않는다."
+    ]
+  },
+  {
+    "seq": 77,
+    "ch": "13-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "교착 상태 회피에서 “교착 상태 없이 모든 프로세스가 완료될 수 있는 실행 순서”를 무엇이라고 하나요?",
+    "answer": "안전 순서열",
+    "explain": "안전 순서열이 존재하면 안전 상태입니다.",
+    "choices": [
+      "safe sequence",
+      "안전순서열"
+    ]
+  },
+  {
+    "seq": 78,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "교착 상태 회피 방식의 핵심 판단 기준은?",
+    "answer": 3,
+    "explain": "회피는 자원을 할당했을 때 안전 상태가 유지되는지 계산한 뒤 할당합니다.",
+    "choices": [
+      "요청한 프로세스의 이름이 무엇인가",
+      "요청한 자원이 프린터인지 CPU인지",
+      "프로세스가 사용자 모드인지 커널 모드인지",
+      "자원을 할당해도 시스템이 안전 상태를 유지하는지"
+    ]
+  },
+  {
+    "seq": 79,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "안전 상태와 불안전 상태에 대한 설명으로 옳은 것은?",
+    "answer": 0,
+    "explain": "불안전 상태는 교착 상태 발생 가능성이 있는 상태이지, 반드시 이미 교착 상태라는 뜻은 아닙니다.",
+    "choices": [
+      "안전 순서열이 존재하면 안전 상태이고, 존재하지 않으면 불안전 상태이다.",
+      "불안전 상태는 항상 이미 교착 상태가 발생한 상태이다.",
+      "안전 상태에서는 자원 할당을 무조건 금지해야 한다.",
+      "안전 순서열은 CPU 스케줄링 알고리즘의 이름이다."
+    ]
+  },
+  {
+    "seq": 80,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "교착 상태 검출 후 회복 방식에 대한 설명으로 옳은 것은?",
+    "answer": 1,
+    "explain": "검출 후 회복은 사후 수습 전략입니다.",
+    "choices": [
+      "자원 할당을 항상 사전에 금지하여 교착 상태를 원천 차단한다.",
+      "평소에는 자원을 제약 없이 할당하고, 주기적으로 감시해 교착 상태가 검출되면 회복한다.",
+      "교착 상태가 검출되면 아무 작업도 하지 않는 것이 유일한 방법이다.",
+      "은행원 알고리즘으로만 구현할 수 있다."
+    ]
+  },
+  {
+    "seq": 81,
+    "ch": "13-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "교착 상태 검출 후 회복에서 자원을 빼앗을 희생 프로세스를 고른 뒤 자원을 회수하고 안전했던 상태로 되돌리는 것을 무엇이라고 하나요?",
+    "answer": "롤백",
+    "explain": "자원을 빼앗긴 프로세스는 롤백하거나 작업을 처음부터 다시 시작할 수 있습니다.",
+    "choices": [
+      "rollback",
+      "Rollback"
+    ]
+  },
+  {
+    "seq": 82,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "타조 알고리즘을 현대 범용 OS가 현실적으로 선택하는 이유로 가장 적절한 것은?",
+    "answer": 2,
+    "explain": "교수 PDF는 드문 데드락을 막기 위해 매 순간 큰 성능 비용을 내는 것이 비효율적이라는 현실적 선택을 설명합니다.",
+    "choices": [
+      "교착 상태가 매초 반드시 발생하기 때문이다.",
+      "예방/회피/검출은 구현이 불가능하기 때문이다.",
+      "교착 상태는 드물게 발생하는데 매 순간 예방/검출 비용을 치르면 성능 낭비가 크기 때문이다.",
+      "타조 알고리즘은 교착 상태를 100% 예방하기 때문이다."
+    ]
+  },
+  {
+    "seq": 83,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "교착 상태 대응 전략과 특성이 잘못 연결된 것은?",
+    "answer": 3,
+    "explain": "무시는 오버헤드는 거의 없지만 위험은 사용자/시스템에 노출됩니다.",
+    "choices": [
+      "예방: 사전에 조건을 깨뜨려 원천 차단하지만 자원 효율이 나쁠 수 있다.",
+      "회피: 자원 할당 시 안전 상태 유지 여부를 계산한다.",
+      "검출 후 회복: 교착 상태 발생 후 프로세스 종료나 선점으로 수습한다.",
+      "무시(타조 알고리즘): 오버헤드가 크지만 안전성을 100% 보장한다."
+    ]
+  },
+  {
+    "seq": 84,
+    "ch": "7-1",
+    "type": "short",
+    "book": false,
+    "trend": true,
+    "q": "하드 디스크의 데이터 접근 시간을 구성하는 세 요소를 모두 쓰세요.",
+    "answer": "탐색 시간, 회전 지연, 전송 시간",
+    "explain": "하드 디스크 접근 시간은 헤드를 이동하는 탐색 시간, 원하는 섹터가 올 때까지 기다리는 회전 지연, 실제 전송 시간으로 나뉩니다.",
+    "choices": [
+      "탐색시간,회전지연,전송시간",
+      "탐색 시간 회전 지연 전송 시간",
+      "seek time, rotational latency, transfer time"
+    ]
+  },
+  {
+    "seq": 85,
+    "ch": "7-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "대용량 로그 파일을 순차적으로 읽는 작업보다 작은 파일을 여러 위치에서 무작위로 읽는 작업에서 HDD가 더 느려지기 쉬운 주된 이유는?",
+    "answer": 1,
+    "explain": "무작위 접근은 탐색 시간과 회전 지연을 자주 발생시켜 HDD 성능을 크게 떨어뜨립니다.",
+    "choices": [
+      "플래터가 전혀 회전하지 않기 때문입니다.",
+      "헤드 이동과 회전 대기 같은 기계적 지연이 반복되기 때문입니다.",
+      "섹터와 트랙 개념이 SSD에만 존재하기 때문입니다.",
+      "HDD는 데이터를 페이지 단위로만 삭제하기 때문입니다."
+    ]
+  },
+  {
+    "seq": 86,
+    "ch": "7-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "플래시 메모리에서 기존 데이터가 있는 영역을 덮어쓰는 작업이 복잡해지는 이유로 가장 적절한 것은?",
+    "answer": 2,
+    "explain": "플래시 메모리는 페이지 단위로 읽고 쓰지만 삭제는 블록 단위라 갱신 비용과 관리 부담이 생깁니다.",
+    "choices": [
+      "읽기와 쓰기 모두 블록 단위로만 가능하기 때문입니다.",
+      "삭제는 페이지 단위, 쓰기는 섹터 단위로만 가능하기 때문입니다.",
+      "읽기/쓰기는 페이지 단위지만 삭제는 더 큰 블록 단위로 이루어지기 때문입니다.",
+      "플래시 메모리는 전원이 꺼지면 데이터가 모두 사라지기 때문입니다."
+    ]
+  },
+  {
+    "seq": 87,
+    "ch": "7-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "높은 수명과 빠른 속도가 중요하고 가격은 덜 중요한 산업용 저장장치에 가장 어울리는 플래시 메모리 타입은?",
+    "answer": 0,
+    "explain": "SLC는 셀당 1비트를 저장해 일반적으로 속도와 수명은 좋지만 가격이 비쌉니다.",
+    "choices": [
+      "SLC",
+      "MLC",
+      "TLC",
+      "QLC만 가능"
+    ]
+  },
+  {
+    "seq": 88,
+    "ch": "7-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "성능 향상을 위해 데이터를 여러 디스크에 스트라이핑하지만, 디스크 하나만 고장 나도 데이터 손실 위험이 큰 RAID는?",
+    "answer": 0,
+    "explain": "RAID 0은 스트라이핑으로 성능을 높이지만 복제나 패리티가 없어 안전성이 낮습니다.",
+    "choices": [
+      "RAID 0",
+      "RAID 1",
+      "RAID 5",
+      "RAID 6"
+    ]
+  },
+  {
+    "seq": 89,
+    "ch": "7-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "쓰기 작업이 많을 때 전용 패리티 디스크가 병목이 되기 쉬운 RAID는?",
+    "answer": 2,
+    "explain": "RAID 4는 패리티를 별도 디스크에 집중 저장하므로 패리티 디스크가 병목이 될 수 있습니다.",
+    "choices": [
+      "RAID 0",
+      "RAID 1",
+      "RAID 4",
+      "RAID 6"
+    ]
+  },
+  {
+    "seq": 90,
+    "ch": "8-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "장치 컨트롤러가 입출력장치와 CPU 사이에서 완충 역할을 하는 상황으로 가장 적절한 것은?",
+    "answer": 0,
+    "explain": "장치 컨트롤러는 통신 중개, 오류 검출, 데이터 버퍼링 등을 담당합니다.",
+    "choices": [
+      "CPU와 입출력장치 사이의 전송률 차이를 버퍼링으로 완화한다.",
+      "보조기억장치의 모든 데이터를 영구 보존한다.",
+      "프로세스의 우선순위를 계산한다.",
+      "파일 시스템의 디렉터리 구조를 만든다."
+    ]
+  },
+  {
+    "seq": 91,
+    "ch": "8-1",
+    "type": "short",
+    "book": false,
+    "trend": true,
+    "q": "장치 컨트롤러 내부에서 CPU가 명령을 쓰거나 상태를 확인할 때 사용하는 대표적인 세 레지스터를 쓰세요.",
+    "answer": "데이터 레지스터, 상태 레지스터, 제어 레지스터",
+    "explain": "장치 컨트롤러는 보통 데이터 레지스터, 상태 레지스터, 제어 레지스터를 통해 CPU와 정보를 주고받습니다.",
+    "choices": [
+      "데이터레지스터,상태레지스터,제어레지스터",
+      "데이터 레지스터 상태 레지스터 제어 레지스터"
+    ]
+  },
+  {
+    "seq": 92,
+    "ch": "8-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "새 프린터를 연결했는데 운영체제가 해당 장치를 제대로 사용할 수 없는 상황의 가장 직접적인 원인은?",
+    "answer": 3,
+    "explain": "장치 드라이버는 장치 컨트롤러가 컴퓨터 내부와 정보를 주고받게 해 주는 프로그램입니다.",
+    "choices": [
+      "프린터가 보조기억장치라서 사용할 수 없습니다.",
+      "CPU가 사용자 모드로만 동작하기 때문입니다.",
+      "프린터에는 장치 컨트롤러가 절대 없기 때문입니다.",
+      "운영체제가 해당 장치 드라이버를 인식하거나 실행하지 못하기 때문입니다."
+    ]
+  },
+  {
+    "seq": 93,
+    "ch": "8-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "프로그램 입출력 방식의 단점으로 가장 적절한 것은?",
+    "answer": 1,
+    "explain": "프로그램 입출력은 CPU가 입출력 작업에 직접 관여하므로 CPU 부담이 큽니다.",
+    "choices": [
+      "입출력장치가 CPU 없이 메모리에 직접 접근한다.",
+      "CPU가 입출력 완료 여부를 계속 확인하거나 입출력 명령을 직접 수행해 부담이 커진다.",
+      "입출력장치와 메모리의 주소 공간이 반드시 분리된다.",
+      "인터럽트가 전혀 필요하지 않아 항상 가장 빠르다."
+    ]
+  },
+  {
+    "seq": 94,
+    "ch": "8-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "인터럽트 기반 입출력과 DMA 입출력의 차이로 옳은 것은?",
+    "answer": 2,
+    "explain": "DMA는 CPU를 거치지 않는 직접 메모리 접근으로 대량 입출력에서 CPU 부담을 줄입니다.",
+    "choices": [
+      "인터럽트 기반 입출력은 CPU를 전혀 사용하지 않는다.",
+      "DMA 입출력은 메모리와 입출력장치 사이 데이터 이동도 항상 CPU 명령어가 직접 수행한다.",
+      "DMA 입출력은 CPU를 거치지 않고 메모리와 입출력장치 사이 데이터를 주고받아 CPU 부담을 줄인다.",
+      "인터럽트 기반 입출력은 장치 드라이버가 필요 없는 방식이다."
+    ]
+  },
+  {
+    "seq": 95,
+    "ch": "8-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "메모리 맵 입출력 방식의 특징으로 옳은 것은?",
+    "answer": 0,
+    "explain": "메모리 맵 입출력은 메모리와 입출력장치를 하나의 주소 공간으로 간주합니다.",
+    "choices": [
+      "메모리와 입출력장치가 하나의 주소 공간을 공유해 같은 명령어로 접근할 수 있다.",
+      "메모리 주소 공간과 입출력장치 주소 공간을 반드시 완전히 분리한다.",
+      "입출력장치 접근 전용 명령어만 사용할 수 있다.",
+      "DMA 컨트롤러가 시스템 버스를 사용할 수 없게 한다."
+    ]
+  },
+  {
+    "seq": 96,
+    "ch": "9-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "운영체제를 “자원 관리자”라고 부르는 이유로 가장 적절한 것은?",
+    "answer": 1,
+    "explain": "운영체제의 핵심 역할은 자원 할당과 프로그램 실행 지원입니다.",
+    "choices": [
+      "운영체제가 모든 응용 프로그램의 소스 코드를 작성하기 때문입니다.",
+      "CPU, 메모리, 입출력장치, 파일 같은 시스템 자원을 프로그램에 할당하고 관리하기 때문입니다.",
+      "운영체제가 하드웨어 없이 단독으로 실행되기 때문입니다.",
+      "운영체제는 사용자 인터페이스만 담당하기 때문입니다."
+    ]
+  },
+  {
+    "seq": 97,
+    "ch": "9-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "운영체제를 이해하면 문제 해결에 도움이 되는 상황으로 가장 적절한 것은?",
+    "answer": 2,
+    "explain": "운영체제는 자원, 권한, 파일, 프로세스 실행을 관리하므로 오류 원인 분석에 중요합니다.",
+    "choices": [
+      "네트워크 케이블 색상을 고르는 상황",
+      "프로그래밍 언어의 문법만 외우는 상황",
+      "프로그램이 파일 접근 권한 오류나 메모리 부족 오류로 실패한 원인을 분석하는 상황",
+      "모니터 해상도를 물리적으로 측정하는 상황"
+    ]
+  },
+  {
+    "seq": 98,
+    "ch": "9-1",
+    "type": "short",
+    "book": false,
+    "trend": true,
+    "q": "실행 중인 프로그램이 운영체제에게 할당받아야 하는 CPU, 메모리, 파일, 입출력장치 등을 통틀어 무엇이라고 하나요?",
+    "answer": "자원",
+    "explain": "운영체제는 실행 프로그램에 필요한 시스템 자원을 할당합니다.",
+    "choices": [
+      "시스템 자원",
+      "리소스",
+      "resource"
+    ]
+  },
+  {
+    "seq": 99,
+    "ch": "9-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "사용자 모드에서 실행 중인 응용 프로그램이 파일 저장처럼 운영체제 서비스가 필요한 작업을 하려면 무엇을 사용해야 하나요?",
+    "answer": 0,
+    "explain": "시스템 호출은 사용자 모드 프로그램이 커널 서비스를 요청해 커널 모드로 전환하는 통로입니다.",
+    "choices": [
+      "시스템 호출",
+      "문맥 교환",
+      "RAID 0",
+      "플래시 블록 삭제"
+    ]
+  },
+  {
+    "seq": 100,
+    "ch": "9-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "이중 모드가 필요한 이유로 가장 적절한 것은?",
+    "answer": 3,
+    "explain": "이중 모드는 사용자 모드와 커널 모드를 구분해 시스템 자원을 보호합니다.",
+    "choices": [
+      "모든 프로그램이 하드웨어 자원에 마음대로 접근하도록 하기 위해서입니다.",
+      "사용자 인터페이스를 더 화려하게 만들기 위해서입니다.",
+      "하드 디스크의 회전 지연을 없애기 위해서입니다.",
+      "응용 프로그램의 위험한 명령 실행을 제한하고 운영체제와 자원을 보호하기 위해서입니다."
+    ]
+  },
+  {
+    "seq": 101,
+    "ch": "9-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "커널과 사용자 인터페이스의 관계에 대한 설명으로 옳은 것은?",
+    "answer": 1,
+    "explain": "커널은 핵심 기능을 담당하고, UI는 운영체제와 사용자 사이의 상호작용을 돕습니다.",
+    "choices": [
+      "커널은 운영체제의 핵심 기능이 아니며 단순한 화면 장식입니다.",
+      "커널은 운영체제의 핵심 기능을 담당하고, 사용자 인터페이스는 사용자가 운영체제와 상호작용하도록 돕는 별도 계층일 수 있습니다.",
+      "사용자 인터페이스가 없으면 커널도 절대 존재할 수 없습니다.",
+      "파일 시스템 관리는 커널과 무관합니다."
+    ]
+  },
+  {
+    "seq": 102,
+    "ch": "10-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "프로그램과 프로세스의 차이로 가장 적절한 것은?",
+    "answer": 0,
+    "explain": "프로세스는 실행 중인 프로그램이며 운영체제는 PCB 등으로 이를 관리합니다.",
+    "choices": [
+      "프로그램은 저장된 실행 파일이고, 프로세스는 실행 중인 프로그램입니다.",
+      "프로그램은 항상 커널 영역에 있고, 프로세스는 항상 보조기억장치에만 있습니다.",
+      "프로세스는 실행 전 프로그램과 완전히 같은 정적 파일입니다.",
+      "프로그램과 프로세스는 운영체제 관점에서 차이가 없습니다."
+    ]
+  },
+  {
+    "seq": 103,
+    "ch": "10-1",
+    "type": "short",
+    "book": false,
+    "trend": true,
+    "q": "문맥 교환 때 운영체제가 PCB에 저장하고 복구하는 대표적인 CPU 실행 정보 두 가지를 쓰세요.",
+    "answer": "프로그램 카운터, 레지스터 값",
+    "explain": "문맥에는 프로그램 카운터, 레지스터 값 등 다음 실행을 이어가기 위한 CPU 상태가 포함됩니다.",
+    "choices": [
+      "PC,레지스터",
+      "프로그램 카운터 레지스터",
+      "프로그램카운터,레지스터값",
+      "프로그램 카운터, 레지스터"
+    ]
+  },
+  {
+    "seq": 104,
+    "ch": "10-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "문맥 교환이 너무 자주 발생할 때의 문제로 가장 적절한 것은?",
+    "answer": 2,
+    "explain": "문맥 교환은 필요한 기능이지만 저장/복구 비용이 있으므로 너무 잦으면 오버헤드가 커집니다.",
+    "choices": [
+      "프로세스가 모두 커널 영역으로 이동합니다.",
+      "보조기억장치의 플래터가 사라집니다.",
+      "실제 작업보다 문맥 저장/복구 오버헤드가 커져 성능이 떨어질 수 있습니다.",
+      "입출력장치가 장치 드라이버 없이 동작합니다."
+    ]
+  },
+  {
+    "seq": 105,
+    "ch": "10-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "fork와 exec을 함께 사용하는 일반적인 흐름으로 옳은 것은?",
+    "answer": 1,
+    "explain": "많은 운영체제에서 fork로 자식 프로세스를 만들고 exec으로 자식의 메모리 공간을 새 프로그램으로 교체합니다.",
+    "choices": [
+      "exec으로 부모 프로세스를 복제한 뒤 fork로 메모리를 유지한다.",
+      "fork로 자식 프로세스를 만든 뒤, 자식 프로세스가 exec으로 새 프로그램을 실행한다.",
+      "fork는 파일을 삭제하고 exec은 파일을 복구한다.",
+      "fork와 exec은 스레드의 스택만 늘리는 명령이다."
+    ]
+  },
+  {
+    "seq": 106,
+    "ch": "10-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "프로세스 상태 전이에 대한 설명으로 옳은 것은?",
+    "answer": 3,
+    "explain": "타이머 인터럽트로 CPU를 빼앗기면 실행 상태 프로세스는 다시 준비 상태가 될 수 있습니다.",
+    "choices": [
+      "대기 상태의 프로세스는 CPU를 이미 할당받아 실행 중인 상태입니다.",
+      "준비 상태의 프로세스는 입출력 완료를 기다리는 상태입니다.",
+      "실행 상태에서 입출력 요청을 하면 종료 상태로만 이동합니다.",
+      "실행 상태에서 타이머 인터럽트가 발생하면 준비 상태로 돌아갈 수 있습니다."
+    ]
+  },
+  {
+    "seq": 107,
+    "ch": "10-3",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "멀티프로세스보다 멀티스레드가 자원 공유 측면에서 유리할 수 있는 이유는?",
+    "answer": 0,
+    "explain": "스레드는 같은 프로세스의 자원을 공유하지만, 각자 스택과 실행 흐름은 따로 가집니다.",
+    "choices": [
+      "같은 프로세스의 스레드들은 코드, 데이터, 힙 영역을 공유하므로 통신 비용이 줄 수 있습니다.",
+      "스레드는 항상 각자 완전히 독립된 주소 공간을 가집니다.",
+      "스레드는 프로그램 카운터와 스택도 모두 공유하므로 충돌이 절대 없습니다.",
+      "멀티스레드는 문맥 교환이 전혀 발생하지 않습니다."
+    ]
+  },
+  {
+    "seq": 108,
+    "ch": "11-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "CPU 스케줄링에서 준비 큐에 오래 대기 중인 프로세스와 방금 들어온 프로세스 중 무엇을 먼저 실행할지 결정하는 주체는?",
+    "answer": 1,
+    "explain": "CPU 스케줄러는 준비 상태 프로세스 중 어떤 프로세스에 CPU를 할당할지 결정합니다.",
+    "choices": [
+      "장치 컨트롤러",
+      "운영체제의 CPU 스케줄러",
+      "파일 시스템",
+      "DMA 컨트롤러"
+    ]
+  },
+  {
+    "seq": 109,
+    "ch": "11-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "선점형 스케줄링이 필요한 상황으로 가장 적절한 것은?",
+    "answer": 2,
+    "explain": "선점형 스케줄링은 실행 중인 프로세스의 자원을 빼앗아 응답성을 높일 수 있지만 오버헤드가 있습니다.",
+    "choices": [
+      "실행 중인 프로세스가 끝날 때까지 어떤 경우에도 CPU를 빼앗지 않으려는 상황",
+      "모든 프로세스가 반드시 같은 입출력장치만 사용하는 상황",
+      "응답성을 높이기 위해 실행 중인 프로세스의 CPU 사용을 중간에 끊고 다른 프로세스에 넘겨야 하는 상황",
+      "문맥 교환을 완전히 금지해야 하는 상황"
+    ]
+  },
+  {
+    "seq": 110,
+    "ch": "11-1",
+    "type": "short",
+    "book": false,
+    "trend": true,
+    "q": "CPU를 오래 사용하는 프로세스보다 입출력을 자주 요청하는 프로세스가 CPU를 짧게 쓰고 대기 큐로 자주 이동하는 특성을 무엇이라고 하나요?",
+    "answer": "입출력 집중 프로세스",
+    "explain": "입출력 집중 프로세스는 CPU burst가 짧고 입출력 대기가 잦습니다.",
+    "choices": [
+      "I/O 집중 프로세스",
+      "IO 집중 프로세스",
+      "입출력 중심 프로세스",
+      "I/O bound process"
+    ]
+  },
+  {
+    "seq": 111,
+    "ch": "11-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "선입 선처리 스케줄링에서 긴 CPU 작업 하나가 앞에 있어 뒤의 짧은 작업들이 오래 기다리는 현상을 무엇이라고 하나요?",
+    "answer": 0,
+    "explain": "FCFS에서는 긴 작업이 앞에 있으면 뒤의 짧은 작업들이 밀리는 호위 효과가 발생할 수 있습니다.",
+    "choices": [
+      "호위 효과",
+      "에이징",
+      "스래싱",
+      "세마포"
+    ]
+  },
+  {
+    "seq": 112,
+    "ch": "11-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "라운드 로빈 스케줄링에서 타임 슬라이스가 너무 작을 때 가장 우려되는 문제는?",
+    "answer": 3,
+    "explain": "타임 슬라이스가 너무 작으면 문맥 교환이 많아지고, 너무 크면 선입 선처리와 비슷해질 수 있습니다.",
+    "choices": [
+      "모든 프로세스가 종료 상태로 바로 이동합니다.",
+      "기아 현상이 절대 발생하지 않습니다.",
+      "RAID 패리티 계산이 실패합니다.",
+      "문맥 교환이 지나치게 자주 발생해 오버헤드가 커집니다."
+    ]
+  },
+  {
+    "seq": 113,
+    "ch": "11-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "다단계 피드백 큐 스케줄링이 다단계 큐 스케줄링과 다른 핵심 특징은?",
+    "answer": 1,
+    "explain": "다단계 피드백 큐는 프로세스가 큐 사이를 이동할 수 있어 유연하게 우선순위를 조정합니다.",
+    "choices": [
+      "프로세스가 큐 사이를 절대 이동할 수 없습니다.",
+      "프로세스가 실행 특성에 따라 큐 사이를 이동할 수 있습니다.",
+      "우선순위를 모두 제거합니다.",
+      "입출력 작업을 금지합니다."
+    ]
+  },
+  {
+    "seq": 114,
+    "ch": "12-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "두 스레드가 공유 변수 count를 동시에 count = count + 1로 갱신했는데 결과가 예상보다 작게 나오는 상황의 원인은?",
+    "answer": 0,
+    "explain": "공유 자원을 동시에 갱신해 실행 순서에 따라 결과가 달라지는 현상은 레이스 컨디션입니다.",
+    "choices": [
+      "레이스 컨디션",
+      "RAID 0",
+      "문맥 교환 금지",
+      "고립형 입출력"
+    ]
+  },
+  {
+    "seq": 115,
+    "ch": "12-1",
+    "type": "short",
+    "book": false,
+    "trend": true,
+    "q": "공유 자원에 접근하는 코드 중 동시에 실행하면 문제가 발생할 수 있는 영역을 무엇이라고 하나요?",
+    "answer": "임계 구역",
+    "explain": "임계 구역은 공유 자원 접근 코드 중 동시에 실행하면 문제가 생길 수 있는 부분입니다.",
+    "choices": [
+      "임계구역",
+      "critical section"
+    ]
+  },
+  {
+    "seq": 116,
+    "ch": "12-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "상호 배제를 만족하는 상황으로 옳은 것은?",
+    "answer": 2,
+    "explain": "상호 배제는 한 프로세스가 임계 구역에 있을 때 다른 프로세스의 진입을 막는 것입니다.",
+    "choices": [
+      "임계 구역에 여러 프로세스가 동시에 들어간다.",
+      "공유 자원을 아무 제한 없이 동시에 갱신한다.",
+      "한 프로세스가 임계 구역에서 작업 중이면 다른 프로세스는 임계 구역 밖에서 기다린다.",
+      "운영체제가 모든 공유 자원을 보조기억장치로 옮긴다."
+    ]
+  },
+  {
+    "seq": 117,
+    "ch": "12-2",
+    "type": "short",
+    "book": false,
+    "trend": true,
+    "q": "동일한 공유 자원이 3개 있고 세마포로 이를 관리하려면 세마포 변수 S의 초기값은 얼마가 적절한가요?",
+    "answer": "3",
+    "explain": "카운팅 세마포의 초기값은 동시에 사용할 수 있는 공유 자원의 개수로 둡니다.",
+    "choices": [
+      "3개"
+    ]
+  },
+  {
+    "seq": 118,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "세마포 wait()와 signal()의 기본 의미로 옳은 것은?",
+    "answer": 1,
+    "explain": "wait()는 진입 전 자원 수를 차감하고, signal()은 작업 후 자원 수를 회복시키며 대기자를 깨울 수 있습니다.",
+    "choices": [
+      "wait()는 자원 수를 증가시키고 signal()은 자원 수를 감소시킨다.",
+      "wait()는 자원 수를 확인하고 감소시키며, signal()은 자원 수를 증가시키고 대기 중인 프로세스를 깨울 수 있다.",
+      "wait()와 signal()은 모두 프로세스를 강제 종료한다.",
+      "wait()는 파일을 열고 signal()은 파일을 닫는다."
+    ]
+  },
+  {
+    "seq": 119,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "모니터가 세마포보다 사용하기 편리하다고 설명되는 주된 이유는?",
+    "answer": 3,
+    "explain": "모니터는 공유 자원과 접근 함수를 묶고, 내부에 한 프로세스만 들어오게 제어해 세마포의 사용 실수를 줄입니다.",
+    "choices": [
+      "모니터는 상호 배제를 전혀 제공하지 않습니다.",
+      "모니터는 조건 변수를 사용할 수 없습니다.",
+      "모니터는 공유 자원에 직접 접근하도록 강제합니다.",
+      "모니터는 공유 자원 접근 인터페이스와 상호 배제를 구조적으로 묶어 실수 가능성을 줄입니다."
+    ]
+  },
+  {
+    "seq": 120,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "교착 상태와 기아 현상의 차이로 가장 적절한 것은?",
+    "answer": 2,
+    "explain": "교착 상태와 기아 현상은 모두 대기 문제지만 원인과 구조가 다릅니다.",
+    "choices": [
+      "둘은 완전히 같은 말입니다.",
+      "교착 상태는 CPU 스케줄링과 무관하고 기아 현상은 항상 RAID에서만 발생합니다.",
+      "교착 상태는 서로가 가진 자원을 기다리며 전체가 멈추는 상황이고, 기아 현상은 특정 프로세스가 계속 선택되지 못해 오래 기다리는 상황입니다.",
+      "기아 현상은 반드시 자원 할당 그래프의 원형 대기 때문에만 발생합니다."
+    ]
+  },
+  {
+    "seq": 121,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "자원 할당 그래프에 사이클이 없다는 사실로 확실히 말할 수 있는 것은?",
+    "answer": 0,
+    "explain": "자원 할당 그래프에 사이클이 없으면 교착 상태는 발생하지 않습니다.",
+    "choices": [
+      "교착 상태가 발생하지 않았습니다.",
+      "교착 상태가 반드시 발생했습니다.",
+      "모든 자원이 무한합니다.",
+      "비선점 조건이 반드시 성립합니다."
+    ]
+  },
+  {
+    "seq": 122,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "식사하는 철학자 문제에서 모든 철학자가 왼쪽 포크를 든 채 오른쪽 포크를 기다리는 상황은 어떤 조건을 잘 보여주나요?",
+    "answer": 1,
+    "explain": "각 철학자는 하나의 포크를 점유한 채 다른 포크를 기다리고, 기다림이 원형으로 이어집니다.",
+    "choices": [
+      "보조기억장치 휘발성",
+      "점유와 대기 및 원형 대기",
+      "메모리 맵 입출력",
+      "스레드 코드 영역 공유"
+    ]
+  },
+  {
+    "seq": 123,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "교착 상태 회피에서 어떤 자원 요청을 거절하거나 대기시키는 기준으로 옳은 것은?",
+    "answer": 3,
+    "explain": "회피는 자원을 할당했을 때 안전 상태가 유지되는지를 판단합니다.",
+    "choices": [
+      "요청한 프로세스 이름이 길면 거절합니다.",
+      "요청 자원이 CPU이면 항상 거절합니다.",
+      "현재 남은 자원이 1개라도 있으면 무조건 할당합니다.",
+      "할당 후 시스템이 불안전 상태가 될 위험이 있으면 보류합니다."
+    ]
+  },
+  {
+    "seq": 124,
+    "ch": "13-2",
+    "type": "short",
+    "book": false,
+    "trend": true,
+    "q": "총 자원 10개 중 현재 7개가 할당되어 남은 자원이 3개입니다. 어떤 프로세스가 추가로 2개를 받아 완료한 뒤 자신이 사용하던 총 5개를 반납하면 남은 자원은 몇 개인가요?",
+    "answer": "6",
+    "explain": "먼저 2개를 할당하면 3-2=1개가 남고, 완료 후 5개를 반납하면 1+5=6개가 됩니다.",
+    "choices": [
+      "6개"
+    ]
+  },
+  {
+    "seq": 125,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "교착 상태 검출 후 회복에서 희생 프로세스를 하나씩 종료할 때의 단점으로 가장 적절한 것은?",
+    "answer": 1,
+    "explain": "한 프로세스씩 종료하는 방식은 피해를 줄일 수 있지만 반복 검출 비용이 생깁니다.",
+    "choices": [
+      "모든 프로세스를 한 번에 종료하므로 항상 가장 큰 피해가 납니다.",
+      "하나를 종료할 때마다 교착 상태가 풀렸는지 다시 검사해야 해 오버헤드가 커질 수 있습니다.",
+      "자원 할당 그래프를 절대 사용할 수 없습니다.",
+      "교착 상태가 발생하기 전에만 사용할 수 있습니다."
+    ]
+  }
 ];
 
 // ============ 출제 설정 ============
-// 목표: 40점에 가깝도록 OX×10(10점) + 주관식×8(16점) + 객관식×5(15점) = 41점
-const PICK = { ox: 10, short: 8, choice: 5 };
+// PDF 확인 문제 전체를 매 회차 그대로 출제
+const PICK = { ox: 999, short: 999, choice: 999 };
 const POINTS = { ox: 1, short: 2, choice: 3 };
-const CHAPTERS = ['1', '2-1', '2-2', '3-1', '4-1', '4-2', '4-3', '5-1', '5-2', '5-3', '6-1', '6-2', '6-3'];
+const CHAPTERS = ['7-1', '7-2', '8-1', '8-2', '9-1', '9-2', '10-1', '10-2', '10-3', '11-1', '11-2', '12-1', '12-2', '13-1', '13-2'];
 
 // ============ 유틸 ============
 function shuffle(arr) {
@@ -1123,11 +2245,12 @@ function buildSet() {
     ...pickPool('short', PICK.short),
     ...pickPool('choice', PICK.choice),
   ];
-  // 챕터 순으로 정렬하되 type 내부는 랜덤 유지
+  // PDF 문제 순서를 유지하도록 챕터와 seq 기준으로 정렬
   set.sort((a, b) => {
     const ai = CHAPTERS.indexOf(a.ch), bi = CHAPTERS.indexOf(b.ch);
     if (ai !== bi) return ai - bi;
-    // 같은 챕터면 OX→주관식→객관식 순
+    if (typeof a.seq === 'number' && typeof b.seq === 'number') return a.seq - b.seq;
+    // seq가 없는 문제는 같은 챕터 안에서 OX→주관식→객관식 순
     const order = { ox:0, short:1, choice:2 };
     return order[a.type] - order[b.type];
   });
@@ -1175,6 +2298,8 @@ function render() {
     const correct = !!state.correct[i];
     const cardClass = revealed ? (correct ? 'answered-correct' : 'answered-wrong') : '';
     const bookBadge = q.book ? '<span class="q-tag book">📘책</span>' : '';
+    const profBadge = q.prof ? '<span class="q-tag prof">교수PDF</span>' : '';
+    const trendBadge = q.trend ? '<span class="q-tag trend">경향</span>' : '';
     const tLabel = typeLabel(q.type);
 
     let body = '';
@@ -1239,6 +2364,8 @@ function render() {
           ${pointBadge}
           <span class="q-tag">${q.ch}장</span>
           ${bookBadge}
+          ${profBadge}
+          ${trendBadge}
         </div>
         <div class="q-text">${escapeHtml(q.q)}</div>
         ${body}
@@ -1350,7 +2477,9 @@ function renderPoolInfo() {
   const info = document.getElementById('pool-info');
   const byType = (t) => POOL.filter(q => q.type === t).length;
   const bookN = POOL.filter(q => q.book).length;
-  info.textContent = `문제 풀: 총 ${POOL.length}문제 (OX ${byType('ox')} / 주관식 ${byType('short')} / 객관식 ${byType('choice')} / 서술형 ${byType('essay')}) · 교재 확인 문제 ${bookN}개`;
+  const profN = POOL.filter(q => q.prof).length;
+  const trendN = POOL.filter(q => q.trend).length;
+  info.textContent = `문제 풀: 총 ${POOL.length}문제 (주관식 ${byType('short')} / 객관식 ${byType('choice')}) · PDF 확인 문제 ${bookN}개 · 교수 PDF 보강 ${profN}개 · 경향 보강 ${trendN}개`;
 }
 
 function applyModeUI() {
@@ -1358,12 +2487,12 @@ function applyModeUI() {
   const subtitle = document.querySelector('header p');
   if (subtitle) {
     subtitle.textContent = isEssay
-      ? '서술형 연습 (자가학습용 — 점수 미반영) · 모범답안 보기로 확인'
-      : '1장~6장 (03-2 제외) · OX 1점 / 주관식 2점 / 객관식 3점 · 40점 만점 랜덤';
+      ? '서술형 연습 (자가학습용 - 점수 미반영) · 모범답안 보기로 확인'
+      : '7장~13장 · PDF 확인 문제 + 교수/경향 보강 · 주관식 2점 / 객관식 3점';
   }
   document.getElementById('submit-btn').style.display = isEssay ? 'none' : '';
-  document.getElementById('mode-btn').textContent = isEssay ? '🎯 시험 모드로' : '📝 서술형 연습';
-  document.getElementById('reset-btn').textContent = isEssay ? '🔄 처음부터 다시' : '🎲 새 세트로 다시 풀기';
+  document.getElementById('mode-btn').style.display = 'none';
+  document.getElementById('reset-btn').textContent = '🔄 다시 풀기';
 }
 
 // ============ 이벤트 ============
@@ -1379,10 +2508,10 @@ document.getElementById('submit-btn').addEventListener('click', () => {
   document.getElementById('result-detail').textContent = `정답 ${correct}/${state.questions.length} · 정답률 ${percent}%`;
 
   let msg;
-  if (percent >= 90) msg = '🎉 시험장 가서 무쌍찍어도 되는 수준!';
-  else if (percent >= 75) msg = '👍 안정권 — 오답만 다시 확인';
-  else if (percent >= 60) msg = '💪 조금 더! 📘책 뱃지 문제는 반드시 맞히기';
-  else msg = '📚 교재 확인문제 위주로 다시 복습';
+  if (percent >= 90) msg = '좋습니다. 오답만 한 번 더 확인하세요.';
+  else if (percent >= 75) msg = '안정권입니다. 헷갈린 개념을 다시 보세요.';
+  else if (percent >= 60) msg = '조금 더 필요합니다. PDF 확인 문제를 반복하세요.';
+  else msg = '교재 확인 문제 중심으로 다시 복습하세요.';
   document.getElementById('result-message').textContent = msg;
 
   // 유형별/챕터별 내역
@@ -1409,7 +2538,7 @@ document.getElementById('submit-btn').addEventListener('click', () => {
 document.getElementById('reset-btn').addEventListener('click', () => {
   const msg = state.mode === 'essay'
     ? '서술형 답안과 열람 상태가 초기화됩니다. 진행할까요?'
-    : '새로운 세트로 바꾸면 현재 답안이 사라집니다. 진행할까요?';
+    : '현재 답안을 초기화하고 다시 풀까요?';
   if (Object.keys(state.revealed).length > 0 && !confirm(msg)) return;
   newRound();
 });
