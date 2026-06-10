@@ -1,0 +1,2562 @@
+<!DOCTYPE html><script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Os Final Quiz",
+  "schemaVersion": 1,
+  "description": "오퍼레이팅시스템 기말고사 대비 인터랙티브 문제은행 (7장~13장) - 교재 PDF의 확인 문제 전체 포함"
+}
+</script>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<title>오퍼레이팅시스템 기말고사 퀴즈</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 24px 16px 80px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+  background: #f7f8fa;
+  color: #1f2937;
+  line-height: 1.6;
+}
+.container { max-width: 760px; margin: 0 auto; }
+header {
+  background: linear-gradient(135deg, #0f766e 0%, #0ea5e9 100%);
+  color: white;
+  padding: 22px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+}
+header h1 { margin: 0 0 4px; font-size: 22px; font-weight: 700; }
+header p { margin: 0; font-size: 13px; opacity: 0.95; }
+header .pool-info { margin-top: 8px; font-size: 11px; opacity: 0.85; }
+
+.progress-bar {
+  position: sticky; top: 0;
+  background: white; padding: 12px 14px; border-radius: 12px;
+  margin-bottom: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  z-index: 10; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.progress-track { flex: 1; min-width: 100px; background: #e5e7eb; height: 8px; border-radius: 4px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #0f766e, #0ea5e9); transition: width 0.3s; width: 0%; }
+.progress-text { font-size: 13px; font-weight: 600; color: #0f766e; white-space: nowrap; }
+.score-badge { background: #10b981; color: white; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.points-badge { background: #f59e0b; color: white; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+
+.filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.filter-btn {
+  padding: 5px 11px; border: 1.5px solid #e5e7eb; background: white;
+  border-radius: 999px; font-size: 12px; cursor: pointer;
+  color: #6b7280; font-weight: 500; transition: all 0.15s;
+}
+.filter-btn:hover { border-color: #0ea5e9; color: #0ea5e9; }
+.filter-btn.active { background: #0ea5e9; border-color: #0ea5e9; color: white; }
+
+.question-card {
+  background: white; border-radius: 14px; padding: 18px;
+  margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  border: 2px solid transparent; transition: border-color 0.2s;
+}
+.question-card.answered-correct { border-color: #10b981; }
+.question-card.answered-wrong { border-color: #ef4444; }
+
+.q-header { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.q-num { background: #ecfeff; color: #0f766e; font-weight: 700; padding: 3px 10px; border-radius: 6px; font-size: 13px; }
+.q-tag { background: #f3f4f6; color: #6b7280; font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
+.q-tag.type-ox { background: #dbeafe; color: #1e40af; }
+.q-tag.type-short { background: #fef3c7; color: #92400e; }
+.q-tag.type-choice { background: #f3e8ff; color: #6b21a8; }
+.q-tag.type-essay { background: #ede9fe; color: #5b21b6; }
+.q-tag.book { background: #fee2e2; color: #991b1b; }
+.q-tag.prof { background: #dcfce7; color: #166534; }
+.q-tag.trend { background: #e0e7ff; color: #3730a3; }
+.q-point { background: #10b981; color: white; font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 700; }
+
+.q-text { font-size: 15px; font-weight: 500; margin: 0 0 14px; color: #111827; white-space: pre-wrap; }
+.q-text code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-family: 'D2Coding', Menlo, Consolas, monospace; font-size: 13px; color: #be185d; }
+
+.choices { display: flex; flex-direction: column; gap: 7px; }
+.choice {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px; border: 1.5px solid #e5e7eb; border-radius: 10px;
+  cursor: pointer; transition: all 0.15s; background: #fafafa;
+}
+.choice:hover { border-color: #7dd3fc; background: #f0f9ff; }
+.choice.selected { border-color: #0ea5e9; background: #f0f9ff; }
+.choice.correct { border-color: #10b981; background: #ecfdf5; }
+.choice.wrong { border-color: #ef4444; background: #fef2f2; }
+.choice.disabled { cursor: default; }
+.choice.disabled:hover { background: inherit; }
+
+.choice-num {
+  flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+  border: 1.5px solid #cbd5e1; background: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #64748b;
+}
+.choice.selected .choice-num { background: #0ea5e9; border-color: #0ea5e9; color: white; }
+.choice.correct .choice-num { background: #10b981; border-color: #10b981; color: white; }
+.choice.wrong .choice-num { background: #ef4444; border-color: #ef4444; color: white; }
+.choice-text { flex: 1; font-size: 14px; color: #374151; }
+
+/* OX */
+.ox-choices { display: flex; gap: 10px; }
+.ox-btn {
+  flex: 1; padding: 14px; border: 2px solid #e5e7eb; border-radius: 12px;
+  background: white; font-size: 22px; font-weight: 800; cursor: pointer;
+  color: #6b7280; transition: all 0.15s;
+}
+.ox-btn:hover { border-color: #0ea5e9; color: #0ea5e9; }
+.ox-btn.selected { border-color: #0ea5e9; background: #f0f9ff; color: #0369a1; }
+.ox-btn.correct { border-color: #10b981; background: #ecfdf5; color: #065f46; }
+.ox-btn.wrong { border-color: #ef4444; background: #fef2f2; color: #991b1b; }
+.ox-btn.disabled { cursor: default; }
+
+/* Short answer */
+.short-row { display: flex; gap: 8px; }
+.short-input {
+  flex: 1; padding: 10px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px;
+  font-size: 14px; font-family: inherit; outline: none; background: #fafafa;
+}
+.short-input:focus { border-color: #0ea5e9; background: white; }
+.short-input.correct { border-color: #10b981; background: #ecfdf5; }
+.short-input.wrong { border-color: #ef4444; background: #fef2f2; }
+.short-submit {
+  padding: 10px 18px; border-radius: 10px; border: none;
+  background: #0ea5e9; color: white; font-weight: 700; font-size: 14px; cursor: pointer;
+}
+.short-submit:hover { background: #0284c7; }
+.short-submit:disabled { background: #94a3b8; cursor: default; }
+
+/* Essay (서술형) */
+.essay-textarea {
+  width: 100%; min-height: 110px; padding: 11px 13px;
+  border: 1.5px solid #e5e7eb; border-radius: 10px;
+  font-size: 14px; font-family: inherit; line-height: 1.55;
+  outline: none; background: #fafafa; resize: vertical;
+}
+.essay-textarea:focus { border-color: #8b5cf6; background: white; }
+.essay-textarea:disabled { background: #f9fafb; color: #4b5563; }
+.essay-reveal {
+  margin-top: 8px; padding: 9px 16px; border-radius: 10px; border: none;
+  background: #8b5cf6; color: white; font-weight: 700; font-size: 13.5px; cursor: pointer;
+}
+.essay-reveal:hover { background: #7c3aed; }
+.essay-answer {
+  margin-top: 12px; padding: 13px 15px; background: #faf5ff;
+  border-left: 4px solid #8b5cf6; border-radius: 8px;
+  font-size: 13.5px; color: #4c1d95;
+}
+.essay-answer .ea-label { font-weight: 700; color: #6d28d9; display: block; margin-bottom: 6px; }
+.essay-answer .ea-summary { color: #1f2937; font-weight: 600; margin-bottom: 8px; }
+.essay-answer ul { margin: 6px 0 4px 18px; padding: 0; }
+.essay-answer li { margin-bottom: 4px; line-height: 1.55; color: #374151; }
+.essay-answer .ea-foot { margin-top: 8px; color: #6b7280; font-size: 12.5px; font-style: italic; }
+
+.btn-essay { background: #8b5cf6; color: white; }
+.btn-essay:hover { background: #7c3aed; }
+
+.explain {
+  margin-top: 12px; padding: 11px 13px; background: #fefce8;
+  border-left: 4px solid #facc15; border-radius: 8px;
+  font-size: 13px; color: #78350f; display: none;
+}
+.explain.show { display: block; }
+.explain-label { font-weight: 700; margin-right: 6px; color: #a16207; }
+.explain .ans-line { display: block; margin-top: 4px; font-weight: 600; color: #422006; }
+
+.controls {
+  display: flex; gap: 10px; justify-content: center;
+  margin-top: 24px; flex-wrap: wrap;
+}
+.btn {
+  padding: 10px 20px; border-radius: 10px; border: none;
+  font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+}
+.btn-primary { background: #0f766e; color: white; }
+.btn-primary:hover { background: #115e59; }
+.btn-secondary { background: white; color: #0f766e; border: 1.5px solid #99f6e4; }
+.btn-secondary:hover { background: #f0fdfa; }
+
+.result-card {
+  background: white; border-radius: 16px; padding: 22px;
+  margin-bottom: 14px; text-align: center; display: none;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+.result-card.show { display: block; }
+.result-score { font-size: 40px; font-weight: 800; color: #0f766e; margin-bottom: 4px; }
+.result-detail { font-size: 14px; color: #6b7280; margin-bottom: 12px; }
+.result-message { font-size: 16px; font-weight: 600; color: #111827; }
+.result-breakdown { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 12px; }
+.result-breakdown span { background: #f3f4f6; color: #374151; padding: 4px 10px; border-radius: 999px; font-size: 12px; }
+
+footer { text-align: center; margin-top: 30px; font-size: 11px; color: #9ca3af; }
+
+/* 모바일 최적화 (≤640px) */
+@media (max-width: 640px) {
+  body { padding: 12px 10px 72px; font-size: 15px; line-height: 1.55; }
+  header { padding: 16px; border-radius: 12px; margin-bottom: 12px; }
+  header h1 { font-size: 18px; }
+  header p { font-size: 12px; }
+  header .pool-info { font-size: 10.5px; margin-top: 6px; }
+
+  .progress-bar { padding: 9px 11px; gap: 8px; border-radius: 10px; margin-bottom: 10px; }
+  .progress-text { font-size: 12px; }
+  .score-badge, .points-badge { font-size: 11px; padding: 3px 8px; }
+
+  .filter-bar { gap: 5px; margin-bottom: 10px; }
+  .filter-btn { padding: 5px 10px; font-size: 11.5px; }
+
+  .question-card { padding: 14px; border-radius: 12px; margin-bottom: 10px; }
+  .q-header { gap: 5px; margin-bottom: 8px; }
+  .q-num { font-size: 12px; padding: 2px 8px; }
+  .q-tag, .q-point { font-size: 10.5px; padding: 2px 6px; }
+  .q-text { font-size: 14.5px; margin-bottom: 12px; }
+  .q-text code { font-size: 12.5px; }
+
+  .choice { padding: 9px 11px; gap: 9px; border-radius: 9px; }
+  .choice-num { width: 20px; height: 20px; font-size: 11.5px; }
+  .choice-text { font-size: 13.5px; }
+
+  .ox-choices { gap: 8px; }
+  .ox-btn { padding: 12px; font-size: 20px; border-radius: 10px; }
+
+  .short-row { flex-wrap: wrap; gap: 8px; }
+  .short-input { flex: 1 1 100%; padding: 10px 12px; font-size: 15px; }
+  .short-submit { flex: 1 1 100%; padding: 10px; font-size: 14px; }
+
+  .essay-textarea { min-height: 100px; padding: 10px 12px; font-size: 15px; }
+  .essay-reveal { width: 100%; padding: 10px; font-size: 14px; }
+  .essay-answer { padding: 11px 12px; font-size: 12.8px; }
+
+  .explain { padding: 10px 11px; font-size: 12.5px; }
+
+  .controls { gap: 8px; margin-top: 18px; }
+  .btn { padding: 10px 16px; font-size: 13.5px; flex: 1 1 auto; }
+
+  .result-card { padding: 18px; border-radius: 14px; }
+  .result-score { font-size: 32px; }
+  .result-detail { font-size: 13px; }
+  .result-message { font-size: 14.5px; }
+}
+
+/* iOS에서 input 줌 방지 (폰트 16px 미만일 때 자동 줌) */
+@media (max-width: 640px) {
+  .short-input { font-size: 16px; }
+  .essay-textarea { font-size: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>💻 오퍼레이팅시스템 기말고사</h1>
+    <p>7장~13장 · PDF 확인 문제 + 교수/경향 보강 · 주관식 2점 / 객관식 3점</p>
+    <div class="pool-info" id="pool-info"></div>
+  </header>
+
+  <div class="progress-bar">
+    <span class="progress-text" id="progress-text">0 / 0</span>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <span class="score-badge" id="score-badge">정답 0</span>
+    <span class="points-badge" id="points-badge">0점</span>
+  </div>
+
+  <div class="filter-bar" id="filter-bar"></div>
+
+  <div class="result-card" id="result-card">
+    <div class="result-score" id="result-score">0점</div>
+    <div class="result-detail" id="result-detail">정답률 0%</div>
+    <div class="result-message" id="result-message"></div>
+    <div class="result-breakdown" id="result-breakdown"></div>
+  </div>
+
+  <div id="quiz-container"></div>
+
+  <div class="controls">
+    <button class="btn btn-secondary" id="reset-btn">🎲 새 세트로 다시 풀기</button>
+    <button class="btn btn-essay" id="mode-btn" style="display:none">📝 서술형 연습</button>
+    <button class="btn btn-primary" id="submit-btn">📊 결과 보기</button>
+  </div>
+
+  <footer>교재: 혼자 공부하는 컴퓨터 구조+운영체제 · 기말 범위 7장~13장 · 📘책 = PDF 확인 문제 · 교수PDF/경향 = 보강 문제</footer>
+</div>
+
+<script>
+// ============ 문제 풀 ============
+// type: 'short' (2점) | 'choice' (3점)
+// book: true 면 📘책 뱃지 (PDF 교재 확인 문제)
+const POOL = [
+  {
+    "seq": 1,
+    "ch": "7-1",
+    "type": "short",
+    "book": true,
+    "q": "<보기> 플래터, 스핀들, 헤드, 디스크 암\n하드 디스크에서 데이터는 어디에 저장되나요?",
+    "answer": "플래터",
+    "explain": "교재 확인 문제입니다.",
+    "alts": [
+      "platter"
+    ]
+  },
+  {
+    "seq": 2,
+    "ch": "7-1",
+    "type": "short",
+    "book": true,
+    "q": "<보기> 플래터, 스핀들, 헤드, 디스크 암\n하드 디스크의 플래터를 돌리는 구성 요소는 무엇인가요?",
+    "answer": "스핀들",
+    "explain": "교재 확인 문제입니다.",
+    "alts": [
+      "spindle"
+    ]
+  },
+  {
+    "seq": 3,
+    "ch": "7-1",
+    "type": "short",
+    "book": true,
+    "q": "<보기> 플래터, 스핀들, 헤드, 디스크 암\n하드 디스크에 저장된 데이터를 읽고 쓰는 구성 요소는 무엇인가요?",
+    "answer": "헤드",
+    "explain": "교재 확인 문제입니다.",
+    "alts": [
+      "head"
+    ]
+  },
+  {
+    "seq": 4,
+    "ch": "7-1",
+    "type": "choice",
+    "book": true,
+    "q": "SLC, MLC, TLC 타입에 대해 옳지 않은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "SLC 타입은 MLC 타입보다 읽고 쓰는 속도가 빠릅니다.",
+      "TLC 타입은 MLC 타입보다 읽고 쓰는 속도가 빠릅니다.",
+      "MLC 타입은 SLC 타입보다 가격이 저렴합니다.",
+      "TLC 타입은 MLC 타입보다 가격이 저렴합니다."
+    ],
+    "explain": "SLC > MLC > TLC 순으로 일반적으로 속도와 수명이 좋고, 가격은 그 반대입니다."
+  },
+  {
+    "seq": 5,
+    "ch": "7-2",
+    "type": "choice",
+    "book": true,
+    "q": "RAID에 대한 설명 중 옳지 않은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "RAID는 여러 보조기억장치들을 마치 하나의 장치처럼 사용하는 기술입니다.",
+      "RAID를 구성하지 않아도 보조기억장치는 영구히 사용할 수 있습니다.",
+      "RAID를 통해 보조기억장치들의 성능을 높일 수 있습니다.",
+      "RAID를 통해 데이터를 안전하게 보관할 수 있습니다."
+    ],
+    "explain": "RAID는 성능과 안전성을 높일 수 있지만, 보조기억장치의 영구 사용을 보장하지는 않습니다."
+  },
+  {
+    "seq": 6,
+    "ch": "7-2",
+    "type": "choice",
+    "book": true,
+    "q": "RAID 0과 관련한 설명으로 옳은 것을 고르세요.",
+    "answer": 2,
+    "choices": [
+      "RAID 0은 하나의 물리적인 보조기억장치만을 사용하는 방식입니다.",
+      "RAID 0은 안전한 백업이 가능한 RAID 구성 방식입니다.",
+      "RAID 0은 데이터를 단순히 병렬적으로 분산하여 저장하는 방식입니다.",
+      "RAID 0은 CPU 구성 방식입니다."
+    ],
+    "explain": "RAID 0은 스트라이핑으로 데이터를 병렬 분산 저장합니다. 복제나 패리티가 없어 안전성은 낮습니다."
+  },
+  {
+    "seq": 7,
+    "ch": "7-2",
+    "type": "short",
+    "book": true,
+    "q": "그림처럼 5개의 하드 디스크에 데이터 블록과 서로 다른 두 개의 패리티가 분산 저장되는 RAID 레벨을 고르세요. [보기: RAID 0, RAID 1, RAID 4, RAID 5, RAID 6]",
+    "answer": "RAID 6",
+    "explain": "두 종류의 패리티를 분산 저장하는 방식은 RAID 6입니다.",
+    "alts": [
+      "레이드6",
+      "raid6",
+      "RAID6"
+    ]
+  },
+  {
+    "seq": 8,
+    "ch": "8-1",
+    "type": "short",
+    "book": true,
+    "q": "컴퓨터 내부와 정보를 주고받기 위해 입출력장치가 장치 컨트롤러를 이용하는 이유로 옳은 것을 두 가지 고르세요.\n① 입출력장치는 종류가 많아 주고받는 정보의 규격화가 어렵기 때문입니다.\n② CPU는 모든 입출력장치가 사용하는 데이터 형식들을 알고 있기 때문입니다.\n③ 일반적으로 입출력장치와 CPU 간에 전송률의 차이가 크기 때문입니다.\n④ CPU와 입출력장치 사이에는 중개자가 필요하지 않기 때문입니다.",
+    "answer": "①, ③",
+    "explain": "장치 종류가 다양해 규격화가 어렵고, CPU/메모리와 입출력장치 사이 전송률 차이가 큽니다.",
+    "alts": [
+      "1,3",
+      "①③",
+      "1 3",
+      "1번 3번",
+      "① ③"
+    ]
+  },
+  {
+    "seq": 9,
+    "ch": "8-1",
+    "type": "choice",
+    "book": true,
+    "q": "장치 컨트롤러의 기능으로 옳지 않은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "CPU 또는 입출력장치 간의 통신을 중개합니다.",
+      "전원이 꺼져도 대용량의 데이터를 저장합니다.",
+      "입출력장치의 오류를 검출합니다.",
+      "데이터 버퍼링을 통해 전송률 차이를 완화해 줍니다."
+    ],
+    "explain": "전원이 꺼져도 대용량 데이터를 저장하는 것은 보조기억장치의 역할입니다."
+  },
+  {
+    "seq": 10,
+    "ch": "8-1",
+    "type": "short",
+    "book": true,
+    "q": "장치 드라이버는 ( ① )가 컴퓨터 내부와 정보를 주고받을 수 있게 하는 ( ② )입니다. [보기: 메모리, 장치 컨트롤러, 프로그램, 하드웨어] ①,②를 쉼표로 적으세요.",
+    "answer": "장치 컨트롤러, 프로그램",
+    "explain": "장치 드라이버는 장치 컨트롤러가 동작하도록 돕는 프로그램입니다.",
+    "alts": [
+      "장치컨트롤러,프로그램",
+      "장치 컨트롤러 프로그램",
+      "장치컨트롤러 프로그램"
+    ]
+  },
+  {
+    "seq": 11,
+    "ch": "8-1",
+    "type": "choice",
+    "book": true,
+    "q": "장치 드라이버와 관련한 설명 중 옳은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "운영체제가 기본적으로 제공하는 장치 드라이버는 없습니다.",
+      "컴퓨터가 장치 드라이버를 인식하고 실행할 수 있다면 해당 입출력장치의 사용이 가능합니다.",
+      "컴퓨터가 장치 드라이버를 인식하고 실행할 수 없어도 해당 입출력장치의 사용이 가능합니다.",
+      "장치 드라이버는 하드웨어입니다."
+    ],
+    "explain": "장치 드라이버가 인식되고 실행되어야 해당 입출력장치를 사용할 수 있습니다."
+  },
+  {
+    "seq": 12,
+    "ch": "8-2",
+    "type": "choice",
+    "book": true,
+    "q": "메모리 맵 입출력과 고립형 입출력에 관한 설명 중 옳지 않은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "메모리 맵 입출력은 메모리를 위한 주소 공간과 입출력장치에 접근하기 위한 주소 공간을 하나의 주소 공간으로 간주하는 입출력 방식입니다.",
+      "고립형 입출력 방식은 메모리의 주소 공간을 축소시키는 방법입니다.",
+      "메모리 맵 입출력 방식은 메모리와 입출력장치에 동일한 명령어로써 접근합니다.",
+      "고립형 입출력은 분리된 주소 공간으로 메모리와 입출력장치를 관리하는 방식입니다."
+    ],
+    "explain": "메모리 주소 공간이 축소될 수 있는 방식은 메모리 맵 입출력입니다."
+  },
+  {
+    "seq": 13,
+    "ch": "8-2",
+    "type": "short",
+    "book": true,
+    "q": "인터럽트 A의 서비스 루틴을 실행하던 중 우선순위가 더 높은 인터럽트 B가 발생했습니다. CPU는 인터럽트 (A, B)의 서비스 루틴을 잠시 멈추고, 인터럽트 (A, B)의 서비스 루틴을 실행합니다. 순서대로 고르세요.",
+    "answer": "A, B",
+    "explain": "우선순위가 높은 B를 처리하기 위해 실행 중이던 A의 서비스 루틴을 잠시 멈춥니다.",
+    "alts": [
+      "A B",
+      "a,b",
+      "a b",
+      "A,B"
+    ]
+  },
+  {
+    "seq": 14,
+    "ch": "8-2",
+    "type": "choice",
+    "book": true,
+    "q": "DMA와 관련한 설명 중 옳지 않은 것을 고르세요.",
+    "answer": 2,
+    "choices": [
+      "DMA 작업이 완료되면 DMA 컨트롤러는 CPU에게 인터럽트 요청을 보냅니다.",
+      "DMA 컨트롤러와 CPU는 시스템 버스를 동시에 사용할 수 없습니다.",
+      "DMA 컨트롤러는 CPU를 거치고 메모리와 입출력장치 간의 데이터를 주고 받습니다.",
+      "DMA는 프로그램 입출력보다 CPU의 입출력 부담이 적습니다."
+    ],
+    "explain": "DMA는 CPU를 거치지 않고 메모리와 입출력장치 간 데이터를 전송합니다."
+  },
+  {
+    "seq": 15,
+    "ch": "8-2",
+    "type": "short",
+    "book": true,
+    "q": "메모리에 접근하기 위한 주소 공간과 입출력장치에 접근하기 위한 주소 공간을 하나의 주소 공간으로 간주하는 입출력 방식은 무엇인가요?",
+    "answer": "메모리 맵 입출력",
+    "explain": "하나의 주소 공간으로 관리하는 방식은 메모리 맵 입출력입니다.",
+    "alts": [
+      "메모리맵입출력",
+      "memory mapped I/O",
+      "memory-mapped I/O",
+      "메모리 맵 I/O"
+    ]
+  },
+  {
+    "seq": 16,
+    "ch": "8-2",
+    "type": "short",
+    "book": true,
+    "q": "메모리에 접근하기 위한 주소 공간과 입출력장치에 접근하기 위한 주소 공간을 별도의 주소 공간으로 분리하는 입출력 방식은 무엇인가요?",
+    "answer": "고립형 입출력",
+    "explain": "주소 공간을 분리하는 방식은 고립형 입출력입니다.",
+    "alts": [
+      "고립형입출력",
+      "isolated I/O",
+      "isolated IO",
+      "분리형 입출력"
+    ]
+  },
+  {
+    "seq": 17,
+    "ch": "9-1",
+    "type": "short",
+    "book": true,
+    "q": "운영체제는 실행할 프로그램에 (     )을 할당하고, 프로그램이 올바르게 실행되도록 돕는 프로그램입니다.",
+    "answer": "자원",
+    "explain": "운영체제는 실행 프로그램에 필요한 자원을 할당하고 실행을 돕습니다.",
+    "alts": [
+      "시스템 자원",
+      "리소스",
+      "resource"
+    ]
+  },
+  {
+    "seq": 18,
+    "ch": "9-1",
+    "type": "choice",
+    "book": true,
+    "q": "운영체제에 대한 설명으로 옳지 않은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "운영체제를 이해하면 하드웨어와 프로그램을 더 깊이 이해할 수 있습니다.",
+      "운영체제는 사용자 영역에 적재됩니다.",
+      "운영체제는 시스템 자원을 관리하는 프로그램입니다.",
+      "운영체제는 사용자가 실행하는 프로그램이 올바르게 실행되도록 돕습니다."
+    ],
+    "explain": "운영체제의 핵심인 커널은 커널 영역에 적재됩니다."
+  },
+  {
+    "seq": 19,
+    "ch": "9-2",
+    "type": "short",
+    "book": true,
+    "q": "(     )은 운영체제의 핵심 기능을 담당하는 부분을 의미합니다.",
+    "answer": "커널",
+    "explain": "커널은 운영체제의 핵심 기능을 담당합니다.",
+    "alts": [
+      "kernel"
+    ]
+  },
+  {
+    "seq": 20,
+    "ch": "9-2",
+    "type": "choice",
+    "book": true,
+    "q": "이중 모드와 시스템 호출에 대해 옳지 않은 것을 고르세요.",
+    "answer": 3,
+    "choices": [
+      "운영체제의 핵심 서비스는 커널 모드로 실행됩니다.",
+      "일반적인 응용 프로그램은 사용자 모드로 실행됩니다.",
+      "시스템 호출을 통해 사용자 모드에서 커널 모드로 전환할 수 있습니다.",
+      "시스템 호출은 인터럽트와 아무런 연관이 없습니다."
+    ],
+    "explain": "시스템 호출은 소프트웨어 인터럽트와 관련이 있습니다."
+  },
+  {
+    "seq": 21,
+    "ch": "9-2",
+    "type": "choice",
+    "book": true,
+    "q": "운영체제의 핵심 서비스가 아닌 것을 고르세요.",
+    "answer": 2,
+    "choices": [
+      "프로세스 관리",
+      "자원 접근 및 할당",
+      "사용자 인터페이스 제공",
+      "파일 시스템 관리"
+    ],
+    "explain": "사용자 인터페이스 제공은 커널의 핵심 서비스라기보다 운영체제 전체가 제공할 수 있는 서비스입니다."
+  },
+  {
+    "seq": 22,
+    "ch": "10-1",
+    "type": "choice",
+    "book": true,
+    "q": "프로세스와 관련한 설명 중 옳지 않은 것을 고르세요.",
+    "answer": 3,
+    "choices": [
+      "실행되는 프로그램을 프로세스라고 합니다.",
+      "프로세스가 생성되면 커널 영역에 PCB가 생성됩니다.",
+      "프로세스들은 문맥 교환을 통해 번갈아 가며 수행됩니다.",
+      "프로세스는 반드시 사용자와 상호작용할 수 있어야 합니다."
+    ],
+    "explain": "사용자와 상호작용하지 않는 백그라운드 프로세스도 있습니다."
+  },
+  {
+    "seq": 23,
+    "ch": "10-1",
+    "type": "choice",
+    "book": true,
+    "q": "문맥 교환과 관련한 설명 중 옳지 않은 것을 고르세요.",
+    "answer": 0,
+    "choices": [
+      "문맥 교환은 자주 수행될수록 좋습니다.",
+      "문맥 교환 과정에서 직전에 수행되던 프로세스의 문맥이 백업됩니다.",
+      "문맥 교환 과정에서 다음에 수행할 프로세스의 문맥이 복구됩니다.",
+      "문맥은 PCB에 기록됩니다."
+    ],
+    "explain": "문맥 교환은 오버헤드가 있으므로 무조건 자주 수행될수록 좋은 것은 아닙니다."
+  },
+  {
+    "seq": 24,
+    "ch": "10-2",
+    "type": "short",
+    "book": true,
+    "q": "프로세스 상태 다이어그램에서 ①~⑤에 알맞은 상태를 순서대로 쓰세요. 단서: ①에서 ②로 생성 후 이동, ②에서 디스패치로 ③, ③에서 ④ 종료, ③에서 입출력 요청으로 ⑤, ⑤에서 입출력 완료로 ②.",
+    "answer": "생성, 준비, 실행, 종료, 대기",
+    "explain": "프로세스 상태는 생성, 준비, 실행, 대기, 종료가 있습니다.",
+    "alts": [
+      "생성 준비 실행 종료 대기",
+      "생성상태,준비상태,실행상태,종료상태,대기상태",
+      "생성,준비,실행,종료,대기"
+    ]
+  },
+  {
+    "seq": 25,
+    "ch": "10-2",
+    "type": "short",
+    "book": true,
+    "q": "최초 프로세스가 로그인 프로세스를 생성하고, 로그인 프로세스는 bash 프로세스를, bash 프로세스는 Vim 프로세스를 생성했습니다. bash 프로세스의 부모 프로세스는 무엇인가요?",
+    "answer": "로그인 프로세스",
+    "explain": "bash는 로그인 프로세스가 생성했습니다.",
+    "alts": [
+      "login 프로세스",
+      "로그인",
+      "login"
+    ]
+  },
+  {
+    "seq": 26,
+    "ch": "10-2",
+    "type": "short",
+    "book": true,
+    "q": "위 상황에서 bash 프로세스의 자식 프로세스는 무엇인가요?",
+    "answer": "Vim 프로세스",
+    "explain": "bash는 Vim 프로세스를 생성했습니다.",
+    "alts": [
+      "vim 프로세스",
+      "Vim",
+      "vim"
+    ]
+  },
+  {
+    "seq": 27,
+    "ch": "10-2",
+    "type": "short",
+    "book": true,
+    "q": "위 상황에서 Vim 프로세스의 부모 프로세스는 무엇인가요?",
+    "answer": "bash 프로세스",
+    "explain": "Vim은 bash 프로세스가 생성했습니다.",
+    "alts": [
+      "bash",
+      "배시 프로세스"
+    ]
+  },
+  {
+    "seq": 28,
+    "ch": "10-2",
+    "type": "choice",
+    "book": true,
+    "q": "fork와 exec에 대한 설명으로 옳지 않은 것을 고르세요.",
+    "answer": 0,
+    "choices": [
+      "fork 시스템 호출을 하면 새로운 폴더가 생성됩니다.",
+      "fork 시스템 호출을 하면 부모 프로세스의 복제본이 자식 프로세스로서 생성됩니다.",
+      "exec 시스템 호출을 하면 프로세스의 메모리 공간이 다른 프로세스의 내용으로 변경됩니다.",
+      "많은 운영체제는 fork와 exec을 통해 프로세스 계층 구조를 형성합니다."
+    ],
+    "explain": "fork 시스템 호출은 폴더 생성과 관련이 없습니다."
+  },
+  {
+    "seq": 29,
+    "ch": "10-2",
+    "type": "choice",
+    "book": true,
+    "q": "프로세스 상태에 대한 설명으로 옳은 것을 고르세요.",
+    "answer": 3,
+    "choices": [
+      "생성 상태는 프로세스가 입출력 장치의 작업을 기다리는 상태입니다.",
+      "실행 상태는 프로세스가 종료되는 상태입니다.",
+      "종료 상태는 프로세스가 이제 막 생성된 상태입니다.",
+      "준비 상태는 CPU를 할당받기를 기다리고 있는 상태입니다."
+    ],
+    "explain": "준비 상태는 실행 가능한 프로세스가 CPU 할당을 기다리는 상태입니다."
+  },
+  {
+    "seq": 30,
+    "ch": "10-3",
+    "type": "choice",
+    "book": true,
+    "q": "스레드와 관련한 설명으로 옳지 않은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "스레드는 프로세스 내의 실행의 흐름 단위입니다.",
+      "프로세스 내의 스레드들은 각기 다른 코드/데이터/힙 영역을 가지고 있습니다.",
+      "프로세스 내의 스레드들은 각기 다른 프로그램 카운터값을 가지고 있습니다.",
+      "프로세스 내의 스레드들은 각기 다른 스택을 가지고 있습니다."
+    ],
+    "explain": "같은 프로세스의 스레드들은 코드, 데이터, 힙 영역을 공유하고 각자 스택과 실행 정보를 가집니다."
+  },
+  {
+    "seq": 31,
+    "ch": "10-3",
+    "type": "short",
+    "book": true,
+    "q": "멀티프로세스와 멀티스레드의 차이입니다. 옳은 단어를 순서대로 고르세요.\n프로세스끼리는 기본적으로 자원을 (공유하지 않지만, 공유하지만), 프로세스 내의 스레드끼리는 같은 프로세스 내의 자원을 (공유하지 않습니다, 공유합니다).",
+    "answer": "공유하지 않지만, 공유합니다",
+    "explain": "프로세스끼리는 기본적으로 자원을 공유하지 않고, 같은 프로세스의 스레드끼리는 자원을 공유합니다.",
+    "alts": [
+      "공유하지않지만,공유합니다",
+      "공유하지 않지만 공유합니다"
+    ]
+  },
+  {
+    "seq": 32,
+    "ch": "11-1",
+    "type": "choice",
+    "book": true,
+    "q": "프로세스 스케줄링에 대해 옳지 않은 것을 고르세요.",
+    "answer": 3,
+    "choices": [
+      "운영체제는 우선순위를 토대로 프로세스들을 스케줄링합니다.",
+      "운영체제는 스케줄링 큐를 사용하여 스케줄링할 프로세스들을 관리합니다.",
+      "준비 큐에는 준비 상태인 프로세스들이, 대기 큐에는 대기 상태인 프로세스들이 삽입됩니다.",
+      "선점형 스케줄링은 프로세스가 이용 중인 자원을 빼앗을 수 없는 방식을 의미합니다."
+    ],
+    "explain": "선점형 스케줄링은 프로세스가 이용 중인 자원을 빼앗을 수 있는 방식입니다."
+  },
+  {
+    "seq": 33,
+    "ch": "11-1",
+    "type": "short",
+    "book": true,
+    "q": "그림에서 준비 상태 프로세스들이 줄 서는 ①과 대기 상태 프로세스들이 줄 서는 ②에 알맞은 말을 순서대로 쓰세요.",
+    "answer": "준비 큐, 대기 큐",
+    "explain": "준비 큐는 CPU 할당 대기, 대기 큐는 입출력 등 특정 이벤트 대기 프로세스를 관리합니다.",
+    "alts": [
+      "준비큐,대기큐",
+      "준비 큐 대기 큐",
+      "ready queue, waiting queue"
+    ]
+  },
+  {
+    "seq": 34,
+    "ch": "11-1",
+    "type": "choice",
+    "book": true,
+    "q": "선점형 스케줄링과 비선점형 스케줄링에 대해 옳지 않은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "선점형 스케줄링은 어느 한 프로세스가 자원을 독점할 수 없는 스케줄링 방식입니다.",
+      "선점형 스케줄링은 문맥 교환 과정의 오버헤드가 비선점형 스케줄링에 비해 적습니다.",
+      "비선점형 스케줄링은 어느 한 프로세스가 자원을 독점할 수 있는 스케줄링 방식입니다.",
+      "비선점형 스케줄링은 문맥 교환 과정의 오버헤드가 선점형 스케줄링에 비해 적습니다."
+    ],
+    "explain": "선점형 스케줄링은 문맥 교환 오버헤드가 비선점형보다 클 수 있습니다."
+  },
+  {
+    "seq": 35,
+    "ch": "11-2",
+    "type": "choice",
+    "book": true,
+    "q": "준비 큐에 프로세스 A, B, C, D 순으로 삽입되었습니다. 선입 선처리 스케줄링 알고리즘을 적용하면 어떤 순서대로 CPU를 할당받나요?",
+    "answer": 2,
+    "choices": [
+      "A-D-B-C",
+      "B-C-A-D",
+      "A-B-C-D",
+      "D-C-B-A"
+    ],
+    "explain": "선입 선처리는 준비 큐에 삽입된 순서대로 CPU를 할당합니다."
+  },
+  {
+    "seq": 36,
+    "ch": "11-2",
+    "type": "short",
+    "book": true,
+    "q": "우선순위가 낮아 실행이 계속 연기되는 문제를 무엇이라고 하나요? [보기: 기아 현상, 에이징, 타임 슬라이스]",
+    "answer": "기아 현상",
+    "explain": "낮은 우선순위 때문에 실행이 계속 밀리는 문제는 기아 현상입니다.",
+    "alts": [
+      "기아현상",
+      "starvation"
+    ]
+  },
+  {
+    "seq": 37,
+    "ch": "11-2",
+    "type": "short",
+    "book": true,
+    "q": "우선순위가 낮아 실행이 계속 연기되는 문제를 해결하기 위해 점차 우선순위를 높이는 기법은 무엇인가요? [보기: 기아 현상, 에이징, 타임 슬라이스]",
+    "answer": "에이징",
+    "explain": "에이징은 시간이 지날수록 우선순위를 높여 기아 현상을 완화합니다.",
+    "alts": [
+      "aging"
+    ]
+  },
+  {
+    "seq": 38,
+    "ch": "12-1",
+    "type": "short",
+    "book": true,
+    "q": "동기화의 의미입니다. 빈칸 ①,②에 알맞은 말을 순서대로 쓰세요.\n①을 위한 동기화: 프로세스를 올바른 순서대로 실행하기\n②를 위한 동기화: 동시에 접근해서는 안 되는 자원에 하나의 프로세스만 접근하게 하기\n[보기: 상호 배제, 실행 순서 제어, 임계 구역]",
+    "answer": "실행 순서 제어, 상호 배제",
+    "explain": "동기화는 실행 순서 제어와 상호 배제를 포함합니다.",
+    "alts": [
+      "실행순서제어,상호배제",
+      "실행 순서 제어 상호 배제"
+    ]
+  },
+  {
+    "seq": 39,
+    "ch": "12-1",
+    "type": "choice",
+    "book": true,
+    "q": "임계 구역에 대한 설명으로 옳지 않은 것을 고르세요.",
+    "answer": 0,
+    "choices": [
+      "임계 구역에서 여러 개의 프로세스가 동시에 실행해도 무방합니다.",
+      "임계 구역에서 여러 프로세스가 동시에 실행할 경우 레이스 컨디션이 발생합니다.",
+      "임계 구역에서 실행되는 프로세스가 있다면 다른 프로세스는 기다려야 합니다.",
+      "운영체제는 임계 구역을 관리합니다."
+    ],
+    "explain": "임계 구역에는 동시에 여러 프로세스가 진입하면 문제가 발생할 수 있습니다."
+  },
+  {
+    "seq": 40,
+    "ch": "12-2",
+    "type": "choice",
+    "book": true,
+    "q": "뮤텍스 락과 세마포에 대한 설명으로 옳지 않은 것을 고르세요.",
+    "answer": 3,
+    "choices": [
+      "뮤텍스 락은 임계 구역을 잠근 뒤 임계 구역에 진입함으로써 상호 배제를 위한 동기화를 이룹니다.",
+      "세마포는 공유 자원이 여러 개 있는 상황에서도 이용할 수 있습니다.",
+      "세마포를 이용해 프로세스 실행 순서 제어를 위한 동기화도 이룰 수 있습니다.",
+      "세마포를 이용하면 반드시 바쁜 대기를 해야 합니다."
+    ],
+    "explain": "세마포는 구현 방식에 따라 바쁜 대기를 피할 수 있습니다."
+  },
+  {
+    "seq": 41,
+    "ch": "12-2",
+    "type": "short",
+    "book": true,
+    "q": "조건 변수 x와 y가 있습니다. 스레드 A는 x.wait를 호출했고 스레드 B는 y.wait를 호출했습니다. 스레드 C가 y.signal을 호출했을 때 실행이 재개되는 스레드는 무엇인가요?",
+    "answer": "스레드 B",
+    "explain": "y.signal은 y 조건 변수에서 기다리는 스레드를 깨우므로 B가 재개됩니다.",
+    "alts": [
+      "B",
+      "스레드B",
+      "thread B"
+    ]
+  },
+  {
+    "seq": 42,
+    "ch": "12-2",
+    "type": "short",
+    "book": true,
+    "q": "세마포를 이용하면 동시에 실행되는 프로세스 혹은 스레드 간에 ( ① )를 위한 동기화와 ( ② )를 위한 동기화를 할 수 있습니다. [보기: 실행 순서 제어, 상호 배제, 입출력장치] ①,②를 순서대로 쓰세요.",
+    "answer": "상호 배제, 실행 순서 제어",
+    "explain": "세마포는 상호 배제와 실행 순서 제어 모두에 사용할 수 있습니다.",
+    "alts": [
+      "상호배제,실행순서제어",
+      "상호 배제 실행 순서 제어"
+    ]
+  },
+  {
+    "seq": 43,
+    "ch": "13-1",
+    "type": "choice",
+    "book": true,
+    "q": "교착 상태에 대한 설명으로 옳지 않은 것을 고르세요.",
+    "answer": 3,
+    "choices": [
+      "교착 상태는 다양한 상황에서 발생할 수 있습니다.",
+      "교착 상태는 자원 할당 그래프로 표현할 수 있습니다.",
+      "교착 상태는 일어나지 않을 사건을 기다리며 무한히 대기하는 현상을 의미합니다.",
+      "식사하는 철학자 문제에서 단 한 명의 철학자가 식사를 해도 교착 상태가 발생합니다."
+    ],
+    "explain": "식사하는 철학자 문제에서는 모든 철학자가 동시에 식사를 하려고 할 때 교착 상태가 발생할 수 있습니다."
+  },
+  {
+    "seq": 44,
+    "ch": "13-1",
+    "type": "short",
+    "book": true,
+    "q": "교착 상태가 발생할 수 있는 네 가지 조건을 모두 쓰세요.",
+    "answer": "상호 배제, 점유와 대기, 비선점, 원형 대기",
+    "explain": "교착 상태 발생 조건은 상호 배제, 점유와 대기, 비선점, 원형 대기입니다.",
+    "alts": [
+      "상호배제,점유와대기,비선점,원형대기",
+      "상호 배제 점유와 대기 비선점 원형 대기"
+    ]
+  },
+  {
+    "seq": 45,
+    "ch": "13-1",
+    "type": "choice",
+    "book": true,
+    "q": "자원 할당 그래프 중 교착 상태가 발생할 위험이 있는 그래프는 ①과 ② 중 무엇인가요? 단서: ②는 자원 할당 그래프가 원형 대기 형태를 이룹니다.",
+    "answer": 1,
+    "choices": [
+      "①",
+      "②"
+    ],
+    "explain": "자원 할당 그래프가 원의 형태를 띠면 교착 상태 발생 위험이 있습니다."
+  },
+  {
+    "seq": 46,
+    "ch": "13-2",
+    "type": "choice",
+    "book": true,
+    "q": "교착 상태를 회복하는 방법에 대해 옳지 않은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "교착 상태가 발생하는 조건 중 하나를 충족하지 않게 하면 교착 상태를 예방할 수 있습니다.",
+      "교착 상태가 발생했다면 이를 회복할 수 없습니다.",
+      "안전 상태를 유지할 수 있는 경우에만 자원을 할당하면 교착 상태를 회피할 수 있습니다.",
+      "교착 상태 검출 후 회복 방식에서 운영체제는 주기적으로 교착 상태의 발생 여부를 검사합니다."
+    ],
+    "explain": "교착 상태가 발생해도 검출 후 회복 방식으로 회복할 수 있습니다."
+  },
+  {
+    "seq": 47,
+    "ch": "13-2",
+    "type": "short",
+    "book": true,
+    "q": "할당 가능 자원 12개, 현재 사용량 합계 9개라서 남은 자원은 3개입니다. 이 상황에서 프로세스 P2에 자원 2개를 나누어 주고, P2가 실행을 종료한 뒤 현재 사용 중이던 자원 4개를 반납하면 남은 자원은 몇 개인가요?",
+    "answer": "5",
+    "explain": "P2에 2개를 주면 3-2=1개가 남고, P2가 종료되어 4개를 반납하면 1+4=5개입니다.",
+    "alts": [
+      "5개"
+    ]
+  },
+  {
+    "seq": 48,
+    "ch": "13-2",
+    "type": "choice",
+    "book": true,
+    "q": "교착 상태에 대한 대처 방법 중 타조 알고리즘에 대한 설명으로 옳은 것을 고르세요.",
+    "answer": 1,
+    "choices": [
+      "교착 상태를 회피하는 방법입니다.",
+      "교착 상태를 무시하는 방법입니다.",
+      "교착 상태를 검출하고 회복하는 방법입니다.",
+      "교착 상태를 예방하는 방법입니다."
+    ],
+    "explain": "타조 알고리즘은 교착 상태가 발생해도 이를 무시하는 방법입니다."
+  },
+  {
+    "seq": 49,
+    "ch": "13-2",
+    "type": "choice",
+    "book": true,
+    "q": "교착 상태 예방에 대한 설명으로 옳지 않은 것을 고르세요.",
+    "answer": 3,
+    "choices": [
+      "상호 배제 조건을 없앰으로써 교착 상태를 예방할 수 있습니다.",
+      "점유와 대기 조건을 없앰으로써 교착 상태를 예방할 수 있습니다.",
+      "비선점 조건을 없앰으로써 교착 상태를 예방할 수 있습니다.",
+      "원형 대기 조건을 추가함으로써 교착 상태를 예방할 수 있습니다."
+    ],
+    "explain": "원형 대기 조건을 없애야 교착 상태를 예방할 수 있습니다."
+  },
+  {
+    "seq": 50,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "뮤텍스 락을 옷 가게 탈의실 비유로 설명할 때, 탈의실의 “자물쇠”에 해당하는 동기화 개념은 무엇인가요?",
+    "answer": 0,
+    "explain": "뮤텍스 락은 공유 자원에 대한 상호 배제를 보장하는 잠금입니다.",
+    "choices": [
+      "임계 구역에 한 번에 하나의 프로세스만 들어가도록 하는 잠금",
+      "프로세스를 무조건 종료시키는 운영체제 서비스",
+      "디스크 블록을 순서대로 배치하는 저장 장치 기법",
+      "프로세스 우선순위를 자동으로 낮추는 스케줄링 기법"
+    ]
+  },
+  {
+    "seq": 51,
+    "ch": "12-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "뮤텍스 락에서 락을 얻지 못한 프로세스가 CPU를 계속 소모하며 반복 확인하는 대기 방식을 무엇이라고 하나요?",
+    "answer": "바쁜 대기",
+    "explain": "while 루프를 돌며 계속 확인하는 방식은 바쁜 대기 또는 스핀 락입니다.",
+    "choices": [
+      "busy wait",
+      "busy waiting",
+      "스핀 락",
+      "spin lock",
+      "스핀락"
+    ]
+  },
+  {
+    "seq": 52,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "실제 프로그래밍 언어의 뮤텍스 락 구현에 대한 설명으로 옳은 것은?",
+    "answer": 0,
+    "explain": "교수 PDF는 현대 언어/프레임워크의 뮤텍스가 대기 상태 전환 등으로 바쁜 대기를 줄인다고 설명합니다.",
+    "choices": [
+      "락을 얻지 못하면 스레드를 대기 상태로 전환하거나 짧게 스핀한 뒤 잠재우는 등 커널/라이브러리 수준에서 최적화된다.",
+      "항상 사용자가 직접 무한 루프 acquire()를 구현해야만 한다.",
+      "뮤텍스 락은 CPU 스케줄링과 무관하므로 운영체제 커널의 도움을 받지 않는다.",
+      "뮤텍스 락은 공유 자원이 여러 개일 때만 사용할 수 있고 하나일 때는 사용할 수 없다."
+    ]
+  },
+  {
+    "seq": 53,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "이진 세마포와 뮤텍스 락의 핵심 차이로 가장 적절한 것은?",
+    "answer": 1,
+    "explain": "교수 PDF의 핵심 질문은 소유권(Ownership)의 유무입니다.",
+    "choices": [
+      "이진 세마포는 0과 1을 사용하지 않는다.",
+      "뮤텍스 락은 소유권이 있어 락을 획득한 주체가 해제해야 하지만, 이진 세마포는 단순 신호 체계로 소유권이 없을 수 있다.",
+      "뮤텍스 락은 순서 제어에만 쓰이고 상호 배제에는 쓰이지 않는다.",
+      "이진 세마포는 공유 자원 수가 무한할 때만 동작한다."
+    ]
+  },
+  {
+    "seq": 54,
+    "ch": "12-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "세마포에서 wait()는 다익스트라 표기로 어떤 연산이라고도 부르나요?",
+    "answer": "P",
+    "explain": "wait()는 P 연산 또는 down으로도 불립니다.",
+    "choices": [
+      "P()",
+      "p",
+      "down",
+      "down()"
+    ]
+  },
+  {
+    "seq": 55,
+    "ch": "12-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "세마포에서 signal()은 다익스트라 표기로 어떤 연산이라고도 부르나요?",
+    "answer": "V",
+    "explain": "signal()은 V 연산 또는 up으로도 불립니다.",
+    "choices": [
+      "V()",
+      "v",
+      "up",
+      "up()"
+    ]
+  },
+  {
+    "seq": 56,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "대기 큐 방식의 세마포에서 S < 0일 때 S의 절댓값이 의미하는 것은?",
+    "answer": 2,
+    "explain": "교수 PDF는 S가 음수일 때 대기 큐에 갇혀 잠든 프로세스 수를 나타낸다고 설명합니다.",
+    "choices": [
+      "즉시 사용 가능한 실제 공유 자원의 개수",
+      "현재 CPU 코어의 개수",
+      "세마포 대기 큐에서 잠들어 있는 프로세스의 개수",
+      "이미 종료된 프로세스의 개수"
+    ]
+  },
+  {
+    "seq": 57,
+    "ch": "12-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "세마포로 실행 순서를 제어할 때, 나중에 실행되어야 하는 프로세스 앞에는 어떤 함수를 붙이나요?",
+    "answer": "wait()",
+    "explain": "먼저 실행되어야 하는 프로세스 뒤에는 signal(), 나중에 실행되어야 하는 프로세스 앞에는 wait()를 둡니다.",
+    "choices": [
+      "wait",
+      "P",
+      "P()",
+      "down",
+      "down()"
+    ]
+  },
+  {
+    "seq": 58,
+    "ch": "12-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "세마포로 실행 순서를 제어할 때, 먼저 실행되어야 하는 프로세스 뒤에는 어떤 함수를 붙이나요?",
+    "answer": "signal()",
+    "explain": "먼저 실행될 작업이 끝난 뒤 signal()로 대기 중인 프로세스를 깨웁니다.",
+    "choices": [
+      "signal",
+      "V",
+      "V()",
+      "up",
+      "up()"
+    ]
+  },
+  {
+    "seq": 59,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "세마포 사용 실수와 그 결과가 잘못 연결된 것은?",
+    "answer": 3,
+    "explain": "교수 PDF는 signal 누락, 순서 오류, wait 중복 호출을 세마포의 위험한 사용 예로 듭니다.",
+    "choices": [
+      "임계 구역을 빠져나올 때 signal() 호출을 잊으면 무한 대기가 발생할 수 있다.",
+      "signal()을 먼저 호출하고 wait()를 나중에 호출하면 상호 배제가 깨질 수 있다.",
+      "wait()를 연속으로 두 번 호출하면 스스로 갇혀 교착 상태가 발생할 수 있다.",
+      "signal()을 호출하지 않으면 항상 시스템 성능이 향상된다."
+    ]
+  },
+  {
+    "seq": 60,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "모니터에 대한 설명으로 옳지 않은 것은?",
+    "answer": 2,
+    "explain": "모니터에서는 공유 자원에 직접 접근하지 않고 지정된 인터페이스를 통해 접근합니다.",
+    "choices": [
+      "공유 자원과 접근 인터페이스를 하나의 안전한 구역으로 묶어 관리한다.",
+      "모니터 내부에는 한 번에 하나의 프로세스만 들어와 실행되도록 통제한다.",
+      "프로세스는 모니터를 거치지 않고 공유 자원에 직접 접근해야 한다.",
+      "세마포보다 사용자가 더 안전하고 편리하게 동기화를 구현하도록 돕는다."
+    ]
+  },
+  {
+    "seq": 61,
+    "ch": "12-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "모니터에서 상호 배제를 위해 모니터 바깥쪽 문 앞에 존재하는 큐는 무엇인가요?",
+    "answer": "모니터 진입 큐",
+    "explain": "모니터 진입 큐는 모니터 내부에 들어가려는 프로세스들이 대기하는 상호 배제 큐입니다.",
+    "choices": [
+      "진입 큐",
+      "entry queue",
+      "모니터진입큐"
+    ]
+  },
+  {
+    "seq": 62,
+    "ch": "12-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "모니터에서 특정 실행 조건이 만족될 때까지 프로세스가 기다리는 큐는 무엇인가요?",
+    "answer": "조건 변수 대기 큐",
+    "explain": "조건 변수 대기 큐는 모니터 내부에서 특정 조건을 기다리는 순서 제어 큐입니다.",
+    "choices": [
+      "조건변수대기큐",
+      "조건 변수 큐",
+      "condition variable queue",
+      "condition queue"
+    ]
+  },
+  {
+    "seq": 63,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "조건 변수 x.wait()를 호출한 프로세스에 대한 설명으로 옳은 것은?",
+    "answer": 0,
+    "explain": "조건 변수 wait()는 호출 프로세스를 조건 변수 대기 큐에 넣고 실행을 중단시킵니다.",
+    "choices": [
+      "실행을 일시 중단하고 조건 변수 x의 전용 대기 큐로 이동한다.",
+      "모니터 밖의 진입 큐로 이동하지 않고 CPU를 계속 점유하며 바쁜 대기를 한다.",
+      "해당 조건을 만족시키지 않아도 즉시 계속 실행한다.",
+      "모니터 내부 프로세스 수를 강제로 두 개로 유지한다."
+    ]
+  },
+  {
+    "seq": 64,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "Signal-and-Wait(Hoare 방식)에 대한 설명으로 옳은 것은?",
+    "answer": 0,
+    "explain": "Hoare 방식은 깨어난 프로세스에게 모니터 소유권을 즉시 넘기는 방식입니다.",
+    "choices": [
+      "signal()을 호출한 프로세스가 잠시 멈추고 깨어난 프로세스에게 모니터 소유권을 즉시 넘긴다.",
+      "signal()을 호출한 프로세스가 끝까지 실행한 뒤에야 깨어난 프로세스가 실행된다.",
+      "조건 변수 wait() 호출을 금지하는 방식이다.",
+      "뮤텍스 락에서만 사용되고 모니터와는 무관하다."
+    ]
+  },
+  {
+    "seq": 65,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "Signal-and-Continue(Mesa 방식)에 대한 설명으로 옳은 것은?",
+    "answer": 1,
+    "explain": "Mesa 방식은 signal() 호출자가 계속 실행한 뒤 모니터를 떠나면 깨어난 프로세스가 실행됩니다.",
+    "choices": [
+      "signal() 호출자가 즉시 멈추고 깨어난 프로세스가 곧바로 모니터를 점유한다.",
+      "signal() 호출자가 남은 작업을 끝내고 모니터를 떠난 뒤 깨어난 프로세스가 실행을 이어받는다.",
+      "조건 변수 대기 큐를 사용하지 않는다.",
+      "세마포의 P/V 연산 이름을 바꾼 것일 뿐이다."
+    ]
+  },
+  {
+    "seq": 66,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "식사하는 철학자 문제를 운영체제 상황에 대응시킬 때, 포크에 해당하는 것은?",
+    "answer": 1,
+    "explain": "철학자는 프로세스/스레드, 포크는 한정된 공유 자원에 대응합니다.",
+    "choices": [
+      "프로세스 또는 스레드",
+      "한정된 공유 자원",
+      "자원 요청 및 점유 행위",
+      "교착 상태 그 자체"
+    ]
+  },
+  {
+    "seq": 67,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "자원 할당 그래프에서 프로세스와 자원을 표현하는 도형으로 옳은 것은?",
+    "answer": 2,
+    "explain": "자원 할당 그래프에서 프로세스는 원, 자원 종류는 사각형으로 표현합니다.",
+    "choices": [
+      "프로세스는 사각형, 자원은 원",
+      "프로세스와 자원 모두 원",
+      "프로세스는 원, 자원은 사각형",
+      "프로세스와 자원 모두 삼각형"
+    ]
+  },
+  {
+    "seq": 68,
+    "ch": "13-1",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "자원 할당 그래프에서 사각형 내부의 점(●)은 무엇을 의미하나요?",
+    "answer": "자원의 인스턴스 개수",
+    "explain": "같은 종류 자원의 개수는 사각형 내부의 점으로 표시합니다.",
+    "choices": [
+      "자원 개수",
+      "자원의 수량",
+      "인스턴스 개수",
+      "사용 가능한 자원의 개수"
+    ]
+  },
+  {
+    "seq": 69,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "자원 할당 그래프의 화살표 의미로 옳지 않은 것은?",
+    "answer": 3,
+    "explain": "대기 화살표는 프로세스에서 자원으로 향합니다. 할당 화살표는 자원에서 프로세스로 향합니다.",
+    "choices": [
+      "자원에서 프로세스로 향하는 화살표는 해당 자원이 프로세스에 할당되었음을 의미한다.",
+      "프로세스에서 자원으로 향하는 화살표는 프로세스가 해당 자원을 기다림을 의미한다.",
+      "프로세스가 자원을 반납하면 할당 화살표는 삭제된다.",
+      "자원에서 프로세스로 향하는 화살표는 프로세스가 그 자원을 기다리고 있음을 의미한다."
+    ]
+  },
+  {
+    "seq": 70,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "자원 할당 그래프의 사이클에 대한 설명으로 가장 정확한 것은?",
+    "answer": 2,
+    "explain": "교수 PDF는 사이클이 필수 조건이지만, 자원이 여러 인스턴스면 충분 조건은 아닐 수 있다고 강조합니다.",
+    "choices": [
+      "사이클이 있으면 자원 인스턴스 수와 무관하게 항상 100% 교착 상태이다.",
+      "사이클이 없더라도 교착 상태가 반드시 발생한다.",
+      "자원당 인스턴스가 1개뿐이면 사이클은 교착 상태를 의미하지만, 인스턴스가 여러 개면 사이클이 있어도 교착 상태가 아닐 수 있다.",
+      "사이클은 교착 상태와 아무 관련이 없다."
+    ]
+  },
+  {
+    "seq": 71,
+    "ch": "13-1",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "교착 상태가 발생하기 위한 4가지 필요조건을 모두 쓰세요.",
+    "answer": "상호 배제, 점유와 대기, 비선점, 원형 대기",
+    "explain": "교수 PDF는 상호 배제, 점유와 대기, 비선점, 원형 대기를 4가지 조건으로 정리합니다.",
+    "choices": [
+      "상호배제,점유와대기,비선점,원형대기",
+      "상호 배제 점유와 대기 비선점 원형 대기",
+      "상호 배제, 점유 대기, 비선점, 순환 대기"
+    ]
+  },
+  {
+    "seq": 72,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "점유와 대기 조건에 대한 설명으로 옳은 것은?",
+    "answer": 0,
+    "explain": "점유와 대기는 Hold and Wait입니다.",
+    "choices": [
+      "프로세스가 이미 하나 이상의 자원을 점유한 상태에서 다른 자원을 얻기 위해 기다리는 상황이다.",
+      "모든 자원을 여러 프로세스가 동시에 사용할 수 있는 상황이다.",
+      "자원을 가진 프로세스가 강제로 자원을 빼앗기는 상황이다.",
+      "프로세스가 아무 자원도 갖지 않은 상태에서만 대기하는 상황이다."
+    ]
+  },
+  {
+    "seq": 73,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "비선점 조건에 대한 설명으로 옳은 것은?",
+    "answer": 1,
+    "explain": "비선점은 이미 점유된 자원을 강제로 선점할 수 없다는 조건입니다.",
+    "choices": [
+      "운영체제가 언제든 다른 프로세스의 자원을 강제로 빼앗을 수 있다는 조건이다.",
+      "자원을 가진 프로세스가 스스로 반납할 때까지 운영체제나 다른 프로세스가 강제로 빼앗지 못한다는 조건이다.",
+      "프로세스가 자원을 하나도 갖지 않는다는 조건이다.",
+      "자원 요청 순서가 항상 오름차순이라는 조건이다."
+    ]
+  },
+  {
+    "seq": 74,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "교착 상태 예방에 대한 설명으로 옳은 것은?",
+    "answer": 0,
+    "explain": "예방은 필요조건 하나 이상을 깨뜨려 데드락을 원천 차단하는 방식입니다.",
+    "choices": [
+      "교착 상태 발생 필요조건 네 가지 중 최소 하나를 충족하지 못하게 시스템을 설계한다.",
+      "교착 상태 발생 후에만 자원 할당 그래프를 검사한다.",
+      "현대 범용 OS가 항상 채택하는 최고의 무비용 전략이다.",
+      "불안전 상태를 허용하는 경우에만 자원을 할당한다."
+    ]
+  },
+  {
+    "seq": 75,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "점유와 대기 조건을 파괴하는 예방 방식의 핵심 아이디어는?",
+    "answer": 1,
+    "explain": "All or Nothing 방식은 점유와 대기 조건을 깨뜨립니다.",
+    "choices": [
+      "자원에 번호를 붙이고 오름차순으로만 요청하게 한다.",
+      "필요한 모든 자원을 한꺼번에 할당하거나 하나라도 부족하면 아무것도 할당하지 않는다.",
+      "프로세스가 자원을 요청할 때마다 항상 허용한다.",
+      "교착 상태를 무시한다."
+    ]
+  },
+  {
+    "seq": 76,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "원형 대기 조건을 파괴하는 대표적인 방법은?",
+    "answer": 2,
+    "explain": "자원 번호 부여와 오름차순 요청 제한은 원형 대기를 깨뜨립니다.",
+    "choices": [
+      "모든 자원을 동시에 공유 가능하게 만든다.",
+      "프로세스가 가진 자원을 모두 강제 회수한다.",
+      "모든 자원에 번호를 부여하고 오름차순으로만 요청하게 한다.",
+      "교착 상태가 발생할 때까지 아무 조치도 하지 않는다."
+    ]
+  },
+  {
+    "seq": 77,
+    "ch": "13-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "교착 상태 회피에서 “교착 상태 없이 모든 프로세스가 완료될 수 있는 실행 순서”를 무엇이라고 하나요?",
+    "answer": "안전 순서열",
+    "explain": "안전 순서열이 존재하면 안전 상태입니다.",
+    "choices": [
+      "safe sequence",
+      "안전순서열"
+    ]
+  },
+  {
+    "seq": 78,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "교착 상태 회피 방식의 핵심 판단 기준은?",
+    "answer": 3,
+    "explain": "회피는 자원을 할당했을 때 안전 상태가 유지되는지 계산한 뒤 할당합니다.",
+    "choices": [
+      "요청한 프로세스의 이름이 무엇인가",
+      "요청한 자원이 프린터인지 CPU인지",
+      "프로세스가 사용자 모드인지 커널 모드인지",
+      "자원을 할당해도 시스템이 안전 상태를 유지하는지"
+    ]
+  },
+  {
+    "seq": 79,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "안전 상태와 불안전 상태에 대한 설명으로 옳은 것은?",
+    "answer": 0,
+    "explain": "불안전 상태는 교착 상태 발생 가능성이 있는 상태이지, 반드시 이미 교착 상태라는 뜻은 아닙니다.",
+    "choices": [
+      "안전 순서열이 존재하면 안전 상태이고, 존재하지 않으면 불안전 상태이다.",
+      "불안전 상태는 항상 이미 교착 상태가 발생한 상태이다.",
+      "안전 상태에서는 자원 할당을 무조건 금지해야 한다.",
+      "안전 순서열은 CPU 스케줄링 알고리즘의 이름이다."
+    ]
+  },
+  {
+    "seq": 80,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "교착 상태 검출 후 회복 방식에 대한 설명으로 옳은 것은?",
+    "answer": 1,
+    "explain": "검출 후 회복은 사후 수습 전략입니다.",
+    "choices": [
+      "자원 할당을 항상 사전에 금지하여 교착 상태를 원천 차단한다.",
+      "평소에는 자원을 제약 없이 할당하고, 주기적으로 감시해 교착 상태가 검출되면 회복한다.",
+      "교착 상태가 검출되면 아무 작업도 하지 않는 것이 유일한 방법이다.",
+      "은행원 알고리즘으로만 구현할 수 있다."
+    ]
+  },
+  {
+    "seq": 81,
+    "ch": "13-2",
+    "type": "short",
+    "book": false,
+    "prof": true,
+    "q": "교착 상태 검출 후 회복에서 자원을 빼앗을 희생 프로세스를 고른 뒤 자원을 회수하고 안전했던 상태로 되돌리는 것을 무엇이라고 하나요?",
+    "answer": "롤백",
+    "explain": "자원을 빼앗긴 프로세스는 롤백하거나 작업을 처음부터 다시 시작할 수 있습니다.",
+    "choices": [
+      "rollback",
+      "Rollback"
+    ]
+  },
+  {
+    "seq": 82,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "타조 알고리즘을 현대 범용 OS가 현실적으로 선택하는 이유로 가장 적절한 것은?",
+    "answer": 2,
+    "explain": "교수 PDF는 드문 데드락을 막기 위해 매 순간 큰 성능 비용을 내는 것이 비효율적이라는 현실적 선택을 설명합니다.",
+    "choices": [
+      "교착 상태가 매초 반드시 발생하기 때문이다.",
+      "예방/회피/검출은 구현이 불가능하기 때문이다.",
+      "교착 상태는 드물게 발생하는데 매 순간 예방/검출 비용을 치르면 성능 낭비가 크기 때문이다.",
+      "타조 알고리즘은 교착 상태를 100% 예방하기 때문이다."
+    ]
+  },
+  {
+    "seq": 83,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "prof": true,
+    "q": "교착 상태 대응 전략과 특성이 잘못 연결된 것은?",
+    "answer": 3,
+    "explain": "무시는 오버헤드는 거의 없지만 위험은 사용자/시스템에 노출됩니다.",
+    "choices": [
+      "예방: 사전에 조건을 깨뜨려 원천 차단하지만 자원 효율이 나쁠 수 있다.",
+      "회피: 자원 할당 시 안전 상태 유지 여부를 계산한다.",
+      "검출 후 회복: 교착 상태 발생 후 프로세스 종료나 선점으로 수습한다.",
+      "무시(타조 알고리즘): 오버헤드가 크지만 안전성을 100% 보장한다."
+    ]
+  },
+  {
+    "seq": 84,
+    "ch": "7-1",
+    "type": "short",
+    "book": false,
+    "trend": true,
+    "q": "하드 디스크의 데이터 접근 시간을 구성하는 세 요소를 모두 쓰세요.",
+    "answer": "탐색 시간, 회전 지연, 전송 시간",
+    "explain": "하드 디스크 접근 시간은 헤드를 이동하는 탐색 시간, 원하는 섹터가 올 때까지 기다리는 회전 지연, 실제 전송 시간으로 나뉩니다.",
+    "choices": [
+      "탐색시간,회전지연,전송시간",
+      "탐색 시간 회전 지연 전송 시간",
+      "seek time, rotational latency, transfer time"
+    ]
+  },
+  {
+    "seq": 85,
+    "ch": "7-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "대용량 로그 파일을 순차적으로 읽는 작업보다 작은 파일을 여러 위치에서 무작위로 읽는 작업에서 HDD가 더 느려지기 쉬운 주된 이유는?",
+    "answer": 1,
+    "explain": "무작위 접근은 탐색 시간과 회전 지연을 자주 발생시켜 HDD 성능을 크게 떨어뜨립니다.",
+    "choices": [
+      "플래터가 전혀 회전하지 않기 때문입니다.",
+      "헤드 이동과 회전 대기 같은 기계적 지연이 반복되기 때문입니다.",
+      "섹터와 트랙 개념이 SSD에만 존재하기 때문입니다.",
+      "HDD는 데이터를 페이지 단위로만 삭제하기 때문입니다."
+    ]
+  },
+  {
+    "seq": 86,
+    "ch": "7-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "플래시 메모리에서 기존 데이터가 있는 영역을 덮어쓰는 작업이 복잡해지는 이유로 가장 적절한 것은?",
+    "answer": 2,
+    "explain": "플래시 메모리는 페이지 단위로 읽고 쓰지만 삭제는 블록 단위라 갱신 비용과 관리 부담이 생깁니다.",
+    "choices": [
+      "읽기와 쓰기 모두 블록 단위로만 가능하기 때문입니다.",
+      "삭제는 페이지 단위, 쓰기는 섹터 단위로만 가능하기 때문입니다.",
+      "읽기/쓰기는 페이지 단위지만 삭제는 더 큰 블록 단위로 이루어지기 때문입니다.",
+      "플래시 메모리는 전원이 꺼지면 데이터가 모두 사라지기 때문입니다."
+    ]
+  },
+  {
+    "seq": 87,
+    "ch": "7-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "높은 수명과 빠른 속도가 중요하고 가격은 덜 중요한 산업용 저장장치에 가장 어울리는 플래시 메모리 타입은?",
+    "answer": 0,
+    "explain": "SLC는 셀당 1비트를 저장해 일반적으로 속도와 수명은 좋지만 가격이 비쌉니다.",
+    "choices": [
+      "SLC",
+      "MLC",
+      "TLC",
+      "QLC만 가능"
+    ]
+  },
+  {
+    "seq": 88,
+    "ch": "7-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "성능 향상을 위해 데이터를 여러 디스크에 스트라이핑하지만, 디스크 하나만 고장 나도 데이터 손실 위험이 큰 RAID는?",
+    "answer": 0,
+    "explain": "RAID 0은 스트라이핑으로 성능을 높이지만 복제나 패리티가 없어 안전성이 낮습니다.",
+    "choices": [
+      "RAID 0",
+      "RAID 1",
+      "RAID 5",
+      "RAID 6"
+    ]
+  },
+  {
+    "seq": 89,
+    "ch": "7-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "쓰기 작업이 많을 때 전용 패리티 디스크가 병목이 되기 쉬운 RAID는?",
+    "answer": 2,
+    "explain": "RAID 4는 패리티를 별도 디스크에 집중 저장하므로 패리티 디스크가 병목이 될 수 있습니다.",
+    "choices": [
+      "RAID 0",
+      "RAID 1",
+      "RAID 4",
+      "RAID 6"
+    ]
+  },
+  {
+    "seq": 90,
+    "ch": "8-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "장치 컨트롤러가 입출력장치와 CPU 사이에서 완충 역할을 하는 상황으로 가장 적절한 것은?",
+    "answer": 0,
+    "explain": "장치 컨트롤러는 통신 중개, 오류 검출, 데이터 버퍼링 등을 담당합니다.",
+    "choices": [
+      "CPU와 입출력장치 사이의 전송률 차이를 버퍼링으로 완화한다.",
+      "보조기억장치의 모든 데이터를 영구 보존한다.",
+      "프로세스의 우선순위를 계산한다.",
+      "파일 시스템의 디렉터리 구조를 만든다."
+    ]
+  },
+  {
+    "seq": 91,
+    "ch": "8-1",
+    "type": "short",
+    "book": false,
+    "trend": true,
+    "q": "장치 컨트롤러 내부에서 CPU가 명령을 쓰거나 상태를 확인할 때 사용하는 대표적인 세 레지스터를 쓰세요.",
+    "answer": "데이터 레지스터, 상태 레지스터, 제어 레지스터",
+    "explain": "장치 컨트롤러는 보통 데이터 레지스터, 상태 레지스터, 제어 레지스터를 통해 CPU와 정보를 주고받습니다.",
+    "choices": [
+      "데이터레지스터,상태레지스터,제어레지스터",
+      "데이터 레지스터 상태 레지스터 제어 레지스터"
+    ]
+  },
+  {
+    "seq": 92,
+    "ch": "8-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "새 프린터를 연결했는데 운영체제가 해당 장치를 제대로 사용할 수 없는 상황의 가장 직접적인 원인은?",
+    "answer": 3,
+    "explain": "장치 드라이버는 장치 컨트롤러가 컴퓨터 내부와 정보를 주고받게 해 주는 프로그램입니다.",
+    "choices": [
+      "프린터가 보조기억장치라서 사용할 수 없습니다.",
+      "CPU가 사용자 모드로만 동작하기 때문입니다.",
+      "프린터에는 장치 컨트롤러가 절대 없기 때문입니다.",
+      "운영체제가 해당 장치 드라이버를 인식하거나 실행하지 못하기 때문입니다."
+    ]
+  },
+  {
+    "seq": 93,
+    "ch": "8-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "프로그램 입출력 방식의 단점으로 가장 적절한 것은?",
+    "answer": 1,
+    "explain": "프로그램 입출력은 CPU가 입출력 작업에 직접 관여하므로 CPU 부담이 큽니다.",
+    "choices": [
+      "입출력장치가 CPU 없이 메모리에 직접 접근한다.",
+      "CPU가 입출력 완료 여부를 계속 확인하거나 입출력 명령을 직접 수행해 부담이 커진다.",
+      "입출력장치와 메모리의 주소 공간이 반드시 분리된다.",
+      "인터럽트가 전혀 필요하지 않아 항상 가장 빠르다."
+    ]
+  },
+  {
+    "seq": 94,
+    "ch": "8-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "인터럽트 기반 입출력과 DMA 입출력의 차이로 옳은 것은?",
+    "answer": 2,
+    "explain": "DMA는 CPU를 거치지 않는 직접 메모리 접근으로 대량 입출력에서 CPU 부담을 줄입니다.",
+    "choices": [
+      "인터럽트 기반 입출력은 CPU를 전혀 사용하지 않는다.",
+      "DMA 입출력은 메모리와 입출력장치 사이 데이터 이동도 항상 CPU 명령어가 직접 수행한다.",
+      "DMA 입출력은 CPU를 거치지 않고 메모리와 입출력장치 사이 데이터를 주고받아 CPU 부담을 줄인다.",
+      "인터럽트 기반 입출력은 장치 드라이버가 필요 없는 방식이다."
+    ]
+  },
+  {
+    "seq": 95,
+    "ch": "8-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "메모리 맵 입출력 방식의 특징으로 옳은 것은?",
+    "answer": 0,
+    "explain": "메모리 맵 입출력은 메모리와 입출력장치를 하나의 주소 공간으로 간주합니다.",
+    "choices": [
+      "메모리와 입출력장치가 하나의 주소 공간을 공유해 같은 명령어로 접근할 수 있다.",
+      "메모리 주소 공간과 입출력장치 주소 공간을 반드시 완전히 분리한다.",
+      "입출력장치 접근 전용 명령어만 사용할 수 있다.",
+      "DMA 컨트롤러가 시스템 버스를 사용할 수 없게 한다."
+    ]
+  },
+  {
+    "seq": 96,
+    "ch": "9-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "운영체제를 “자원 관리자”라고 부르는 이유로 가장 적절한 것은?",
+    "answer": 1,
+    "explain": "운영체제의 핵심 역할은 자원 할당과 프로그램 실행 지원입니다.",
+    "choices": [
+      "운영체제가 모든 응용 프로그램의 소스 코드를 작성하기 때문입니다.",
+      "CPU, 메모리, 입출력장치, 파일 같은 시스템 자원을 프로그램에 할당하고 관리하기 때문입니다.",
+      "운영체제가 하드웨어 없이 단독으로 실행되기 때문입니다.",
+      "운영체제는 사용자 인터페이스만 담당하기 때문입니다."
+    ]
+  },
+  {
+    "seq": 97,
+    "ch": "9-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "운영체제를 이해하면 문제 해결에 도움이 되는 상황으로 가장 적절한 것은?",
+    "answer": 2,
+    "explain": "운영체제는 자원, 권한, 파일, 프로세스 실행을 관리하므로 오류 원인 분석에 중요합니다.",
+    "choices": [
+      "네트워크 케이블 색상을 고르는 상황",
+      "프로그래밍 언어의 문법만 외우는 상황",
+      "프로그램이 파일 접근 권한 오류나 메모리 부족 오류로 실패한 원인을 분석하는 상황",
+      "모니터 해상도를 물리적으로 측정하는 상황"
+    ]
+  },
+  {
+    "seq": 98,
+    "ch": "9-1",
+    "type": "short",
+    "book": false,
+    "trend": true,
+    "q": "실행 중인 프로그램이 운영체제에게 할당받아야 하는 CPU, 메모리, 파일, 입출력장치 등을 통틀어 무엇이라고 하나요?",
+    "answer": "자원",
+    "explain": "운영체제는 실행 프로그램에 필요한 시스템 자원을 할당합니다.",
+    "choices": [
+      "시스템 자원",
+      "리소스",
+      "resource"
+    ]
+  },
+  {
+    "seq": 99,
+    "ch": "9-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "사용자 모드에서 실행 중인 응용 프로그램이 파일 저장처럼 운영체제 서비스가 필요한 작업을 하려면 무엇을 사용해야 하나요?",
+    "answer": 0,
+    "explain": "시스템 호출은 사용자 모드 프로그램이 커널 서비스를 요청해 커널 모드로 전환하는 통로입니다.",
+    "choices": [
+      "시스템 호출",
+      "문맥 교환",
+      "RAID 0",
+      "플래시 블록 삭제"
+    ]
+  },
+  {
+    "seq": 100,
+    "ch": "9-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "이중 모드가 필요한 이유로 가장 적절한 것은?",
+    "answer": 3,
+    "explain": "이중 모드는 사용자 모드와 커널 모드를 구분해 시스템 자원을 보호합니다.",
+    "choices": [
+      "모든 프로그램이 하드웨어 자원에 마음대로 접근하도록 하기 위해서입니다.",
+      "사용자 인터페이스를 더 화려하게 만들기 위해서입니다.",
+      "하드 디스크의 회전 지연을 없애기 위해서입니다.",
+      "응용 프로그램의 위험한 명령 실행을 제한하고 운영체제와 자원을 보호하기 위해서입니다."
+    ]
+  },
+  {
+    "seq": 101,
+    "ch": "9-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "커널과 사용자 인터페이스의 관계에 대한 설명으로 옳은 것은?",
+    "answer": 1,
+    "explain": "커널은 핵심 기능을 담당하고, UI는 운영체제와 사용자 사이의 상호작용을 돕습니다.",
+    "choices": [
+      "커널은 운영체제의 핵심 기능이 아니며 단순한 화면 장식입니다.",
+      "커널은 운영체제의 핵심 기능을 담당하고, 사용자 인터페이스는 사용자가 운영체제와 상호작용하도록 돕는 별도 계층일 수 있습니다.",
+      "사용자 인터페이스가 없으면 커널도 절대 존재할 수 없습니다.",
+      "파일 시스템 관리는 커널과 무관합니다."
+    ]
+  },
+  {
+    "seq": 102,
+    "ch": "10-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "프로그램과 프로세스의 차이로 가장 적절한 것은?",
+    "answer": 0,
+    "explain": "프로세스는 실행 중인 프로그램이며 운영체제는 PCB 등으로 이를 관리합니다.",
+    "choices": [
+      "프로그램은 저장된 실행 파일이고, 프로세스는 실행 중인 프로그램입니다.",
+      "프로그램은 항상 커널 영역에 있고, 프로세스는 항상 보조기억장치에만 있습니다.",
+      "프로세스는 실행 전 프로그램과 완전히 같은 정적 파일입니다.",
+      "프로그램과 프로세스는 운영체제 관점에서 차이가 없습니다."
+    ]
+  },
+  {
+    "seq": 103,
+    "ch": "10-1",
+    "type": "short",
+    "book": false,
+    "trend": true,
+    "q": "문맥 교환 때 운영체제가 PCB에 저장하고 복구하는 대표적인 CPU 실행 정보 두 가지를 쓰세요.",
+    "answer": "프로그램 카운터, 레지스터 값",
+    "explain": "문맥에는 프로그램 카운터, 레지스터 값 등 다음 실행을 이어가기 위한 CPU 상태가 포함됩니다.",
+    "choices": [
+      "PC,레지스터",
+      "프로그램 카운터 레지스터",
+      "프로그램카운터,레지스터값",
+      "프로그램 카운터, 레지스터"
+    ]
+  },
+  {
+    "seq": 104,
+    "ch": "10-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "문맥 교환이 너무 자주 발생할 때의 문제로 가장 적절한 것은?",
+    "answer": 2,
+    "explain": "문맥 교환은 필요한 기능이지만 저장/복구 비용이 있으므로 너무 잦으면 오버헤드가 커집니다.",
+    "choices": [
+      "프로세스가 모두 커널 영역으로 이동합니다.",
+      "보조기억장치의 플래터가 사라집니다.",
+      "실제 작업보다 문맥 저장/복구 오버헤드가 커져 성능이 떨어질 수 있습니다.",
+      "입출력장치가 장치 드라이버 없이 동작합니다."
+    ]
+  },
+  {
+    "seq": 105,
+    "ch": "10-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "fork와 exec을 함께 사용하는 일반적인 흐름으로 옳은 것은?",
+    "answer": 1,
+    "explain": "많은 운영체제에서 fork로 자식 프로세스를 만들고 exec으로 자식의 메모리 공간을 새 프로그램으로 교체합니다.",
+    "choices": [
+      "exec으로 부모 프로세스를 복제한 뒤 fork로 메모리를 유지한다.",
+      "fork로 자식 프로세스를 만든 뒤, 자식 프로세스가 exec으로 새 프로그램을 실행한다.",
+      "fork는 파일을 삭제하고 exec은 파일을 복구한다.",
+      "fork와 exec은 스레드의 스택만 늘리는 명령이다."
+    ]
+  },
+  {
+    "seq": 106,
+    "ch": "10-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "프로세스 상태 전이에 대한 설명으로 옳은 것은?",
+    "answer": 3,
+    "explain": "타이머 인터럽트로 CPU를 빼앗기면 실행 상태 프로세스는 다시 준비 상태가 될 수 있습니다.",
+    "choices": [
+      "대기 상태의 프로세스는 CPU를 이미 할당받아 실행 중인 상태입니다.",
+      "준비 상태의 프로세스는 입출력 완료를 기다리는 상태입니다.",
+      "실행 상태에서 입출력 요청을 하면 종료 상태로만 이동합니다.",
+      "실행 상태에서 타이머 인터럽트가 발생하면 준비 상태로 돌아갈 수 있습니다."
+    ]
+  },
+  {
+    "seq": 107,
+    "ch": "10-3",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "멀티프로세스보다 멀티스레드가 자원 공유 측면에서 유리할 수 있는 이유는?",
+    "answer": 0,
+    "explain": "스레드는 같은 프로세스의 자원을 공유하지만, 각자 스택과 실행 흐름은 따로 가집니다.",
+    "choices": [
+      "같은 프로세스의 스레드들은 코드, 데이터, 힙 영역을 공유하므로 통신 비용이 줄 수 있습니다.",
+      "스레드는 항상 각자 완전히 독립된 주소 공간을 가집니다.",
+      "스레드는 프로그램 카운터와 스택도 모두 공유하므로 충돌이 절대 없습니다.",
+      "멀티스레드는 문맥 교환이 전혀 발생하지 않습니다."
+    ]
+  },
+  {
+    "seq": 108,
+    "ch": "11-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "CPU 스케줄링에서 준비 큐에 오래 대기 중인 프로세스와 방금 들어온 프로세스 중 무엇을 먼저 실행할지 결정하는 주체는?",
+    "answer": 1,
+    "explain": "CPU 스케줄러는 준비 상태 프로세스 중 어떤 프로세스에 CPU를 할당할지 결정합니다.",
+    "choices": [
+      "장치 컨트롤러",
+      "운영체제의 CPU 스케줄러",
+      "파일 시스템",
+      "DMA 컨트롤러"
+    ]
+  },
+  {
+    "seq": 109,
+    "ch": "11-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "선점형 스케줄링이 필요한 상황으로 가장 적절한 것은?",
+    "answer": 2,
+    "explain": "선점형 스케줄링은 실행 중인 프로세스의 자원을 빼앗아 응답성을 높일 수 있지만 오버헤드가 있습니다.",
+    "choices": [
+      "실행 중인 프로세스가 끝날 때까지 어떤 경우에도 CPU를 빼앗지 않으려는 상황",
+      "모든 프로세스가 반드시 같은 입출력장치만 사용하는 상황",
+      "응답성을 높이기 위해 실행 중인 프로세스의 CPU 사용을 중간에 끊고 다른 프로세스에 넘겨야 하는 상황",
+      "문맥 교환을 완전히 금지해야 하는 상황"
+    ]
+  },
+  {
+    "seq": 110,
+    "ch": "11-1",
+    "type": "short",
+    "book": false,
+    "trend": true,
+    "q": "CPU를 오래 사용하는 프로세스보다 입출력을 자주 요청하는 프로세스가 CPU를 짧게 쓰고 대기 큐로 자주 이동하는 특성을 무엇이라고 하나요?",
+    "answer": "입출력 집중 프로세스",
+    "explain": "입출력 집중 프로세스는 CPU burst가 짧고 입출력 대기가 잦습니다.",
+    "choices": [
+      "I/O 집중 프로세스",
+      "IO 집중 프로세스",
+      "입출력 중심 프로세스",
+      "I/O bound process"
+    ]
+  },
+  {
+    "seq": 111,
+    "ch": "11-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "선입 선처리 스케줄링에서 긴 CPU 작업 하나가 앞에 있어 뒤의 짧은 작업들이 오래 기다리는 현상을 무엇이라고 하나요?",
+    "answer": 0,
+    "explain": "FCFS에서는 긴 작업이 앞에 있으면 뒤의 짧은 작업들이 밀리는 호위 효과가 발생할 수 있습니다.",
+    "choices": [
+      "호위 효과",
+      "에이징",
+      "스래싱",
+      "세마포"
+    ]
+  },
+  {
+    "seq": 112,
+    "ch": "11-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "라운드 로빈 스케줄링에서 타임 슬라이스가 너무 작을 때 가장 우려되는 문제는?",
+    "answer": 3,
+    "explain": "타임 슬라이스가 너무 작으면 문맥 교환이 많아지고, 너무 크면 선입 선처리와 비슷해질 수 있습니다.",
+    "choices": [
+      "모든 프로세스가 종료 상태로 바로 이동합니다.",
+      "기아 현상이 절대 발생하지 않습니다.",
+      "RAID 패리티 계산이 실패합니다.",
+      "문맥 교환이 지나치게 자주 발생해 오버헤드가 커집니다."
+    ]
+  },
+  {
+    "seq": 113,
+    "ch": "11-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "다단계 피드백 큐 스케줄링이 다단계 큐 스케줄링과 다른 핵심 특징은?",
+    "answer": 1,
+    "explain": "다단계 피드백 큐는 프로세스가 큐 사이를 이동할 수 있어 유연하게 우선순위를 조정합니다.",
+    "choices": [
+      "프로세스가 큐 사이를 절대 이동할 수 없습니다.",
+      "프로세스가 실행 특성에 따라 큐 사이를 이동할 수 있습니다.",
+      "우선순위를 모두 제거합니다.",
+      "입출력 작업을 금지합니다."
+    ]
+  },
+  {
+    "seq": 114,
+    "ch": "12-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "두 스레드가 공유 변수 count를 동시에 count = count + 1로 갱신했는데 결과가 예상보다 작게 나오는 상황의 원인은?",
+    "answer": 0,
+    "explain": "공유 자원을 동시에 갱신해 실행 순서에 따라 결과가 달라지는 현상은 레이스 컨디션입니다.",
+    "choices": [
+      "레이스 컨디션",
+      "RAID 0",
+      "문맥 교환 금지",
+      "고립형 입출력"
+    ]
+  },
+  {
+    "seq": 115,
+    "ch": "12-1",
+    "type": "short",
+    "book": false,
+    "trend": true,
+    "q": "공유 자원에 접근하는 코드 중 동시에 실행하면 문제가 발생할 수 있는 영역을 무엇이라고 하나요?",
+    "answer": "임계 구역",
+    "explain": "임계 구역은 공유 자원 접근 코드 중 동시에 실행하면 문제가 생길 수 있는 부분입니다.",
+    "choices": [
+      "임계구역",
+      "critical section"
+    ]
+  },
+  {
+    "seq": 116,
+    "ch": "12-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "상호 배제를 만족하는 상황으로 옳은 것은?",
+    "answer": 2,
+    "explain": "상호 배제는 한 프로세스가 임계 구역에 있을 때 다른 프로세스의 진입을 막는 것입니다.",
+    "choices": [
+      "임계 구역에 여러 프로세스가 동시에 들어간다.",
+      "공유 자원을 아무 제한 없이 동시에 갱신한다.",
+      "한 프로세스가 임계 구역에서 작업 중이면 다른 프로세스는 임계 구역 밖에서 기다린다.",
+      "운영체제가 모든 공유 자원을 보조기억장치로 옮긴다."
+    ]
+  },
+  {
+    "seq": 117,
+    "ch": "12-2",
+    "type": "short",
+    "book": false,
+    "trend": true,
+    "q": "동일한 공유 자원이 3개 있고 세마포로 이를 관리하려면 세마포 변수 S의 초기값은 얼마가 적절한가요?",
+    "answer": "3",
+    "explain": "카운팅 세마포의 초기값은 동시에 사용할 수 있는 공유 자원의 개수로 둡니다.",
+    "choices": [
+      "3개"
+    ]
+  },
+  {
+    "seq": 118,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "세마포 wait()와 signal()의 기본 의미로 옳은 것은?",
+    "answer": 1,
+    "explain": "wait()는 진입 전 자원 수를 차감하고, signal()은 작업 후 자원 수를 회복시키며 대기자를 깨울 수 있습니다.",
+    "choices": [
+      "wait()는 자원 수를 증가시키고 signal()은 자원 수를 감소시킨다.",
+      "wait()는 자원 수를 확인하고 감소시키며, signal()은 자원 수를 증가시키고 대기 중인 프로세스를 깨울 수 있다.",
+      "wait()와 signal()은 모두 프로세스를 강제 종료한다.",
+      "wait()는 파일을 열고 signal()은 파일을 닫는다."
+    ]
+  },
+  {
+    "seq": 119,
+    "ch": "12-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "모니터가 세마포보다 사용하기 편리하다고 설명되는 주된 이유는?",
+    "answer": 3,
+    "explain": "모니터는 공유 자원과 접근 함수를 묶고, 내부에 한 프로세스만 들어오게 제어해 세마포의 사용 실수를 줄입니다.",
+    "choices": [
+      "모니터는 상호 배제를 전혀 제공하지 않습니다.",
+      "모니터는 조건 변수를 사용할 수 없습니다.",
+      "모니터는 공유 자원에 직접 접근하도록 강제합니다.",
+      "모니터는 공유 자원 접근 인터페이스와 상호 배제를 구조적으로 묶어 실수 가능성을 줄입니다."
+    ]
+  },
+  {
+    "seq": 120,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "교착 상태와 기아 현상의 차이로 가장 적절한 것은?",
+    "answer": 2,
+    "explain": "교착 상태와 기아 현상은 모두 대기 문제지만 원인과 구조가 다릅니다.",
+    "choices": [
+      "둘은 완전히 같은 말입니다.",
+      "교착 상태는 CPU 스케줄링과 무관하고 기아 현상은 항상 RAID에서만 발생합니다.",
+      "교착 상태는 서로가 가진 자원을 기다리며 전체가 멈추는 상황이고, 기아 현상은 특정 프로세스가 계속 선택되지 못해 오래 기다리는 상황입니다.",
+      "기아 현상은 반드시 자원 할당 그래프의 원형 대기 때문에만 발생합니다."
+    ]
+  },
+  {
+    "seq": 121,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "자원 할당 그래프에 사이클이 없다는 사실로 확실히 말할 수 있는 것은?",
+    "answer": 0,
+    "explain": "자원 할당 그래프에 사이클이 없으면 교착 상태는 발생하지 않습니다.",
+    "choices": [
+      "교착 상태가 발생하지 않았습니다.",
+      "교착 상태가 반드시 발생했습니다.",
+      "모든 자원이 무한합니다.",
+      "비선점 조건이 반드시 성립합니다."
+    ]
+  },
+  {
+    "seq": 122,
+    "ch": "13-1",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "식사하는 철학자 문제에서 모든 철학자가 왼쪽 포크를 든 채 오른쪽 포크를 기다리는 상황은 어떤 조건을 잘 보여주나요?",
+    "answer": 1,
+    "explain": "각 철학자는 하나의 포크를 점유한 채 다른 포크를 기다리고, 기다림이 원형으로 이어집니다.",
+    "choices": [
+      "보조기억장치 휘발성",
+      "점유와 대기 및 원형 대기",
+      "메모리 맵 입출력",
+      "스레드 코드 영역 공유"
+    ]
+  },
+  {
+    "seq": 123,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "교착 상태 회피에서 어떤 자원 요청을 거절하거나 대기시키는 기준으로 옳은 것은?",
+    "answer": 3,
+    "explain": "회피는 자원을 할당했을 때 안전 상태가 유지되는지를 판단합니다.",
+    "choices": [
+      "요청한 프로세스 이름이 길면 거절합니다.",
+      "요청 자원이 CPU이면 항상 거절합니다.",
+      "현재 남은 자원이 1개라도 있으면 무조건 할당합니다.",
+      "할당 후 시스템이 불안전 상태가 될 위험이 있으면 보류합니다."
+    ]
+  },
+  {
+    "seq": 124,
+    "ch": "13-2",
+    "type": "short",
+    "book": false,
+    "trend": true,
+    "q": "총 자원 10개 중 현재 7개가 할당되어 남은 자원이 3개입니다. 어떤 프로세스가 추가로 2개를 받아 완료한 뒤 자신이 사용하던 총 5개를 반납하면 남은 자원은 몇 개인가요?",
+    "answer": "6",
+    "explain": "먼저 2개를 할당하면 3-2=1개가 남고, 완료 후 5개를 반납하면 1+5=6개가 됩니다.",
+    "choices": [
+      "6개"
+    ]
+  },
+  {
+    "seq": 125,
+    "ch": "13-2",
+    "type": "choice",
+    "book": false,
+    "trend": true,
+    "q": "교착 상태 검출 후 회복에서 희생 프로세스를 하나씩 종료할 때의 단점으로 가장 적절한 것은?",
+    "answer": 1,
+    "explain": "한 프로세스씩 종료하는 방식은 피해를 줄일 수 있지만 반복 검출 비용이 생깁니다.",
+    "choices": [
+      "모든 프로세스를 한 번에 종료하므로 항상 가장 큰 피해가 납니다.",
+      "하나를 종료할 때마다 교착 상태가 풀렸는지 다시 검사해야 해 오버헤드가 커질 수 있습니다.",
+      "자원 할당 그래프를 절대 사용할 수 없습니다.",
+      "교착 상태가 발생하기 전에만 사용할 수 있습니다."
+    ]
+  }
+];
+
+// ============ 출제 설정 ============
+// PDF 확인 문제 전체를 매 회차 그대로 출제
+const PICK = { ox: 999, short: 999, choice: 999 };
+const POINTS = { ox: 1, short: 2, choice: 3 };
+const CHAPTERS = ['7-1', '7-2', '8-1', '8-2', '9-1', '9-2', '10-1', '10-2', '10-3', '11-1', '11-2', '12-1', '12-2', '13-1', '13-2'];
+
+// ============ 유틸 ============
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+const escapeHtml = (s) => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function normalize(s) {
+  return String(s).toLowerCase().replace(/\s+/g,'').replace(/[.,\-_/\\()\[\]{}'"`]/g,'');
+}
+function typeLabel(t){ return t==='ox'?'OX':t==='short'?'주관식':t==='essay'?'서술형':'객관식'; }
+function typeClass(t){ return 'type-'+t; }
+
+// ============ 상태 ============
+const state = {
+  questions: [],
+  answers: {},    // idx -> 답(문자열 또는 숫자)
+  revealed: {},   // idx -> boolean
+  correct: {},    // idx -> boolean
+  filter: 'all',
+  mode: 'exam',   // 'exam' | 'essay'
+  lastQuestions: new Set(), // 직전 세트에서 출제된 문제(객체 참조)
+};
+
+// ============ 세트 생성 ============
+function buildSet() {
+  if (state.mode === 'essay') {
+    // 서술형: 모든 essay 문제를 챕터 순으로 정렬해 그대로 출제
+    const set = POOL.filter(q => q.type === 'essay').slice();
+    set.sort((a, b) => CHAPTERS.indexOf(a.ch) - CHAPTERS.indexOf(b.ch));
+    return set;
+  }
+
+  const exclude = state.lastQuestions;
+  // 직전 세트에 포함된 문제는 제외. 단, 제외 후 남은 풀이 PICK 수보다 적으면 전체 풀로 폴백.
+  const pickPool = (type, n) => {
+    const full = POOL.filter(q => q.type === type);
+    const remaining = full.filter(q => !exclude.has(q));
+    return shuffle(remaining.length >= n ? remaining : full).slice(0, n);
+  };
+
+  const set = [
+    ...pickPool('ox', PICK.ox),
+    ...pickPool('short', PICK.short),
+    ...pickPool('choice', PICK.choice),
+  ];
+  // PDF 문제 순서를 유지하도록 챕터와 seq 기준으로 정렬
+  set.sort((a, b) => {
+    const ai = CHAPTERS.indexOf(a.ch), bi = CHAPTERS.indexOf(b.ch);
+    if (ai !== bi) return ai - bi;
+    if (typeof a.seq === 'number' && typeof b.seq === 'number') return a.seq - b.seq;
+    // seq가 없는 문제는 같은 챕터 안에서 OX→주관식→객관식 순
+    const order = { ox:0, short:1, choice:2 };
+    return order[a.type] - order[b.type];
+  });
+  return set;
+}
+
+function newRound() {
+  state.questions = buildSet();
+  if (state.mode === 'exam') {
+    state.lastQuestions = new Set(state.questions);
+  }
+  state.answers = {};
+  state.revealed = {};
+  state.correct = {};
+  state.filter = 'all';
+  document.getElementById('result-card').classList.remove('show');
+  applyModeUI();
+  renderFilters();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============ 채점 ============
+function isCorrect(q, ans) {
+  if (ans === undefined || ans === null || ans === '') return false;
+  if (q.type === 'ox') return ans === q.answer;
+  if (q.type === 'choice') return ans === q.answer;
+  if (q.type === 'short') {
+    const na = normalize(ans);
+    const pool = [q.answer, ...(q.alts || [])].map(normalize);
+    return pool.includes(na);
+  }
+  return false;
+}
+
+// ============ 렌더링 ============
+function render() {
+  const container = document.getElementById('quiz-container');
+  const list = state.questions
+    .map((q, i) => ({ q, i }))
+    .filter(x => state.filter === 'all' || x.q.ch === state.filter);
+
+  container.innerHTML = list.map(({ q, i }) => {
+    const revealed = !!state.revealed[i];
+    const correct = !!state.correct[i];
+    const cardClass = revealed ? (correct ? 'answered-correct' : 'answered-wrong') : '';
+    const bookBadge = q.book ? '<span class="q-tag book">📘책</span>' : '';
+    const profBadge = q.prof ? '<span class="q-tag prof">교수PDF</span>' : '';
+    const trendBadge = q.trend ? '<span class="q-tag trend">경향</span>' : '';
+    const tLabel = typeLabel(q.type);
+
+    let body = '';
+    if (q.type === 'ox') {
+      const sel = state.answers[i];
+      const mk = (v) => {
+        let cls = 'ox-btn';
+        if (revealed) { cls += ' disabled'; if (v === q.answer) cls += ' correct'; else if (v === sel) cls += ' wrong'; }
+        else if (sel === v) cls += ' selected';
+        return `<button class="${cls}" data-qi="${i}" data-ox="${v}">${v}</button>`;
+      };
+      body = `<div class="ox-choices">${mk('O')}${mk('X')}</div>`;
+    } else if (q.type === 'choice') {
+      const sel = state.answers[i];
+      body = '<div class="choices">' + q.choices.map((c, ci) => {
+        let cls = 'choice';
+        if (revealed) { cls += ' disabled'; if (ci === q.answer) cls += ' correct'; else if (ci === sel) cls += ' wrong'; }
+        else if (sel === ci) cls += ' selected';
+        return `<div class="${cls}" data-qi="${i}" data-ci="${ci}"><div class="choice-num">${ci+1}</div><div class="choice-text">${escapeHtml(c)}</div></div>`;
+      }).join('') + '</div>';
+    } else if (q.type === 'essay') {
+      const val = state.answers[i] ?? '';
+      body = `<textarea class="essay-textarea" data-qi="${i}" placeholder="답안을 자유롭게 작성해보세요 (선택)" ${revealed?'disabled':''}>${escapeHtml(val)}</textarea>`;
+      if (!revealed) body += `<button class="essay-reveal" data-qi="${i}">💡 모범답안 보기</button>`;
+    } else { // short
+      const val = state.answers[i] ?? '';
+      const inpCls = revealed ? (correct ? 'correct' : 'wrong') : '';
+      body = `<div class="short-row">
+        <input type="text" class="short-input ${inpCls}" data-qi="${i}" value="${escapeHtml(val)}" placeholder="답을 입력하고 Enter 또는 '제출'" ${revealed?'disabled':''}>
+        <button class="short-submit" data-qi="${i}" ${revealed?'disabled':''}>제출</button>
+      </div>`;
+    }
+
+    let explainHtml = '';
+    if (revealed) {
+      if (q.type === 'essay') {
+        const kp = (q.keypoints || []).map(k => `<li>${escapeHtml(k)}</li>`).join('');
+        explainHtml = `
+          <div class="essay-answer">
+            <span class="ea-label">📖 모범답안</span>
+            <div class="ea-summary">${escapeHtml(q.answer)}</div>
+            ${kp ? `<ul>${kp}</ul>` : ''}
+            ${q.explain ? `<div class="ea-foot">${escapeHtml(q.explain)}</div>` : ''}
+          </div>`;
+      } else {
+        explainHtml = `
+          <div class="explain show">
+            <span class="explain-label">${correct ? '✅ 정답!' : '❌ 오답'}</span>
+            ${escapeHtml(q.explain)}
+            ${q.type === 'short' ? `<span class="ans-line">📖 정답: ${escapeHtml(q.answer)}${q.alts && q.alts.length ? ' (또는 ' + q.alts.map(escapeHtml).join(' / ') + ')' : ''}</span>` : ''}
+          </div>`;
+      }
+    }
+
+    const pointBadge = q.type === 'essay' ? '' : `<span class="q-point">${POINTS[q.type]}점</span>`;
+    const finalCardClass = q.type === 'essay' ? '' : cardClass;
+    return `
+      <div class="question-card ${finalCardClass}" id="q-${i}">
+        <div class="q-header">
+          <span class="q-num">Q${i+1}</span>
+          <span class="q-tag ${typeClass(q.type)}">${tLabel}</span>
+          ${pointBadge}
+          <span class="q-tag">${q.ch}장</span>
+          ${bookBadge}
+          ${profBadge}
+          ${trendBadge}
+        </div>
+        <div class="q-text">${escapeHtml(q.q)}</div>
+        ${body}
+        ${explainHtml}
+      </div>`;
+  }).join('');
+
+  // OX 버튼
+  container.querySelectorAll('.ox-btn').forEach(el => {
+    if (el.classList.contains('disabled')) return;
+    el.addEventListener('click', () => {
+      const qi = parseInt(el.dataset.qi);
+      const v = el.dataset.ox;
+      state.answers[qi] = v;
+      state.revealed[qi] = true;
+      state.correct[qi] = isCorrect(state.questions[qi], v);
+      render(); updateProgress();
+    });
+  });
+  // 객관식
+  container.querySelectorAll('.choice').forEach(el => {
+    if (el.classList.contains('disabled')) return;
+    el.addEventListener('click', () => {
+      const qi = parseInt(el.dataset.qi);
+      const ci = parseInt(el.dataset.ci);
+      state.answers[qi] = ci;
+      state.revealed[qi] = true;
+      state.correct[qi] = isCorrect(state.questions[qi], ci);
+      render(); updateProgress();
+    });
+  });
+  // 주관식
+  container.querySelectorAll('.short-input').forEach(inp => {
+    if (inp.disabled) return;
+    inp.addEventListener('input', () => {
+      state.answers[parseInt(inp.dataset.qi)] = inp.value;
+    });
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); submitShort(parseInt(inp.dataset.qi)); }
+    });
+  });
+  container.querySelectorAll('.short-submit').forEach(btn => {
+    if (btn.disabled) return;
+    btn.addEventListener('click', () => submitShort(parseInt(btn.dataset.qi)));
+  });
+  // 서술형
+  container.querySelectorAll('.essay-textarea').forEach(ta => {
+    if (ta.disabled) return;
+    ta.addEventListener('input', () => {
+      state.answers[parseInt(ta.dataset.qi)] = ta.value;
+    });
+  });
+  container.querySelectorAll('.essay-reveal').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const qi = parseInt(btn.dataset.qi);
+      state.revealed[qi] = true;
+      render(); updateProgress();
+    });
+  });
+
+  updateProgress();
+}
+
+function submitShort(qi) {
+  const val = state.answers[qi] ?? '';
+  state.revealed[qi] = true;
+  state.correct[qi] = isCorrect(state.questions[qi], val);
+  render(); updateProgress();
+}
+
+function updateProgress() {
+  const total = state.questions.length;
+  const answered = Object.keys(state.revealed).length;
+  document.getElementById('progress-text').textContent = `${answered} / ${total}`;
+  document.getElementById('progress-fill').style.width = total ? `${(answered/total)*100}%` : '0%';
+
+  if (state.mode === 'essay') {
+    document.getElementById('score-badge').textContent = `열람 ${answered}`;
+    document.getElementById('points-badge').textContent = '연습 모드';
+    return;
+  }
+  let correct = 0, earned = 0, maxPts = 0;
+  state.questions.forEach((q, i) => {
+    maxPts += POINTS[q.type] || 0;
+    if (state.correct[i]) { correct++; earned += POINTS[q.type] || 0; }
+  });
+  document.getElementById('score-badge').textContent = `정답 ${correct}`;
+  document.getElementById('points-badge').textContent = `${earned} / ${maxPts}점`;
+}
+
+function renderFilters() {
+  const bar = document.getElementById('filter-bar');
+  const chs = ['all', ...CHAPTERS.filter(c => state.questions.some(q => q.ch === c))];
+  bar.innerHTML = chs.map(c => {
+    const label = c === 'all' ? `전체 (${state.questions.length})` : `${c}장 (${state.questions.filter(q => q.ch === c).length})`;
+    const cls = state.filter === c ? 'filter-btn active' : 'filter-btn';
+    return `<button class="${cls}" data-f="${c}">${label}</button>`;
+  }).join('');
+  bar.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.filter = btn.dataset.f;
+      renderFilters(); render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+function renderPoolInfo() {
+  const info = document.getElementById('pool-info');
+  const byType = (t) => POOL.filter(q => q.type === t).length;
+  const bookN = POOL.filter(q => q.book).length;
+  const profN = POOL.filter(q => q.prof).length;
+  const trendN = POOL.filter(q => q.trend).length;
+  info.textContent = `문제 풀: 총 ${POOL.length}문제 (주관식 ${byType('short')} / 객관식 ${byType('choice')}) · PDF 확인 문제 ${bookN}개 · 교수 PDF 보강 ${profN}개 · 경향 보강 ${trendN}개`;
+}
+
+function applyModeUI() {
+  const isEssay = state.mode === 'essay';
+  const subtitle = document.querySelector('header p');
+  if (subtitle) {
+    subtitle.textContent = isEssay
+      ? '서술형 연습 (자가학습용 - 점수 미반영) · 모범답안 보기로 확인'
+      : '7장~13장 · PDF 확인 문제 + 교수/경향 보강 · 주관식 2점 / 객관식 3점';
+  }
+  document.getElementById('submit-btn').style.display = isEssay ? 'none' : '';
+  document.getElementById('mode-btn').style.display = 'none';
+  document.getElementById('reset-btn').textContent = '🔄 다시 풀기';
+}
+
+// ============ 이벤트 ============
+document.getElementById('submit-btn').addEventListener('click', () => {
+  if (state.mode === 'essay') return; // 서술형 모드에서는 결과 보기 비활성
+  let correct = 0, earned = 0, maxPts = 0;
+  state.questions.forEach((q, i) => {
+    maxPts += POINTS[q.type] || 0;
+    if (state.correct[i]) { correct++; earned += (POINTS[q.type] || 0); }
+  });
+  const percent = Math.round((earned / maxPts) * 100);
+  document.getElementById('result-score').textContent = `${earned} / ${maxPts}점`;
+  document.getElementById('result-detail').textContent = `정답 ${correct}/${state.questions.length} · 정답률 ${percent}%`;
+
+  let msg;
+  if (percent >= 90) msg = '좋습니다. 오답만 한 번 더 확인하세요.';
+  else if (percent >= 75) msg = '안정권입니다. 헷갈린 개념을 다시 보세요.';
+  else if (percent >= 60) msg = '조금 더 필요합니다. PDF 확인 문제를 반복하세요.';
+  else msg = '교재 확인 문제 중심으로 다시 복습하세요.';
+  document.getElementById('result-message').textContent = msg;
+
+  // 유형별/챕터별 내역
+  const breakdown = [];
+  ['ox','short','choice'].forEach(t => {
+    const qs = state.questions.filter(q => q.type === t);
+    const cqs = qs.filter((_, idx) => {
+      const globalIdx = state.questions.indexOf(qs[idx]);
+      return state.correct[globalIdx];
+    });
+    const got = qs.reduce((s, q, idx) => {
+      const gi = state.questions.indexOf(q);
+      return s + (state.correct[gi] ? POINTS[t] : 0);
+    }, 0);
+    const max = qs.length * POINTS[t];
+    if (qs.length > 0) breakdown.push(`${typeLabel(t)} ${got}/${max}점`);
+  });
+  document.getElementById('result-breakdown').innerHTML = breakdown.map(b => `<span>${b}</span>`).join('');
+  const card = document.getElementById('result-card');
+  card.classList.add('show');
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+document.getElementById('reset-btn').addEventListener('click', () => {
+  const msg = state.mode === 'essay'
+    ? '서술형 답안과 열람 상태가 초기화됩니다. 진행할까요?'
+    : '현재 답안을 초기화하고 다시 풀까요?';
+  if (Object.keys(state.revealed).length > 0 && !confirm(msg)) return;
+  newRound();
+});
+
+document.getElementById('mode-btn').addEventListener('click', () => {
+  const goingEssay = state.mode !== 'essay';
+  if (Object.keys(state.revealed).length > 0) {
+    const msg = goingEssay
+      ? '서술형 연습 모드로 전환합니다. 현재 시험 답안이 사라집니다. 진행할까요?'
+      : '시험 모드로 전환합니다. 서술형 작성 내용이 사라집니다. 진행할까요?';
+    if (!confirm(msg)) return;
+  }
+  state.mode = goingEssay ? 'essay' : 'exam';
+  newRound();
+});
+
+renderPoolInfo();
+newRound();
+</script>
+</body>
+</html>
