@@ -2,7 +2,7 @@
 {
   "name": "Os Final Quiz",
   "schemaVersion": 1,
-  "description": "오퍼레이팅시스템 기말고사 대비 인터랙티브 문제은행 (7장~13장) - 교재 PDF의 확인 문제 전체 포함"
+  "description": "오퍼레이팅시스템 기말고사 대비 40점 랜덤 퀴즈 (7장~13장) - OX, 주관식, 객관식 출제"
 }
 </script>
 <html lang="ko">
@@ -255,7 +255,7 @@ footer { text-align: center; margin-top: 30px; font-size: 11px; color: #9ca3af; 
 <div class="container">
   <header>
     <h1>💻 오퍼레이팅시스템 기말고사</h1>
-    <p>7장~13장 · PDF 확인 문제 + 교수/경향 보강 · 주관식 2점 / 객관식 3점</p>
+    <p>7장~13장 · OX 8문제 / 주관식 7문제 / 객관식 6문제 · 40점 만점</p>
     <div class="pool-info" id="pool-info"></div>
   </header>
 
@@ -263,13 +263,13 @@ footer { text-align: center; margin-top: 30px; font-size: 11px; color: #9ca3af; 
     <span class="progress-text" id="progress-text">0 / 0</span>
     <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
     <span class="score-badge" id="score-badge">정답 0</span>
-    <span class="points-badge" id="points-badge">0점</span>
+    <span class="points-badge" id="points-badge">0 / 40점</span>
   </div>
 
   <div class="filter-bar" id="filter-bar"></div>
 
   <div class="result-card" id="result-card">
-    <div class="result-score" id="result-score">0점</div>
+    <div class="result-score" id="result-score">0 / 40점</div>
     <div class="result-detail" id="result-detail">정답률 0%</div>
     <div class="result-message" id="result-message"></div>
     <div class="result-breakdown" id="result-breakdown"></div>
@@ -278,12 +278,12 @@ footer { text-align: center; margin-top: 30px; font-size: 11px; color: #9ca3af; 
   <div id="quiz-container"></div>
 
   <div class="controls">
-    <button class="btn btn-secondary" id="reset-btn">🎲 새 세트로 다시 풀기</button>
+    <button class="btn btn-secondary" id="reset-btn">🎲 새 40점 세트로 다시 풀기</button>
     <button class="btn btn-essay" id="mode-btn" style="display:none">📝 서술형 연습</button>
     <button class="btn btn-primary" id="submit-btn">📊 결과 보기</button>
   </div>
 
-  <footer>교재: 혼자 공부하는 컴퓨터 구조+운영체제 · 기말 범위 7장~13장 · 📘책 = PDF 확인 문제 · 교수PDF/경향 = 보강 문제</footer>
+  <footer>교재: 혼자 공부하는 컴퓨터 구조+운영체제 · 기말 범위 7장~13장 · OX/주관식/객관식 40점 랜덤 출제</footer>
 </div>
 
 <script>
@@ -2187,12 +2187,312 @@ const POOL = [
       "자원 할당 그래프를 절대 사용할 수 없습니다.",
       "교착 상태가 발생하기 전에만 사용할 수 있습니다."
     ]
+  },
+  {
+    "seq": 126,
+    "ch": "7-1",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "하드 디스크에서 플래터는 데이터를 저장하는 원판이고, 스핀들은 플래터를 회전시키는 구성 요소이다.",
+    "answer": "O",
+    "explain": "플래터는 자기적으로 데이터가 저장되는 원판이고 스핀들은 플래터를 회전시킵니다."
+  },
+  {
+    "seq": 127,
+    "ch": "7-1",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "일반적으로 TLC는 SLC보다 읽기/쓰기 속도와 수명이 더 좋고 가격도 더 비싸다.",
+    "answer": "X",
+    "explain": "일반적으로 SLC가 TLC보다 속도와 수명이 좋고 가격이 더 비쌉니다."
+  },
+  {
+    "seq": 128,
+    "ch": "7-2",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "RAID 0은 데이터를 여러 디스크에 나누어 저장해 성능을 높일 수 있지만, 복구용 중복 정보가 없어 안전성은 낮다.",
+    "answer": "O",
+    "explain": "RAID 0은 스트라이핑으로 성능을 높이지만 복제나 패리티가 없어 장애에 취약합니다."
+  },
+  {
+    "seq": 129,
+    "ch": "7-2",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "RAID 1은 패리티를 계산해 한 디스크에만 저장하는 방식이며, 같은 데이터를 복제하지 않는다.",
+    "answer": "X",
+    "explain": "RAID 1은 미러링 방식으로 같은 데이터를 복제해 저장합니다."
+  },
+  {
+    "seq": 130,
+    "ch": "8-1",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "장치 컨트롤러는 CPU와 입출력장치 사이에서 제어와 데이터 전달을 중개하며, 내부에 버퍼를 둘 수 있다.",
+    "answer": "O",
+    "explain": "장치 컨트롤러는 입출력장치와 컴퓨터 내부 사이의 중개자 역할을 하고 버퍼를 통해 속도 차이를 완화합니다."
+  },
+  {
+    "seq": 131,
+    "ch": "8-1",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "모든 입출력장치는 장치 드라이버 없이 CPU 명령만으로 동일하게 제어된다.",
+    "answer": "X",
+    "explain": "운영체제는 장치별 제어 방법을 담은 장치 드라이버를 통해 입출력장치를 다룹니다."
+  },
+  {
+    "seq": 132,
+    "ch": "8-2",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "인터럽트 기반 입출력은 입출력 작업이 끝났을 때 장치가 CPU에 알리도록 하여 CPU가 계속 상태를 확인하는 부담을 줄인다.",
+    "answer": "O",
+    "explain": "인터럽트 기반 입출력은 폴링보다 CPU 낭비를 줄일 수 있습니다."
+  },
+  {
+    "seq": 133,
+    "ch": "8-2",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "DMA는 CPU를 거치지 않고 입출력장치와 메모리 사이에서 데이터를 전송할 수 없게 만드는 방식이다.",
+    "answer": "X",
+    "explain": "DMA는 CPU 개입을 줄이고 입출력장치와 메모리 사이의 직접 데이터 전송을 가능하게 합니다."
+  },
+  {
+    "seq": 134,
+    "ch": "9-1",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "운영체제는 실행할 프로그램에 필요한 자원을 할당하고, 프로그램 실행을 관리하는 역할을 한다.",
+    "answer": "O",
+    "explain": "운영체제는 CPU, 메모리, 입출력장치 같은 자원을 관리하고 프로그램 실행을 지원합니다."
+  },
+  {
+    "seq": 135,
+    "ch": "9-1",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "커널은 사용자가 작성한 모든 응용 프로그램 코드와 동일한 의미이며, 운영체제의 핵심 기능과는 무관하다.",
+    "answer": "X",
+    "explain": "커널은 운영체제의 핵심 기능을 담당하는 부분입니다."
+  },
+  {
+    "seq": 136,
+    "ch": "9-2",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "응용 프로그램이 운영체제 서비스를 이용하려면 시스템 호출을 통해 커널 기능을 요청할 수 있다.",
+    "answer": "O",
+    "explain": "시스템 호출은 사용자 프로그램이 운영체제 서비스를 요청하는 대표적인 통로입니다."
+  },
+  {
+    "seq": 137,
+    "ch": "9-2",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "이중 모드는 사용자 모드와 커널 모드를 구분하지 않고 모든 명령어를 항상 응용 프로그램이 직접 실행하게 한다.",
+    "answer": "X",
+    "explain": "이중 모드는 사용자 모드와 커널 모드를 구분해 보호가 필요한 명령 실행을 제한합니다."
+  },
+  {
+    "seq": 138,
+    "ch": "10-1",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "프로세스 제어 블록(PCB)에는 프로세스 ID, 레지스터 값, 프로세스 상태 등 프로세스 관리 정보가 저장될 수 있다.",
+    "answer": "O",
+    "explain": "PCB는 운영체제가 프로세스를 관리하기 위해 필요한 정보를 담습니다."
+  },
+  {
+    "seq": 139,
+    "ch": "10-1",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "서로 다른 프로세스는 항상 같은 주소 공간을 공유하므로 별도의 프로세스 간 통신이 필요 없다.",
+    "answer": "X",
+    "explain": "일반적으로 프로세스는 독립된 주소 공간을 가지므로 통신을 위해 IPC 등이 필요합니다."
+  },
+  {
+    "seq": 140,
+    "ch": "10-2",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "문맥 교환은 실행 중이던 프로세스의 문맥을 저장하고 다른 프로세스의 문맥을 복구하는 과정이다.",
+    "answer": "O",
+    "explain": "문맥 교환은 CPU를 넘겨줄 때 필요한 실행 상태 저장과 복구 과정입니다."
+  },
+  {
+    "seq": 141,
+    "ch": "10-2",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "대기 상태는 CPU를 배정받기만 기다리는 상태이고, 준비 상태는 입출력 완료를 기다리는 상태이다.",
+    "answer": "X",
+    "explain": "준비 상태는 CPU 배정을 기다리고, 대기 상태는 입출력 완료 등 특정 사건을 기다립니다."
+  },
+  {
+    "seq": 142,
+    "ch": "10-3",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "같은 프로세스의 스레드들은 코드, 데이터, 힙 영역을 공유할 수 있지만 각자의 실행 흐름을 가진다.",
+    "answer": "O",
+    "explain": "스레드는 프로세스 자원을 공유하면서도 독립적인 실행 흐름을 가집니다."
+  },
+  {
+    "seq": 143,
+    "ch": "10-3",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "같은 프로세스의 모든 스레드는 스택과 프로그램 카운터까지 하나만 공유하므로 동시에 다른 함수를 실행할 수 없다.",
+    "answer": "X",
+    "explain": "스레드는 각자의 스택과 프로그램 카운터를 가질 수 있어 독립적으로 실행됩니다."
+  },
+  {
+    "seq": 144,
+    "ch": "11-1",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "CPU 스케줄러는 준비 큐에 있는 프로세스 중 어떤 프로세스에 CPU를 할당할지 결정한다.",
+    "answer": "O",
+    "explain": "CPU 스케줄링은 준비 상태 프로세스 중 실행할 대상을 고르는 작업입니다."
+  },
+  {
+    "seq": 145,
+    "ch": "11-1",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "선점형 스케줄링은 응답성을 높일 수 있으며 문맥 교환 오버헤드가 전혀 발생하지 않는다.",
+    "answer": "X",
+    "explain": "선점형 스케줄링은 응답성에 유리할 수 있지만 문맥 교환 오버헤드가 발생할 수 있습니다."
+  },
+  {
+    "seq": 146,
+    "ch": "11-2",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "라운드 로빈 스케줄링은 정해진 타임 슬라이스 동안 CPU를 사용하게 하고 시간이 지나면 다음 프로세스로 넘길 수 있다.",
+    "answer": "O",
+    "explain": "라운드 로빈은 시간 할당량을 기준으로 CPU를 번갈아 배정합니다."
+  },
+  {
+    "seq": 147,
+    "ch": "11-2",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "선입 선처리 스케줄링은 항상 평균 대기 시간이 가장 짧으며 호위 효과가 발생하지 않는다.",
+    "answer": "X",
+    "explain": "FCFS는 긴 작업이 앞에 있으면 뒤 작업들이 오래 기다리는 호위 효과가 발생할 수 있습니다."
+  },
+  {
+    "seq": 148,
+    "ch": "12-1",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "공유 자원을 동시에 갱신해 실행 순서에 따라 결과가 달라지는 상황은 레이스 컨디션에 해당할 수 있다.",
+    "answer": "O",
+    "explain": "레이스 컨디션은 공유 자원 접근 순서에 따라 결과가 달라지는 문제입니다."
+  },
+  {
+    "seq": 149,
+    "ch": "12-1",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "상호 배제는 여러 프로세스가 임계 구역에 동시에 들어가도록 허용하는 조건이다.",
+    "answer": "X",
+    "explain": "상호 배제는 한 프로세스가 임계 구역에 있을 때 다른 프로세스의 진입을 막는 조건입니다."
+  },
+  {
+    "seq": 150,
+    "ch": "12-2",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "세마포의 wait() 연산은 임계 구역 진입 전 자원 사용 가능 여부를 확인하고 세마포 값을 감소시키는 역할을 할 수 있다.",
+    "answer": "O",
+    "explain": "wait()는 사용할 수 있는 자원을 하나 차감하고, 필요하면 대기하게 합니다."
+  },
+  {
+    "seq": 151,
+    "ch": "12-2",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "모니터는 상호 배제를 제공하지 않으므로 세마포보다 항상 더 위험한 동기화 도구이다.",
+    "answer": "X",
+    "explain": "모니터는 공유 자원 접근 인터페이스와 상호 배제를 구조화해 동기화 실수를 줄일 수 있습니다."
+  },
+  {
+    "seq": 152,
+    "ch": "13-1",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "교착 상태의 필요 조건에는 상호 배제, 점유와 대기, 비선점, 원형 대기가 포함된다.",
+    "answer": "O",
+    "explain": "네 가지 조건이 모두 성립할 때 교착 상태가 발생할 수 있습니다."
+  },
+  {
+    "seq": 153,
+    "ch": "13-1",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "자원 할당 그래프에 사이클이 없으면 교착 상태가 반드시 발생한 상태라고 판단한다.",
+    "answer": "X",
+    "explain": "사이클이 없으면 교착 상태는 발생하지 않았다고 볼 수 있습니다."
+  },
+  {
+    "seq": 154,
+    "ch": "13-2",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "교착 상태 회피는 자원을 할당한 뒤에도 시스템이 안전 상태를 유지할 수 있는지 고려한다.",
+    "answer": "O",
+    "explain": "회피는 안전 상태를 유지할 수 있는 요청만 승인하는 방식입니다."
+  },
+  {
+    "seq": 155,
+    "ch": "13-2",
+    "type": "ox",
+    "book": false,
+    "trend": true,
+    "q": "교착 상태 회복은 교착 상태가 절대 발생하기 전에만 쓰는 방법이며, 이미 발생한 교착 상태에는 적용할 수 없다.",
+    "answer": "X",
+    "explain": "회복은 교착 상태를 검출한 뒤 프로세스 종료나 자원 선점 등으로 문제를 풀어내는 방식입니다."
   }
 ];
 
 // ============ 출제 설정 ============
-// PDF 확인 문제 전체를 매 회차 그대로 출제
-const PICK = { ox: 999, short: 999, choice: 999 };
+// 40점 세트: OX 8문제(8점) + 주관식 7문제(14점) + 객관식 6문제(18점)
+const PICK = { ox: 8, short: 7, choice: 6 };
 const POINTS = { ox: 1, short: 2, choice: 3 };
 const CHAPTERS = ['7-1', '7-2', '8-1', '8-2', '9-1', '9-2', '10-1', '10-2', '10-3', '11-1', '11-2', '12-1', '12-2', '13-1', '13-2'];
 
@@ -2479,7 +2779,8 @@ function renderPoolInfo() {
   const bookN = POOL.filter(q => q.book).length;
   const profN = POOL.filter(q => q.prof).length;
   const trendN = POOL.filter(q => q.trend).length;
-  info.textContent = `문제 풀: 총 ${POOL.length}문제 (주관식 ${byType('short')} / 객관식 ${byType('choice')}) · PDF 확인 문제 ${bookN}개 · 교수 PDF 보강 ${profN}개 · 경향 보강 ${trendN}개`;
+  const examMax = PICK.ox * POINTS.ox + PICK.short * POINTS.short + PICK.choice * POINTS.choice;
+  info.textContent = `문제 풀: 총 ${POOL.length}문제 (OX ${byType('ox')} / 주관식 ${byType('short')} / 객관식 ${byType('choice')}) · 출제 ${PICK.ox}+${PICK.short}+${PICK.choice}문제 = ${examMax}점 · PDF 확인 문제 ${bookN}개 · 교수 PDF 보강 ${profN}개 · 경향 보강 ${trendN}개`;
 }
 
 function applyModeUI() {
@@ -2488,11 +2789,11 @@ function applyModeUI() {
   if (subtitle) {
     subtitle.textContent = isEssay
       ? '서술형 연습 (자가학습용 - 점수 미반영) · 모범답안 보기로 확인'
-      : '7장~13장 · PDF 확인 문제 + 교수/경향 보강 · 주관식 2점 / 객관식 3점';
+      : '7장~13장 · OX 8문제 / 주관식 7문제 / 객관식 6문제 · 40점 만점';
   }
   document.getElementById('submit-btn').style.display = isEssay ? 'none' : '';
   document.getElementById('mode-btn').style.display = 'none';
-  document.getElementById('reset-btn').textContent = '🔄 다시 풀기';
+  document.getElementById('reset-btn').textContent = '🔄 새 40점 세트';
 }
 
 // ============ 이벤트 ============
